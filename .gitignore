@@ -1,0 +1,10 @@
+node_modules/
+.next/
+.next-arborist/
+.npm-cache/
+tmp/
+*.log
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local

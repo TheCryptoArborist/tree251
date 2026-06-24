@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --leaflet-container-bg: #f7f8f0;
+  --board-black: #0b1f17;
+  --board-ink: #142116;
+  --board-muted: #5d6a60;
+  --board-line: rgba(6, 78, 59, 0.16);
+  --board-green: #047857;
+  --board-gold: #d9a441;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: linear-gradient(180deg, #f9fbf4 0%, #eef3e6 100%);
+  color: var(--board-ink);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  letter-spacing: 0;
+}
+
+main {
+  overflow-x: clip;
+}
+
+body::before {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  background:
+    radial-gradient(circle at 10% 6%, rgba(255, 255, 255, 0.82), transparent 24rem),
+    radial-gradient(circle at 88% 0%, rgba(210, 223, 198, 0.42), transparent 28rem);
+  opacity: 0.8;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  letter-spacing: 0;
+}
+
+::selection {
+  background: rgba(4, 120, 87, 0.18);
+  color: #0b1f17;
+}
+
+.leaflet-container {
+  min-height: 100%;
+  background: var(--leaflet-container-bg);
+  color: #17211b;
+}
+
+.focus-ring {
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+}
+
+.focus-ring:focus-visible {
+  outline-color: var(--board-green);
+}
+
+.tree-ring-texture {
+  background:
+    radial-gradient(circle at 8% 42%, transparent 0 4rem, rgba(190, 255, 78, 0.09) 4.08rem 4.16rem, transparent 4.24rem 7.4rem, rgba(246, 198, 83, 0.07) 7.48rem 7.56rem, transparent 7.64rem 10.8rem, rgba(190, 255, 78, 0.055) 10.88rem 10.96rem, transparent 11.04rem),
+    repeating-radial-gradient(circle at 8% 42%, rgba(255, 255, 255, 0.028) 0 1px, transparent 1px 17px);
+  mask-image: linear-gradient(90deg, black, rgba(0, 0, 0, 0.82), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
