@@ -1,40 +1,41 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
+  ArboristLogo,
   consultationMailto,
-  reportVerificationPath,
-  TreeVerifiedLogo
+  isaCredentialUrl,
+  schedulePagePath
 } from "@/components/ConsultBranding";
-import { ArrowRight, CheckCircle2, FileCheck2, Mail } from "lucide-react";
+import { ArrowRight, BadgeCheck, CalendarDays, CheckCircle2, Mail } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Consultation Request Confirmation",
+  title: "Assessment Request Confirmation",
   description:
-    "Confirmation page branding for Consult Request by Peter Toler, ISA Certified Consulting Arborist."
+    "Confirmation page for tree assessment requests to Peter Toler, ISA Certified Arborist."
 };
 
 type SearchParams = Promise<{ status?: string }>;
 
 const statusCopy: Record<string, { title: string; text: string }> = {
   received: {
-    title: "Consultation request received.",
+    title: "Tree assessment request received.",
     text:
-      "Thank you for requesting a professional tree consultation. If a report is issued, secure report verification and timestamped consultation records may be powered by TREE as an optional verification feature."
+      "Thank you for requesting independent arborist guidance. Peter will review the tree concern, context, and photos if provided."
   },
   incomplete: {
     title: "A few required details are missing.",
     text:
-      "Please send your name, email, and tree concern so the consultation request can be reviewed."
+      "Please send your name, email, and tree concern so the assessment request can be reviewed."
   },
   "not-configured": {
-    title: "The consultation form is ready.",
+    title: "The assessment form is ready.",
     text:
-      "Supabase environment variables are not configured in this runtime, so use email for this request until deployment settings are connected."
+      "The online save step is not configured in this runtime, so use email for this request until deployment settings are connected."
   },
   error: {
     title: "The online request could not be saved.",
     text:
-      "Please use email for this request. The consultation branding and form are in place, but the save step needs attention."
+      "Please use email for this request. The form is in place, but the save step needs attention."
   }
 };
 
@@ -52,23 +53,21 @@ export default async function ConfirmationPage({
       <section className="border-b border-emerald-950/10 bg-white">
         <div className="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 lg:px-8">
           <div className="flex justify-center">
-            <TreeVerifiedLogo />
+            <ArboristLogo />
           </div>
           <h1 className="mt-8 text-4xl font-black uppercase leading-none tracking-[0.08em] text-emerald-950 sm:text-5xl">
-            Consult Request
+            The Arborist
           </h1>
           <p className="mt-5 text-3xl font-black text-stone-900">Peter Toler</p>
           <p className="mt-2 text-xl font-black text-emerald-800">
-            ISA Certified Consulting Arborist
+            ISA Certified Arborist
           </p>
           <div className="mx-auto mt-8 max-w-2xl rounded-md border border-emerald-950/10 bg-[#f7f8f0] p-6 text-left">
             <div className="flex gap-3">
               <CheckCircle2 className="mt-1 size-6 shrink-0 text-emerald-800" aria-hidden="true" />
               <div>
                 <h2 className="text-2xl font-black text-emerald-950">{copy.title}</h2>
-                <p className="mt-3 text-base leading-7 text-stone-700">
-                  {copy.text}
-                </p>
+                <p className="mt-3 text-base leading-7 text-stone-700">{copy.text}</p>
               </div>
             </div>
           </div>
@@ -81,12 +80,21 @@ export default async function ConfirmationPage({
               Send Another Request
             </a>
             <Link
-              href={reportVerificationPath}
+              href={schedulePagePath}
               className="inline-flex items-center justify-center gap-2 rounded-md border border-emerald-900/20 bg-white px-5 py-3 text-sm font-black text-emerald-950 transition hover:border-emerald-800 hover:bg-emerald-50 focus-ring"
             >
-              <FileCheck2 className="size-4 text-emerald-800" aria-hidden="true" />
-              Verify Report
+              <CalendarDays className="size-4 text-emerald-800" aria-hidden="true" />
+              Schedule a Call
             </Link>
+            <a
+              href={isaCredentialUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-emerald-900/20 bg-white px-5 py-3 text-sm font-black text-emerald-950 transition hover:border-emerald-800 hover:bg-emerald-50 focus-ring"
+            >
+              <BadgeCheck className="size-4 text-emerald-800" aria-hidden="true" />
+              Verify ISA Credentials
+            </a>
             <Link
               href="/"
               className="inline-flex items-center justify-center gap-2 rounded-md border border-stone-300 px-5 py-3 text-sm font-bold text-stone-700 transition hover:border-emerald-700 hover:text-emerald-950 focus-ring"
