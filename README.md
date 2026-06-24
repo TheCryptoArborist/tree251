@@ -27,7 +27,18 @@ The consultation form stores requests in `consultation_requests` from a server
 action. Report lookup reads public-safe verification records from
 `consultation_reports`.
 
-Keep `SUPABASE_SERVICE_ROLE_KEY` server-side only. Do not expose it with a
+Required Netlify variables:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+Optional server-only variables:
+
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+The request form can submit with the anon key through row-level security. Keep
+`SUPABASE_SERVICE_ROLE_KEY` server-side only. Do not expose it with a
 `NEXT_PUBLIC_` prefix.
 
 ## Current Homepage Focus
