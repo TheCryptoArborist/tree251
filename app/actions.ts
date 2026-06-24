@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { getSupabaseAdminClient } from "@/lib/supabase/server";
+import { getSupabaseRequestClient } from "@/lib/supabase/server";
 
 function textField(formData: FormData, key: string) {
   const value = formData.get(key);
@@ -17,7 +17,7 @@ export async function submitConsultationRequest(formData: FormData) {
     redirect("/confirmation?status=incomplete");
   }
 
-  const supabase = getSupabaseAdminClient();
+  const supabase = getSupabaseRequestClient();
 
   if (!supabase) {
     redirect("/confirmation?status=not-configured");
