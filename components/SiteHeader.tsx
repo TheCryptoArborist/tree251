@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   consultationAnchor,
   reportVerificationPath,
+  schedulePagePath,
   treeBenefitsAnchor,
   TreeVerifiedLogo
 } from "@/components/ConsultBranding";
@@ -10,6 +11,7 @@ import { ArrowRight, FileCheck2 } from "lucide-react";
 const navItems = [
   { href: "/#services", label: "Services" },
   { href: "/#professional-scope", label: "Consulting Scope" },
+  { href: schedulePagePath, label: "Schedule" },
   { href: reportVerificationPath, label: "Verify Report" },
   { href: "/#about", label: "About Peter" },
   { href: consultationAnchor, label: "Request" }
