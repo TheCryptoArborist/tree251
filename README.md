@@ -27,6 +27,12 @@ The consultation form stores requests in `consultation_requests` from a server
 action. Report lookup reads public-safe verification records from
 `consultation_reports`.
 
+## Calendly
+
+Phone consultation scheduling uses Peter Toler's active Calendly event type:
+
+- `NEXT_PUBLIC_CALENDLY_URL=https://calendly.com/pbtau63/30min`
+
 Required Netlify variables:
 
 - `NEXT_PUBLIC_SUPABASE_URL`
