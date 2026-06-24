@@ -30,6 +30,10 @@ action. Report lookup reads public-safe verification records from
 Required Netlify variables:
 
 - `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+
+Legacy fallback:
+
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 Optional server-only variables:
