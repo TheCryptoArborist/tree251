@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowRight, FileCheck2, WalletCards } from "lucide-react";
+import { ArrowRight, CalendarDays, FileCheck2, WalletCards } from "lucide-react";
 
 export const consultationMailto =
   "mailto:petertoler@me.com?subject=Request%20Consultation";
@@ -7,7 +7,12 @@ export const consultationMailto =
 export const reportVerificationMailto =
   "mailto:petertoler@me.com?subject=Verify%20Report";
 
+export const calendlySchedulingUrl =
+  process.env.NEXT_PUBLIC_CALENDLY_URL ?? "https://calendly.com/pbtau63/30min";
+
 export const consultationAnchor = "/#consultation-request";
+export const scheduleCallAnchor = "/#schedule-call";
+export const schedulePagePath = "/schedule";
 export const reportVerificationPath = "/verify";
 export const treeBenefitsAnchor = "/#tree-benefits";
 
@@ -80,6 +85,28 @@ export function VerifyReportButton({
     >
       <FileCheck2 className="size-4 text-emerald-800" aria-hidden="true" />
       Verify Report
+    </a>
+  );
+}
+
+export function SchedulePhoneButton({
+  href = scheduleCallAnchor,
+  className = ""
+}: {
+  href?: string;
+  className?: string;
+}) {
+  const isExternal = href.startsWith("http");
+
+  return (
+    <a
+      href={href}
+      target={isExternal ? "_blank" : undefined}
+      rel={isExternal ? "noreferrer" : undefined}
+      className={`inline-flex items-center justify-center gap-2 rounded-md border border-emerald-800/30 bg-white px-5 py-3 text-sm font-black text-emerald-950 transition hover:border-emerald-800 hover:bg-emerald-50 focus-ring ${className}`}
+    >
+      <CalendarDays className="size-4 text-emerald-800" aria-hidden="true" />
+      Schedule Phone Consultation
     </a>
   );
 }
