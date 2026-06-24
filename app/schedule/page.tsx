@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import { CalendarDays, ExternalLink, Mail, PhoneCall } from "lucide-react";
 import {
+  ArboristLogo,
   calendlySchedulingUrl,
-  consultationMailto,
-  RequestConsultationButton,
-  TreeVerifiedLogo
+  photoSubmissionMailto,
+  RequestConsultationButton
 } from "@/components/ConsultBranding";
 
 export const metadata: Metadata = {
   title: "Schedule Phone Consultation",
   description:
-    "Schedule a 30-minute phone consultation with Peter Toler, ISA Certified Consulting Arborist in Mobile, Alabama."
+    "Schedule a 30-minute phone consultation with Peter Toler, ISA Certified Arborist in Mobile, Alabama."
 };
 
 const calendlyEmbedUrl = `${calendlySchedulingUrl}?hide_gdpr_banner=1&primary_color=047857`;
@@ -25,17 +25,17 @@ export default function SchedulePage() {
       <section className="border-b border-emerald-950/10 bg-white">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(22rem,0.78fr)] lg:items-start lg:px-8">
           <div>
-            <TreeVerifiedLogo className="mb-6" />
+            <ArboristLogo className="mb-6" />
             <p className="text-sm font-black uppercase tracking-[0.18em] text-emerald-700">
               Phone consultation
             </p>
             <h1 className="mt-3 text-4xl font-black leading-tight text-emerald-950 sm:text-5xl">
-              Schedule a 30-minute call with Peter.
+              Talk through the tree concern before you pay for work.
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-stone-700">
-              Book a phone consultation to talk through the tree concern, property context,
-              photos, storm damage, preservation options, or whether an on-site assessment is the
-              better next step.
+              Book a phone consultation with Peter Toler to review the tree concern, property
+              context, photos, storm damage, preservation options, or whether an on-site assessment
+              is the better next step.
             </p>
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
               {scheduleFacts.map(({ label, Icon }) => (
@@ -60,11 +60,11 @@ export default function SchedulePage() {
                 <ExternalLink className="size-4 text-emerald-800" aria-hidden="true" />
               </a>
               <a
-                href={consultationMailto}
+                href={photoSubmissionMailto}
                 className="inline-flex items-center justify-center gap-2 rounded-md bg-emerald-800 px-5 py-3 text-sm font-black text-white shadow-[0_14px_30px_rgba(6,78,59,0.22)] transition hover:bg-emerald-900 focus-ring"
               >
                 <Mail className="size-4" aria-hidden="true" />
-                Send Details Instead
+                Send Photos Instead
               </a>
             </div>
           </div>
@@ -90,7 +90,7 @@ export default function SchedulePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="rounded-md border border-emerald-950/10 bg-white p-6">
             <h2 className="text-2xl font-black text-emerald-950">
-              Need a full assessment request instead?
+              Need a full tree assessment request instead?
             </h2>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-stone-700">
               The phone consultation is useful for clarifying priorities. For tree risk
