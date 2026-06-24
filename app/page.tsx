@@ -1,5 +1,5 @@
-import { ArboristHomePage } from "@/components/ArboristHomePage";
+import { TheArboristHomePage } from "@/components/TheArboristHomePage";
 
 export default function HomePage() {
-  return <ArboristHomePage />;
+  return <TheArboristHomePage />;
 }
