@@ -15,6 +15,7 @@ const eslintConfig = [
       ".next/**",
       ".next-arborist/**",
       ".npm-cache/**",
+      "tmp/**",
       "node_modules/**",
       "next-env.d.ts",
       "lib/hazard/**",
