@@ -98,7 +98,7 @@ export function ConsultationRequestForm() {
                 type="checkbox"
                 name="consultation_type"
                 value={interest}
-                className="mt-0.5 size-4 rounded border-emerald-900/30 text-emerald-800"
+                className="mt-0.5 size-5 shrink-0 rounded border-emerald-900/30 text-emerald-800"
               />
               <span>{interest}</span>
             </label>
@@ -130,7 +130,7 @@ export function ConsultationRequestForm() {
                 type="radio"
                 name="assessment_handling"
                 value={option}
-                className="mt-0.5 size-4 border-emerald-900/30 text-emerald-800"
+                className="mt-0.5 size-5 shrink-0 border-emerald-900/30 text-emerald-800"
               />
               <span>{option}</span>
             </label>
@@ -162,7 +162,7 @@ export function ConsultationRequestForm() {
           <input
             type="checkbox"
             name="has_photos"
-            className="mt-1 size-4 rounded border-emerald-900/30 text-emerald-800"
+            className="mt-1 size-5 shrink-0 rounded border-emerald-900/30 text-emerald-800"
           />
           <span>If possible, I can provide pictures that may be helpful.</span>
         </label>
