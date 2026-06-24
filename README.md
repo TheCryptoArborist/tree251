@@ -1,8 +1,14 @@
-# Consult Request
+# The Arborist
 
-Professional consultation request website for Peter Toler, ISA Certified Consulting Arborist.
+Primary business website for Peter Toler, ISA Certified Arborist in Mobile, Alabama.
 
-The site positions Consult Request as a professional arborist consulting platform first. TREE Verified appears as a secondary verification and timestamping layer for reports and consultation records.
+The site is built around one lead-generation message:
+
+> Get an independent tree assessment before paying for tree work.
+
+This website is intentionally separate from permit trackers, emergency dashboards, public records
+tools, or 311 hazard maps. The main conversion path is a tree assessment request, with secondary
+paths for Calendly scheduling, photo submission, and ISA credential verification.
 
 ## Run Locally
 
@@ -23,15 +29,8 @@ npm.cmd run build
 
 ## Supabase
 
-The consultation form stores requests in `consultation_requests` from a server
-action. Report lookup reads public-safe verification records from
-`consultation_reports`.
-
-## Calendly
-
-Phone consultation scheduling uses Peter Toler's active Calendly event type:
-
-- `NEXT_PUBLIC_CALENDLY_URL=https://calendly.com/pbtau63/30min`
+The assessment form stores requests in `consultation_requests` from a server action. Report lookup
+reads public-safe verification records from `consultation_reports`.
 
 Required Netlify variables:
 
@@ -48,15 +47,21 @@ Optional server-only variables:
 - `SUPABASE_SERVICE_ROLE_KEY`
 
 The request form can submit with the anon key through row-level security. Keep
-`SUPABASE_SERVICE_ROLE_KEY` server-side only. Do not expose it with a
-`NEXT_PUBLIC_` prefix.
+`SUPABASE_SERVICE_ROLE_KEY` server-side only. Do not expose it with a `NEXT_PUBLIC_` prefix.
+
+## Calendly
+
+Phone consultation scheduling uses Peter Toler's active Calendly event type:
+
+- `NEXT_PUBLIC_CALENDLY_URL=https://calendly.com/pbtau63/30min`
 
 ## Current Homepage Focus
 
-- Professional arborist consulting
+- Independent tree assessments
 - Tree risk assessments
-- Tree health evaluations
-- Development and permit consulting
-- Storm damage assessments
-- Expert recommendations
-- Report verification powered by TREE, without requiring cryptocurrency knowledge
+- Storm damage evaluations
+- Work prioritization
+- Second opinions before hiring a tree service
+- Tree preservation guidance
+- Permit and Tree Commission guidance
+- Property owner consultations
