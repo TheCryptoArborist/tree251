@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
-import "leaflet/dist/leaflet.css";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
   title: {
-    default: "Consult Request | Peter Toler, ISA Certified Consulting Arborist",
-    template: "%s | Consult Request"
+    default: "The Arborist | Peter Toler, ISA Certified Arborist",
+    template: "%s | The Arborist"
   },
   description:
-    "Request professional tree consultations, tree risk assessments, tree health evaluations, storm damage assessments, permit and development consulting, and TREE Verified report verification from Peter Toler.",
+    "Request an independent tree assessment from Peter Toler, ISA Certified Arborist in Mobile, Alabama, before paying for tree removal, pruning, storm cleanup, or permit-related tree work.",
   icons: {
     icon: "/arborist-logo-cropped.png",
     apple: "/arborist-logo-cropped.png"
