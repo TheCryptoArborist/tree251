@@ -50,7 +50,7 @@ export function ArboristLogo({
         />
       </span>
       {showText ? (
-        <span className="min-w-0 text-xs font-bold uppercase leading-tight tracking-[0.14em] text-lime-700">
+        <span className="min-w-0 text-xs font-bold uppercase leading-tight tracking-[0.14em] text-[#f6c95a]">
           The Arborist
           <span className="block text-emerald-950">Peter Toler</span>
         </span>
@@ -71,7 +71,7 @@ export function RequestConsultationButton({
   return (
     <a
       href={href}
-      className={`inline-flex items-center justify-center gap-2 rounded-md bg-lime-400 px-5 py-3 text-sm font-black text-emerald-950 shadow-[0_14px_30px_rgba(190,255,78,0.18)] transition hover:bg-lime-300 focus-ring ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-6 py-3 text-sm font-black uppercase tracking-[0.04em] text-[#06110d] shadow-[0_18px_38px_rgba(246,201,90,0.2)] transition hover:bg-[#ffdc70] focus-ring ${className}`}
     >
       Request a Tree Assessment
       <ArrowRight className="size-4" aria-hidden="true" />
@@ -91,9 +91,9 @@ export function VerifyIsaButton({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className={`inline-flex items-center justify-center gap-2 rounded-md border border-emerald-800/30 bg-white px-5 py-3 text-sm font-black text-emerald-950 transition hover:border-emerald-800 hover:bg-emerald-50 focus-ring ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-full border border-teal-300/35 bg-[#07131b] px-5 py-3 text-sm font-black text-white transition hover:border-[#f6c95a]/70 hover:bg-[#0b1f17] focus-ring ${className}`}
     >
-      <BadgeCheck className="size-4 text-emerald-800" aria-hidden="true" />
+      <BadgeCheck className="size-4 text-[#f6c95a]" aria-hidden="true" />
       Verify ISA Credentials
     </a>
   );
@@ -115,9 +115,9 @@ export function SchedulePhoneButton({
       href={href}
       target={isExternal ? "_blank" : undefined}
       rel={isExternal ? "noreferrer" : undefined}
-      className={`inline-flex items-center justify-center gap-2 rounded-md border border-emerald-800/30 bg-white px-5 py-3 text-sm font-black text-emerald-950 transition hover:border-emerald-800 hover:bg-emerald-50 focus-ring ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-full border border-teal-300/35 bg-[#07131b] px-5 py-3 text-sm font-black uppercase tracking-[0.04em] text-white transition hover:border-[#f6c95a]/70 hover:bg-[#0b1f17] focus-ring ${className}`}
     >
-      <CalendarDays className="size-4 text-emerald-800" aria-hidden="true" />
+      <CalendarDays className="size-4 text-[#f6c95a]" aria-hidden="true" />
       Schedule a Phone Consultation
     </a>
   );
@@ -133,9 +133,9 @@ export function SubmitPhotosButton({
   return (
     <a
       href={href}
-      className={`inline-flex items-center justify-center gap-2 rounded-md border border-stone-300 bg-transparent px-4 py-3 text-sm font-bold text-stone-700 transition hover:border-emerald-700 hover:text-emerald-950 focus-ring ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-full border border-teal-300/35 bg-[#07131b] px-4 py-3 text-sm font-bold text-white transition hover:border-[#f6c95a]/70 hover:bg-[#0b1f17] focus-ring ${className}`}
     >
-      <ImageUp className="size-4" aria-hidden="true" />
+      <ImageUp className="size-4 text-[#f6c95a]" aria-hidden="true" />
       Submit Photos With Request
     </a>
   );
