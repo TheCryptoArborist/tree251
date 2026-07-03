@@ -1,4 +1,4 @@
-import { ExternalLink, FileText, ShieldCheck } from "lucide-react";
+import { ExternalLink, FileText, ImageUp, ShieldCheck } from "lucide-react";
 import { jotformConsultationUrl } from "@/components/ConsultBranding";
 
 const jotformEmbedUrl = `${jotformConsultationUrl}?embed=1`;
@@ -11,16 +11,20 @@ export function ConsultationRequestForm() {
           Assessment request
         </p>
         <h3 className="mt-2 text-2xl font-black text-emerald-950">
-          Complete Peter&apos;s consult request form.
+          Request an assessment and upload photos.
         </h3>
         <p className="mt-2 text-sm leading-6 text-stone-700">
           This is Peter&apos;s Jotform intake for tree assessments, storm damage concerns,
-          preservation questions, photos, and appointment details.
+          preservation questions, appointment details, and tree photos.
         </p>
-        <div className="mt-4 grid gap-3 text-sm leading-6 text-stone-700 sm:grid-cols-2">
+        <div className="mt-4 grid gap-3 text-sm leading-6 text-stone-700 sm:grid-cols-3">
           <div className="flex gap-3 rounded-md border border-emerald-950/10 bg-[#f7f8f0] p-3">
             <FileText className="mt-0.5 size-5 shrink-0 text-emerald-800" aria-hidden="true" />
-            <span>Use the form below to send the full consult request.</span>
+            <span>Use one form for the full consult request.</span>
+          </div>
+          <div className="flex gap-3 rounded-md border border-emerald-950/10 bg-[#f7f8f0] p-3">
+            <ImageUp className="mt-0.5 size-5 shrink-0 text-emerald-800" aria-hidden="true" />
+            <span>Attach photos inside this request form.</span>
           </div>
           <div className="flex gap-3 rounded-md border border-emerald-950/10 bg-[#f7f8f0] p-3">
             <ShieldCheck className="mt-0.5 size-5 shrink-0 text-emerald-800" aria-hidden="true" />
