@@ -1,9 +1,9 @@
 import Link from "next/link";
 import {
   ArboristLogo,
+  calendlySchedulingUrl,
   consultationAnchor,
-  isaCredentialUrl,
-  schedulePagePath
+  isaCredentialUrl
 } from "@/components/ConsultBranding";
 import { ArrowRight, BadgeCheck } from "lucide-react";
 
@@ -45,12 +45,14 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <Link
-            href={schedulePagePath}
+          <a
+            href={calendlySchedulingUrl}
+            target="_blank"
+            rel="noreferrer"
             className="rounded-md px-3 py-2 transition hover:bg-white/10 hover:text-white focus-ring"
           >
             Schedule
-          </Link>
+          </a>
         </nav>
 
         <div className="hidden shrink-0 items-center gap-2 sm:flex">
@@ -86,12 +88,14 @@ export function SiteHeader() {
             {item.label}
           </Link>
         ))}
-        <Link
-          href={schedulePagePath}
+        <a
+          href={calendlySchedulingUrl}
+          target="_blank"
+          rel="noreferrer"
           className="shrink-0 rounded-md px-2.5 py-2 transition hover:bg-white/10 hover:text-white focus-ring"
         >
           Schedule
-        </Link>
+        </a>
         <Link
           href={consultationAnchor}
           className="shrink-0 rounded-md bg-lime-400 px-2.5 py-2 text-emerald-950 transition hover:bg-lime-300 focus-ring"
