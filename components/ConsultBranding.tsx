@@ -19,7 +19,8 @@ export const calendlySchedulingUrl =
 export const jotformConsultationUrl = "https://form.jotform.com/221198646412861";
 
 export const consultationAnchor = "/#consultation-request";
-export const scheduleCallAnchor = calendlySchedulingUrl;
+export const phoneConsultationAnchor = "/#phone-consultation";
+export const scheduleCallAnchor = phoneConsultationAnchor;
 export const schedulePagePath = "/schedule";
 export const reportVerificationPath = "/verify";
 export const treeBenefitsAnchor = "/#tree-benefits";
@@ -104,7 +105,7 @@ export function VerifyIsaButton({
 export const VerifyReportButton = VerifyIsaButton;
 
 export function SchedulePhoneButton({
-  href = calendlySchedulingUrl,
+  href = scheduleCallAnchor,
   className = ""
 }: {
   href?: string;
