@@ -2,13 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   BadgeCheck,
+  CalendarDays,
   CheckCircle2,
   CloudLightning,
   ClipboardCheck,
+  ExternalLink,
   Hammer,
   Home,
   Leaf,
-  Mail,
   MessageSquareText,
   ShieldCheck,
   TreePine
@@ -18,7 +19,7 @@ import {
   calendlySchedulingUrl,
   consultationAnchor,
   isaCredentialUrl,
-  photoSubmissionMailto,
+  phoneConsultationAnchor,
   reportVerificationPath,
   RequestConsultationButton,
   SchedulePhoneButton,
@@ -27,13 +28,15 @@ import {
 import { ConsultationRequestForm } from "@/components/ConsultationRequestForm";
 import { PeterHeadshot } from "@/components/PeterHeadshot";
 
+const calendlyEmbedUrl = `${calendlySchedulingUrl}?hide_gdpr_banner=1&primary_color=047857`;
+
 const services = [
   ["Tree Risk Assessments", "Independent review of defects, targets, likelihood of failure, and practical next steps.", ShieldCheck],
   ["Storm Damage and Hurricane Prep", "Guidance before or after severe weather so urgent concerns are separated from normal cleanup.", CloudLightning],
   ["Work Prioritization", "A clear order of operations so safety items come before cosmetic or optional work.", ClipboardCheck],
   ["Second Opinions", "A neutral assessment before approving removal, pruning, cabling, or expensive tree work.", MessageSquareText],
   ["Preservation and Permit Guidance", "Help understanding preservation options, documentation needs, and local review questions.", Leaf],
-  ["Property Owner Consultations", "On-site or phone guidance for homeowners, property managers, HOAs, buyers, and sellers.", Home]
+  ["Property Owner Consultations", "On-site or phone guidance for homeowners, property managers, HOAs, buyers, and sellers across the Gulf Coast.", Home]
 ] as const;
 
 const whenToCall = [
@@ -84,15 +87,15 @@ export function TheArboristHomePage() {
     <div className="bg-[#06110d] text-stone-900">
       <section className="relative isolate overflow-hidden bg-[#06110d] text-white">
         <Image
-          src="/arborist-hero-assessment.png"
-          alt="Independent arborist assessing a mature tree with a property owner"
+          src="/consult-request-background.jpeg"
+          alt="Tree canopy background for independent arborist assessments"
           fill
           priority
           sizes="100vw"
           className="absolute inset-0 -z-20 object-cover"
         />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(6,17,13,0.96)_0%,rgba(6,17,13,0.78)_48%,rgba(6,17,13,0.2)_100%)]" />
-        <div className="tree-ring-texture absolute inset-y-0 left-0 -z-10 w-3/5 opacity-70" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(6,17,13,0.94)_0%,rgba(6,17,13,0.72)_50%,rgba(6,17,13,0.18)_100%)]" />
+        <div className="tree-ring-texture absolute inset-y-0 left-0 -z-10 w-3/5 opacity-60" />
         <div className="mx-auto flex min-h-[72vh] max-w-7xl items-center px-4 py-14 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <p className="mb-4 inline-flex rounded-full border border-lime-300/30 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-lime-200">
@@ -101,15 +104,11 @@ export function TheArboristHomePage() {
             <h1 className="text-5xl font-black leading-[0.95] text-white sm:text-6xl lg:text-7xl">Concerned About a Tree?</h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-emerald-50 sm:text-xl">Get an independent tree assessment before paying for tree work.</p>
             <p className="mt-5 max-w-2xl text-base leading-7 text-emerald-100/85">
-              Peter Toler helps Mobile-area property owners understand what is actually needed, what can wait, and what should be prioritized before hiring a tree service.
+              Peter Toler helps Gulf Coast property owners, including Mobile and Baldwin County, understand what is actually needed, what can wait, and what should be prioritized before hiring a tree service.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <RequestConsultationButton />
               <SchedulePhoneButton />
-              <a href={photoSubmissionMailto} className="inline-flex items-center justify-center gap-2 rounded-md border border-white/35 bg-white/5 px-5 py-3 text-sm font-black text-white transition hover:border-lime-300 hover:bg-white/10 focus-ring">
-                <Mail className="size-4 text-lime-300" aria-hidden="true" />
-                Submit Photos
-              </a>
             </div>
           </div>
         </div>
@@ -118,8 +117,8 @@ export function TheArboristHomePage() {
       <section className="border-y border-lime-300/20 bg-[#0b1f17] px-4 py-4 text-white sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-3 text-sm font-black uppercase tracking-[0.14em] text-emerald-50 sm:grid-cols-3">
           <div className="rounded-md border border-white/10 px-4 py-3">ISA Certified Arborist</div>
-          <div className="rounded-md border border-white/10 px-4 py-3">Mobile, Alabama</div>
-          <div className="rounded-md border border-white/10 px-4 py-3">Independent Assessments</div>
+          <div className="rounded-md border border-white/10 px-4 py-3">Gulf Coast, Alabama</div>
+          <div className="rounded-md border border-white/10 px-4 py-3">Mobile and Baldwin County</div>
         </div>
       </section>
 
@@ -167,7 +166,7 @@ export function TheArboristHomePage() {
             <div className="mt-6 space-y-3 text-sm leading-6 text-emerald-50/85">
               <ArboristLogo />
               <p className="font-black uppercase tracking-[0.14em] text-lime-300">Peter Toler</p>
-              <p className="text-2xl font-black leading-tight text-white">ISA Certified Arborist serving Mobile, Alabama.</p>
+              <p className="text-2xl font-black leading-tight text-white">ISA Certified Arborist serving the Gulf Coast.</p>
               <a href={isaCredentialUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-black text-lime-200 hover:text-lime-100 focus-ring">
                 <BadgeCheck className="size-4" aria-hidden="true" />
                 Verify current ISA profile
@@ -177,7 +176,7 @@ export function TheArboristHomePage() {
           <div>
             <h2 className="text-3xl font-black leading-tight text-white sm:text-4xl">Independent advice, not tree work sales.</h2>
             <p className="mt-4 max-w-3xl text-base leading-7 text-emerald-50/85">
-              Peter provides practical arborist guidance for property owners who need a clearer read on tree condition, risk, storm damage, preservation, and local decision-making before paying for work.
+              Peter provides practical arborist guidance across the Gulf Coast, including Mobile and Baldwin County, for property owners who need a clearer read on tree condition, risk, storm damage, preservation, and local decision-making before paying for work.
             </p>
             <div className="mt-8 rounded-md border border-white/10 bg-[#06110d] p-6">
               <CheckList items={independent} light />
@@ -198,12 +197,41 @@ export function TheArboristHomePage() {
         </div>
       </section>
 
+      <section id="phone-consultation" className="scroll-mt-28 bg-[#f7f8f0] py-14 sm:py-16">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start lg:px-8">
+          <div>
+            <CalendarDays className="size-10 text-emerald-800" aria-hidden="true" />
+            <SectionHeading
+              title="Schedule a phone consultation."
+              text="Use the embedded scheduler below to book a tree-care phone consultation with Peter. This is separate from the full assessment request form."
+            />
+            <a
+              href={calendlySchedulingUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-emerald-800 px-5 py-3 text-sm font-black text-white shadow-[0_14px_30px_rgba(6,78,59,0.22)] transition hover:bg-emerald-900 focus-ring"
+            >
+              Open Scheduler in New Tab
+              <ExternalLink className="size-4" aria-hidden="true" />
+            </a>
+          </div>
+          <div className="overflow-hidden rounded-md border border-emerald-950/10 bg-white shadow-[0_18px_42px_rgba(25,50,35,0.08)]">
+            <iframe
+              src={calendlyEmbedUrl}
+              title="Schedule a phone consultation with Peter Toler"
+              className="h-[700px] w-full bg-white sm:h-[760px]"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </section>
+
       <section id="consultation-request" className="scroll-mt-28 bg-white py-14 sm:py-16">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start lg:px-8">
           <div>
             <SectionHeading
               title="Request a Tree Assessment."
-              text="Send the concern, the location, and what decision you are trying to make. Photos help, but the most important detail is what you need to decide before paying for tree work."
+              text="Use the Jotform request below for assessment details and photo uploads. Photos belong inside the request form, so there is no separate Submit Photos button."
             />
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <SchedulePhoneButton />
@@ -224,7 +252,7 @@ export function TheArboristHomePage() {
                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-lime-300">Peter Toler</p>
               </div>
             </div>
-            <p className="mt-4 max-w-sm leading-6">Independent arborist consulting for Mobile, Alabama property owners.</p>
+            <p className="mt-4 max-w-sm leading-6">Independent arborist consulting for Gulf Coast property owners, including Mobile and Baldwin County.</p>
           </div>
           <div>
             <p className="font-black uppercase tracking-[0.14em] text-lime-300">Services</p>
@@ -242,7 +270,7 @@ export function TheArboristHomePage() {
                 <a href={consultationAnchor} className="hover:text-white focus-ring">Request a Tree Assessment</a>
               </li>
               <li>
-                <a href={calendlySchedulingUrl} target="_blank" rel="noreferrer" className="hover:text-white focus-ring">Schedule a Phone Consultation</a>
+                <a href={phoneConsultationAnchor} className="hover:text-white focus-ring">Schedule a Phone Consultation</a>
               </li>
               <li>
                 <a href={isaCredentialUrl} target="_blank" rel="noreferrer" className="hover:text-white focus-ring">Verify ISA Credentials</a>
