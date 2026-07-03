@@ -15,11 +15,11 @@ import {
 } from "lucide-react";
 import {
   ArboristLogo,
+  calendlySchedulingUrl,
   consultationAnchor,
   isaCredentialUrl,
   photoSubmissionMailto,
   reportVerificationPath,
-  schedulePagePath,
   RequestConsultationButton,
   SchedulePhoneButton,
   VerifyIsaButton
@@ -105,7 +105,7 @@ export function TheArboristHomePage() {
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <RequestConsultationButton />
-              <SchedulePhoneButton href={schedulePagePath} />
+              <SchedulePhoneButton />
               <a href={photoSubmissionMailto} className="inline-flex items-center justify-center gap-2 rounded-md border border-white/35 bg-white/5 px-5 py-3 text-sm font-black text-white transition hover:border-lime-300 hover:bg-white/10 focus-ring">
                 <Mail className="size-4 text-lime-300" aria-hidden="true" />
                 Submit Photos
@@ -206,7 +206,7 @@ export function TheArboristHomePage() {
               text="Send the concern, the location, and what decision you are trying to make. Photos help, but the most important detail is what you need to decide before paying for tree work."
             />
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <SchedulePhoneButton href={schedulePagePath} />
+              <SchedulePhoneButton />
               <VerifyIsaButton />
             </div>
           </div>
@@ -242,7 +242,7 @@ export function TheArboristHomePage() {
                 <a href={consultationAnchor} className="hover:text-white focus-ring">Request a Tree Assessment</a>
               </li>
               <li>
-                <Link href={schedulePagePath} className="hover:text-white focus-ring">Schedule a Phone Consultation</Link>
+                <a href={calendlySchedulingUrl} target="_blank" rel="noreferrer" className="hover:text-white focus-ring">Schedule a Phone Consultation</a>
               </li>
               <li>
                 <a href={isaCredentialUrl} target="_blank" rel="noreferrer" className="hover:text-white focus-ring">Verify ISA Credentials</a>
