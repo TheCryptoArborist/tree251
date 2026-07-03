@@ -4,9 +4,6 @@ import { ArrowRight, BadgeCheck, CalendarDays, ImageUp } from "lucide-react";
 export const consultationMailto =
   "mailto:petertoler@me.com?subject=Request%20a%20Tree%20Assessment";
 
-export const photoSubmissionMailto =
-  "mailto:petertoler@me.com?subject=Tree%20Assessment%20Photos";
-
 export const reportVerificationMailto =
   "mailto:petertoler@me.com?subject=Verify%20Report";
 
@@ -127,7 +124,7 @@ export function SchedulePhoneButton({
 }
 
 export function SubmitPhotosButton({
-  href = photoSubmissionMailto,
+  href = consultationAnchor,
   className = ""
 }: {
   href?: string;
@@ -139,7 +136,7 @@ export function SubmitPhotosButton({
       className={`inline-flex items-center justify-center gap-2 rounded-md border border-stone-300 bg-transparent px-4 py-3 text-sm font-bold text-stone-700 transition hover:border-emerald-700 hover:text-emerald-950 focus-ring ${className}`}
     >
       <ImageUp className="size-4" aria-hidden="true" />
-      Submit Photos
+      Submit Photos With Request
     </a>
   );
 }
