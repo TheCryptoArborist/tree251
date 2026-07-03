@@ -16,6 +16,8 @@ export const isaCredentialUrl =
 export const calendlySchedulingUrl =
   "https://calendly.com/petertoler/tree-care-phone-consultation";
 
+export const jotformConsultationUrl = "https://form.jotform.com/221198646412861";
+
 export const consultationAnchor = "/#consultation-request";
 export const scheduleCallAnchor = calendlySchedulingUrl;
 export const schedulePagePath = "/schedule";
