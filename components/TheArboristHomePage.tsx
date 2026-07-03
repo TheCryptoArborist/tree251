@@ -60,11 +60,21 @@ const independent = [
   "You can use the guidance when comparing quotes or deciding whether work is urgent, optional, or avoidable."
 ];
 
-function SectionHeading({ title, text, center = false }: { title: string; text: string; center?: boolean }) {
+function SectionHeading({
+  title,
+  text,
+  center = false,
+  light = false
+}: {
+  title: string;
+  text: string;
+  center?: boolean;
+  light?: boolean;
+}) {
   return (
     <div className={center ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}>
-      <h2 className="text-3xl font-black leading-tight text-emerald-950 sm:text-4xl">{title}</h2>
-      <p className="mt-4 text-base leading-7 text-stone-700">{text}</p>
+      <h2 className={`text-3xl font-black leading-tight sm:text-4xl ${light ? "text-white" : "text-emerald-950"}`}>{title}</h2>
+      <p className={`mt-4 text-base leading-7 ${light ? "text-emerald-50/80" : "text-stone-700"}`}>{text}</p>
     </div>
   );
 }
@@ -92,19 +102,19 @@ export function TheArboristHomePage() {
           fill
           priority
           sizes="100vw"
-          className="absolute inset-0 -z-20 object-cover"
+          className="absolute inset-0 -z-20 object-cover opacity-80"
         />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(6,17,13,0.94)_0%,rgba(6,17,13,0.72)_50%,rgba(6,17,13,0.18)_100%)]" />
-        <div className="tree-ring-texture absolute inset-y-0 left-0 -z-10 w-3/5 opacity-60" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(6,17,13,0.9)_0%,rgba(6,17,13,0.66)_50%,rgba(6,17,13,0.24)_100%)]" />
+        <div className="tree-ring-texture absolute inset-y-0 left-0 -z-10 w-3/5 opacity-70" />
         <div className="mx-auto flex min-h-[72vh] max-w-7xl items-center px-4 py-14 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="mb-4 inline-flex rounded-full border border-lime-300/30 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-lime-200">
+            <p className="mb-4 inline-flex rounded-full border border-lime-300/35 bg-black/20 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-lime-200 shadow-[0_10px_28px_rgba(0,0,0,0.25)]">
               Independent Arborist Guidance
             </p>
-            <h1 className="text-5xl font-black leading-[0.95] text-white sm:text-6xl lg:text-7xl">Concerned About a Tree?</h1>
+            <h1 className="text-5xl font-black leading-[0.95] text-white drop-shadow-[0_10px_22px_rgba(0,0,0,0.35)] sm:text-6xl lg:text-7xl">Concerned About a Tree?</h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-emerald-50 sm:text-xl">Get an independent tree assessment before paying for tree work.</p>
             <p className="mt-5 max-w-2xl text-base leading-7 text-emerald-100/85">
-              Peter Toler helps Gulf Coast property owners, including Mobile and Baldwin County, understand what is actually needed, what can wait, and what should be prioritized before hiring a tree service.
+              Peter Toler helps Gulf Coast property owners, including Mobile and Baldwin Counties, understand what is actually needed, what can wait, and what should be prioritized before hiring a tree service.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <RequestConsultationButton />
@@ -116,13 +126,14 @@ export function TheArboristHomePage() {
 
       <section className="border-y border-lime-300/20 bg-[#0b1f17] px-4 py-4 text-white sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-3 text-sm font-black uppercase tracking-[0.14em] text-emerald-50 sm:grid-cols-3">
-          <div className="rounded-md border border-white/10 px-4 py-3">ISA Certified Arborist</div>
-          <div className="rounded-md border border-white/10 px-4 py-3">Gulf Coast, Alabama</div>
-          <div className="rounded-md border border-white/10 px-4 py-3">Mobile and Baldwin County</div>
+          <div className="rounded-md border border-white/10 bg-white/[0.03] px-4 py-3">ISA Certified Arborist</div>
+          <div className="rounded-md border border-white/10 bg-white/[0.03] px-4 py-3">Serving the Gulf Coast</div>
+          <div className="rounded-md border border-white/10 bg-white/[0.03] px-4 py-3">Mobile and Baldwin Counties</div>
         </div>
       </section>
 
-      <section id="services" className="scroll-mt-28 bg-[#f7f8f0] py-14 sm:py-16">
+      <section id="services" className="relative isolate overflow-hidden bg-[#f7f8f0] py-14 sm:py-16">
+        <div className="tree-ring-texture absolute inset-y-0 right-0 -z-10 w-1/2 rotate-180 opacity-25" />
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             title="Tree consulting that helps you decide."
@@ -130,7 +141,7 @@ export function TheArboristHomePage() {
           />
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {services.map(([title, text, Icon]) => (
-              <article key={title} className="rounded-md border border-emerald-950/10 bg-white p-5 shadow-[0_14px_32px_rgba(25,50,35,0.06)]">
+              <article key={title} className="rounded-lg border border-emerald-950/10 bg-white/90 p-5 shadow-[0_18px_42px_rgba(25,50,35,0.08)] backdrop-blur">
                 <Icon className="size-8 text-emerald-800" aria-hidden="true" />
                 <h3 className="mt-5 text-xl font-black text-emerald-950">{title}</h3>
                 <p className="mt-3 text-sm leading-6 text-stone-700">{text}</p>
@@ -140,31 +151,33 @@ export function TheArboristHomePage() {
         </div>
       </section>
 
-      <section id="when-to-call" className="scroll-mt-28 bg-white py-14 sm:py-16">
+      <section id="when-to-call" className="relative isolate overflow-hidden bg-[#0b1f17] py-14 text-white sm:py-16">
+        <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_12%_18%,rgba(190,255,78,0.14),transparent_26rem),linear-gradient(135deg,#06110d_0%,#0b1f17_55%,#143527_100%)]" />
+        <div className="tree-ring-texture absolute inset-y-0 left-0 -z-10 w-1/2 opacity-50" />
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start lg:px-8">
           <SectionHeading
+            light
             title="When a tree assessment helps."
             text="A short, independent review can prevent a rushed or expensive decision. These are the situations where consulting guidance is usually most useful."
           />
           <div className="grid gap-4">
             {whenToCall.map((item) => (
-              <article key={item.title} className="rounded-md border border-emerald-950/10 bg-[#f7f8f0] p-5">
-                <h3 className="text-lg font-black text-emerald-950">{item.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-stone-700">{item.text}</p>
+              <article key={item.title} className="rounded-lg border border-white/10 bg-white/[0.06] p-5 shadow-[0_18px_42px_rgba(0,0,0,0.16)] backdrop-blur">
+                <h3 className="text-lg font-black text-lime-200">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-emerald-50/80">{item.text}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="about" className="scroll-mt-28 bg-[#0b1f17] py-14 text-white sm:py-16">
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.78fr_1.22fr] lg:items-center lg:px-8">
-          <div className="rounded-md border border-white/10 bg-white/5 p-5">
-            <div className="overflow-hidden rounded-md border border-white/10 bg-white">
-              <PeterHeadshot className="aspect-[1/1.05] w-full object-cover" />
+      <section id="about" className="scroll-mt-28 bg-[#06110d] py-14 text-white sm:py-16">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.72fr_1.28fr] lg:items-center lg:px-8">
+          <div className="rounded-lg border border-white/10 bg-white/[0.05] p-5 shadow-[0_20px_54px_rgba(0,0,0,0.24)]">
+            <div className="overflow-hidden rounded-md border border-lime-300/20 bg-white">
+              <PeterHeadshot className="aspect-[4/5] w-full object-cover" />
             </div>
             <div className="mt-6 space-y-3 text-sm leading-6 text-emerald-50/85">
-              <ArboristLogo />
               <p className="font-black uppercase tracking-[0.14em] text-lime-300">Peter Toler</p>
               <p className="text-2xl font-black leading-tight text-white">ISA Certified Arborist serving the Gulf Coast.</p>
               <a href={isaCredentialUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-black text-lime-200 hover:text-lime-100 focus-ring">
@@ -176,18 +189,18 @@ export function TheArboristHomePage() {
           <div>
             <h2 className="text-3xl font-black leading-tight text-white sm:text-4xl">Independent advice, not tree work sales.</h2>
             <p className="mt-4 max-w-3xl text-base leading-7 text-emerald-50/85">
-              Peter provides practical arborist guidance across the Gulf Coast, including Mobile and Baldwin County, for property owners who need a clearer read on tree condition, risk, storm damage, preservation, and local decision-making before paying for work.
+              Peter provides practical arborist guidance across the Gulf Coast, including Mobile and Baldwin Counties, for property owners who need a clearer read on tree condition, risk, storm damage, preservation, and local decision-making before paying for work.
             </p>
-            <div className="mt-8 rounded-md border border-white/10 bg-[#06110d] p-6">
+            <div className="mt-8 rounded-lg border border-white/10 bg-[#0b1f17] p-6 shadow-[0_18px_42px_rgba(0,0,0,0.2)]">
               <CheckList items={independent} light />
             </div>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-md border border-white/10 bg-white/5 p-5">
+              <div className="rounded-lg border border-white/10 bg-white/[0.05] p-5">
                 <TreePine className="size-8 text-lime-300" aria-hidden="true" />
                 <h3 className="mt-4 text-lg font-black text-white">Mature-tree decisions</h3>
                 <p className="mt-2 text-sm leading-6 text-emerald-50/80">Guidance for live oaks, storm-exposed trees, property lines, targets, and preservation tradeoffs.</p>
               </div>
-              <div className="rounded-md border border-white/10 bg-white/5 p-5">
+              <div className="rounded-lg border border-white/10 bg-white/[0.05] p-5">
                 <Hammer className="size-8 text-lime-300" aria-hidden="true" />
                 <h3 className="mt-4 text-lg font-black text-white">Contractor clarity</h3>
                 <p className="mt-2 text-sm leading-6 text-emerald-50/80">Better questions and priorities before you compare quotes or authorize work.</p>
@@ -197,25 +210,36 @@ export function TheArboristHomePage() {
         </div>
       </section>
 
-      <section id="phone-consultation" className="scroll-mt-28 bg-[#f7f8f0] py-14 sm:py-16">
+      <section id="phone-consultation" className="relative isolate scroll-mt-28 overflow-hidden bg-[#0b1f17] py-14 text-white sm:py-16">
+        <Image
+          src="/consult-request-background.jpeg"
+          alt="Tree canopy background"
+          fill
+          sizes="100vw"
+          className="absolute inset-0 -z-20 object-cover opacity-20"
+        />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(135deg,rgba(6,17,13,0.96),rgba(11,31,23,0.88))]" />
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start lg:px-8">
-          <div>
-            <CalendarDays className="size-10 text-emerald-800" aria-hidden="true" />
-            <SectionHeading
-              title="Schedule a phone consultation."
-              text="Use the embedded scheduler below to book a tree-care phone consultation with Peter. This is separate from the full assessment request form."
-            />
+          <div className="rounded-lg border border-white/10 bg-white/[0.06] p-6 shadow-[0_20px_54px_rgba(0,0,0,0.24)] backdrop-blur">
+            <CalendarDays className="size-10 text-lime-300" aria-hidden="true" />
+            <div className="mt-5">
+              <SectionHeading
+                light
+                title="Schedule a phone consultation."
+                text="Use the embedded scheduler to book a tree-care phone consultation with Peter. This call is separate from the full Jotform assessment request."
+              />
+            </div>
             <a
               href={calendlySchedulingUrl}
               target="_blank"
               rel="noreferrer"
-              className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-emerald-800 px-5 py-3 text-sm font-black text-white shadow-[0_14px_30px_rgba(6,78,59,0.22)] transition hover:bg-emerald-900 focus-ring"
+              className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-lime-400 px-5 py-3 text-sm font-black text-emerald-950 shadow-[0_14px_30px_rgba(190,255,78,0.18)] transition hover:bg-lime-300 focus-ring"
             >
               Open Scheduler in New Tab
               <ExternalLink className="size-4" aria-hidden="true" />
             </a>
           </div>
-          <div className="overflow-hidden rounded-md border border-emerald-950/10 bg-white shadow-[0_18px_42px_rgba(25,50,35,0.08)]">
+          <div className="overflow-hidden rounded-lg border border-lime-300/20 bg-white shadow-[0_22px_60px_rgba(0,0,0,0.28)]">
             <iframe
               src={calendlyEmbedUrl}
               title="Schedule a phone consultation with Peter Toler"
@@ -226,16 +250,19 @@ export function TheArboristHomePage() {
         </div>
       </section>
 
-      <section id="consultation-request" className="scroll-mt-28 bg-white py-14 sm:py-16">
+      <section id="consultation-request" className="relative isolate scroll-mt-28 overflow-hidden bg-[#06110d] py-14 text-white sm:py-16">
+        <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_85%_15%,rgba(217,164,65,0.16),transparent_24rem),radial-gradient(circle_at_12%_82%,rgba(190,255,78,0.12),transparent_22rem)]" />
+        <div className="tree-ring-texture absolute inset-y-0 right-0 -z-10 w-1/2 rotate-180 opacity-40" />
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start lg:px-8">
           <div>
             <SectionHeading
+              light
               title="Request a Tree Assessment."
               text="Use the Jotform request below for assessment details and photo uploads. Photos belong inside the request form, so there is no separate Submit Photos button."
             />
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <SchedulePhoneButton />
-              <VerifyIsaButton />
+              <SchedulePhoneButton className="border-white/20 bg-white/10 text-white hover:bg-white/15" />
+              <VerifyIsaButton className="border-white/20 bg-white/10 text-white hover:bg-white/15" />
             </div>
           </div>
           <ConsultationRequestForm />
@@ -252,7 +279,7 @@ export function TheArboristHomePage() {
                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-lime-300">Peter Toler</p>
               </div>
             </div>
-            <p className="mt-4 max-w-sm leading-6">Independent arborist consulting for Gulf Coast property owners, including Mobile and Baldwin County.</p>
+            <p className="mt-4 max-w-sm leading-6">Independent arborist consulting for Gulf Coast property owners, including Mobile and Baldwin Counties.</p>
           </div>
           <div>
             <p className="font-black uppercase tracking-[0.14em] text-lime-300">Services</p>
