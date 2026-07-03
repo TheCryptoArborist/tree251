@@ -5,7 +5,6 @@ import {
   CheckCircle2,
   CloudLightning,
   ClipboardCheck,
-  FileText,
   Hammer,
   Home,
   Leaf,
