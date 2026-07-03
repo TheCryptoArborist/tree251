@@ -17,7 +17,7 @@ export const calendlySchedulingUrl =
   process.env.NEXT_PUBLIC_CALENDLY_URL ?? "https://calendly.com/pbtau63/30min";
 
 export const consultationAnchor = "/#consultation-request";
-export const scheduleCallAnchor = "/#schedule-call";
+export const scheduleCallAnchor = calendlySchedulingUrl;
 export const schedulePagePath = "/schedule";
 export const reportVerificationPath = "/verify";
 export const treeBenefitsAnchor = "/#tree-benefits";
@@ -102,7 +102,7 @@ export function VerifyIsaButton({
 export const VerifyReportButton = VerifyIsaButton;
 
 export function SchedulePhoneButton({
-  href = scheduleCallAnchor,
+  href = calendlySchedulingUrl,
   className = ""
 }: {
   href?: string;
