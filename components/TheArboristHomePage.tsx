@@ -26,6 +26,7 @@ import {
   VerifyIsaButton
 } from "@/components/ConsultBranding";
 import { ConsultationRequestForm } from "@/components/ConsultationRequestForm";
+import { CredentialBadges } from "@/components/CredentialBadges";
 import { PeterHeadshot } from "@/components/PeterHeadshot";
 
 const calendlyEmbedUrl = `${calendlySchedulingUrl}?hide_gdpr_banner=1&hide_event_type_details=1&primary_color=f6c95a`;
@@ -202,13 +203,15 @@ export function TheArboristHomePage() {
         </div>
       </section>
 
+      <CredentialBadges />
+
       <section id="phone-consultation" className="relative isolate scroll-mt-28 overflow-hidden bg-[#0b1f17] py-14 text-white sm:py-16">
         <Image
           src="/consult-request-background.jpeg"
           alt="Tree canopy background"
           fill
           sizes="100vw"
-          className="absolute inset-0 -z-20 object-cover opacity-18"
+          className="absolute inset-0 -z-20 object-cover opacity-[0.18]"
         />
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(135deg,rgba(5,11,18,0.96),rgba(11,31,23,0.88))]" />
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start lg:px-8">
