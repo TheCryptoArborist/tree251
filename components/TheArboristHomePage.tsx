@@ -28,7 +28,7 @@ import {
 import { ConsultationRequestForm } from "@/components/ConsultationRequestForm";
 import { PeterHeadshot } from "@/components/PeterHeadshot";
 
-const calendlyEmbedUrl = `${calendlySchedulingUrl}?hide_gdpr_banner=1&primary_color=f6c95a`;
+const calendlyEmbedUrl = `${calendlySchedulingUrl}?hide_gdpr_banner=1&hide_event_type_details=1&primary_color=f6c95a`;
 
 const services = [
   ["Tree Risk Assessments", "Independent review of defects, targets, likelihood of failure, and practical next steps.", ShieldCheck],
@@ -40,18 +40,9 @@ const services = [
 ] as const;
 
 const whenToCall = [
-  {
-    title: "Before you approve a tree service quote",
-    text: "Understand what is actually needed, what can wait, and what should be handled first."
-  },
-  {
-    title: "After storm damage or before hurricane season",
-    text: "Sort visible damage from real risk, document the condition, and avoid rushed decisions."
-  },
-  {
-    title: "When preservation, permits, or property records matter",
-    text: "Get practical notes for HOAs, insurance, real estate, construction, or local review questions."
-  }
+  ["Before you approve a tree service quote", "Understand what is actually needed, what can wait, and what should be handled first."],
+  ["After storm damage or before hurricane season", "Sort visible damage from real risk, document the condition, and avoid rushed decisions."],
+  ["When preservation, permits, or property records matter", "Get practical notes for HOAs, insurance, real estate, construction, or local review questions."]
 ] as const;
 
 const independent = [
@@ -63,28 +54,26 @@ const independent = [
 function SectionHeading({
   title,
   text,
-  center = false,
   light = false
 }: {
   title: string;
   text: string;
-  center?: boolean;
   light?: boolean;
 }) {
   return (
-    <div className={center ? "mx-auto max-w-3xl text-center" : "max-w-3xl"}>
+    <div className="max-w-3xl">
       <h2 className={`text-3xl font-black leading-tight sm:text-4xl ${light ? "text-white" : "text-emerald-950"}`}>{title}</h2>
       <p className={`mt-4 text-base leading-7 ${light ? "text-emerald-50/80" : "text-stone-700"}`}>{text}</p>
     </div>
   );
 }
 
-function CheckList({ items, light = false }: { items: string[]; light?: boolean }) {
+function CheckList({ items }: { items: string[] }) {
   return (
     <ul className="space-y-3">
       {items.map((item) => (
-        <li key={item} className={`flex gap-3 text-sm leading-6 ${light ? "text-emerald-50" : "text-stone-700"}`}>
-          <CheckCircle2 className={`mt-0.5 size-5 shrink-0 ${light ? "text-[#f6c95a]" : "text-emerald-800"}`} aria-hidden="true" />
+        <li key={item} className="flex gap-3 text-sm leading-6 text-emerald-50">
+          <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-[#f6c95a]" aria-hidden="true" />
           <span>{item}</span>
         </li>
       ))}
@@ -164,10 +153,10 @@ export function TheArboristHomePage() {
             text="A short, independent review can prevent a rushed or expensive decision. These are the situations where consulting guidance is usually most useful."
           />
           <div className="grid gap-4">
-            {whenToCall.map((item) => (
-              <article key={item.title} className="rounded-2xl border border-teal-300/20 bg-white/[0.06] p-5 shadow-[0_18px_42px_rgba(0,0,0,0.16)] backdrop-blur">
-                <h3 className="text-lg font-black text-[#f6c95a]">{item.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-emerald-50/80">{item.text}</p>
+            {whenToCall.map(([title, text]) => (
+              <article key={title} className="rounded-2xl border border-teal-300/20 bg-white/[0.06] p-5 shadow-[0_18px_42px_rgba(0,0,0,0.16)] backdrop-blur">
+                <h3 className="text-lg font-black text-[#f6c95a]">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-emerald-50/80">{text}</p>
               </article>
             ))}
           </div>
@@ -195,7 +184,7 @@ export function TheArboristHomePage() {
               Peter provides practical arborist guidance across the Gulf Coast, including Mobile and Baldwin Counties, for property owners who need a clearer read on tree condition, risk, storm damage, preservation, and local decision-making before paying for work.
             </p>
             <div className="mt-8 rounded-2xl border border-teal-300/20 bg-[#07131b] p-6 shadow-[0_18px_42px_rgba(0,0,0,0.2)]">
-              <CheckList items={independent} light />
+              <CheckList items={independent} />
             </div>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <div className="rounded-2xl border border-teal-300/20 bg-white/[0.05] p-5">
