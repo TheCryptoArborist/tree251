@@ -1,14 +1,12 @@
-import Image from "next/image";
-
 export function PeterHeadshot({ className = "" }: { className?: string }) {
   return (
-    <Image
-      src="/arborist-logo-cropped.png"
-      alt="The Arborist logo for Peter Toler"
-      width={440}
-      height={440}
+    <img
+      src="/peter-toler-headshot.svg"
+      alt="Peter Toler, ISA Certified Arborist"
+      width={197}
+      height={245}
       className={className}
-      priority
+      loading="lazy"
     />
   );
 }
