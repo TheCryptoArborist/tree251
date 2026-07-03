@@ -1,9 +1,9 @@
 import Link from "next/link";
 import {
   ArboristLogo,
-  calendlySchedulingUrl,
   consultationAnchor,
-  isaCredentialUrl
+  isaCredentialUrl,
+  phoneConsultationAnchor
 } from "@/components/ConsultBranding";
 import { ArrowRight, BadgeCheck } from "lucide-react";
 
@@ -27,7 +27,7 @@ export function SiteHeader() {
               Peter Toler
             </span>
             <span className="block truncate text-xs font-bold leading-tight text-emerald-100/80">
-              ISA Certified Arborist in Mobile, AL
+              ISA Certified Arborist serving the Gulf Coast
             </span>
           </span>
         </Link>
@@ -45,14 +45,12 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <a
-            href={calendlySchedulingUrl}
-            target="_blank"
-            rel="noreferrer"
+          <Link
+            href={phoneConsultationAnchor}
             className="rounded-md px-3 py-2 transition hover:bg-white/10 hover:text-white focus-ring"
           >
             Schedule
-          </a>
+          </Link>
         </nav>
 
         <div className="hidden shrink-0 items-center gap-2 sm:flex">
@@ -88,14 +86,12 @@ export function SiteHeader() {
             {item.label}
           </Link>
         ))}
-        <a
-          href={calendlySchedulingUrl}
-          target="_blank"
-          rel="noreferrer"
+        <Link
+          href={phoneConsultationAnchor}
           className="shrink-0 rounded-md px-2.5 py-2 transition hover:bg-white/10 hover:text-white focus-ring"
         >
           Schedule
-        </a>
+        </Link>
         <Link
           href={consultationAnchor}
           className="shrink-0 rounded-md bg-lime-400 px-2.5 py-2 text-emerald-950 transition hover:bg-lime-300 focus-ring"
