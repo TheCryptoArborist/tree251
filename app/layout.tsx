@@ -7,6 +7,38 @@ const siteTitle = "The Arborist | Peter Toler, ISA Certified Arborist";
 const siteDescription =
   "Request an independent tree assessment from Peter Toler, ISA Certified Arborist in Mobile, Alabama, before paying for tree removal, pruning, storm cleanup, or permit-related tree work.";
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "@id": `${siteUrl}/#the-arborist`,
+  name: "The Arborist",
+  url: siteUrl,
+  image: `${siteUrl}/arborist-logo-cropped.png`,
+  description: siteDescription,
+  founder: {
+    "@type": "Person",
+    name: "Peter Toler",
+    jobTitle: "ISA Certified Arborist"
+  },
+  areaServed: {
+    "@type": "City",
+    name: "Mobile",
+    containedInPlace: {
+      "@type": "State",
+      name: "Alabama"
+    }
+  },
+  serviceType: [
+    "Tree Risk Assessments",
+    "Storm Damage Evaluations",
+    "Work Prioritization",
+    "Second Opinions Before Hiring a Tree Service",
+    "Tree Preservation Guidance",
+    "Tree Permit and Tree Commission Guidance",
+    "Property Owner Consultations"
+  ]
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   applicationName: "The Arborist",
@@ -52,6 +84,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
         <SiteHeader />
         <main>{children}</main>
       </body>
