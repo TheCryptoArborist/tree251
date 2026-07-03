@@ -14,7 +14,7 @@ export const isaCredentialUrl =
   "https://certificates.directory.isa-arbor.com/profile/becbda421a7e286db985d6fe607e5436b09df137?search_term=toler&page=1";
 
 export const calendlySchedulingUrl =
-  process.env.NEXT_PUBLIC_CALENDLY_URL ?? "https://calendly.com/pbtau63/30min";
+  "https://calendly.com/petertoler/tree-care-phone-consultation";
 
 export const consultationAnchor = "/#consultation-request";
 export const scheduleCallAnchor = calendlySchedulingUrl;
