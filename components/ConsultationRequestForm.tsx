@@ -43,6 +43,7 @@ export function ConsultationRequestForm() {
         title="Consult Request with Peter Toler, ISA Certified Consulting Arborist"
         className="h-[980px] w-full bg-white sm:h-[1120px]"
         loading="lazy"
+        allow="clipboard-write"
       />
     </div>
   );
