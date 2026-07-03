@@ -9,10 +9,8 @@ import { ArrowRight, BadgeCheck } from "lucide-react";
 
 const navItems = [
   { href: "/#services", label: "Services" },
-  { href: "/#independent", label: "Why Independent" },
-  { href: "/#storm", label: "Storm Prep" },
-  { href: "/#permit-guidance", label: "Permit Guidance" },
-  { href: "/#about", label: "About Peter" }
+  { href: "/#when-to-call", label: "When to Call" },
+  { href: "/#about", label: "About" }
 ];
 
 export function SiteHeader() {
