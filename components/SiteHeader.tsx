@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import {
   ArboristLogo,
   consultationAnchor,
@@ -114,7 +114,7 @@ export function SiteHeader() {
 
           <Link
             href={consultationAnchor}
-            className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full bg-[#f6c95a] px-3 py-2 text-xs font-black text-[#06110d] shadow-[0_12px_28px_rgba(246,201,90,0.22)] transition hover:bg-[#ffdc70] focus-ring sm:px-4 sm:py-2.5 sm:text-sm"
+            className="hidden min-h-11 items-center justify-center gap-1.5 rounded-full bg-[#f6c95a] px-3 py-2 text-xs font-black text-[#06110d] shadow-[0_12px_28px_rgba(246,201,90,0.22)] transition hover:bg-[#ffdc70] focus-ring sm:inline-flex sm:px-4 sm:py-2.5 sm:text-sm"
           >
             <span className="sm:hidden">Request</span>
             <span className="hidden sm:inline">Request Assessment</span>
