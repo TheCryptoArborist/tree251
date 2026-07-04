@@ -33,21 +33,83 @@ import { TreePlanningSection } from "@/components/TreePlanningSection";
 
 const calendlyEmbedUrl = `${calendlySchedulingUrl}?hide_gdpr_banner=1&hide_event_type_details=1&primary_color=f6c95a`;
 
+const audienceHighlights = [
+  {
+    title: "Residential and Commercial",
+    text: "Independent guidance for homeowners, commercial properties, country clubs, campuses, businesses, and property managers who need practical tree decisions before paying for work."
+  },
+  {
+    title: "Municipal and HOA Consulting",
+    text: "Tree assessments, inventories, surveys, and priority planning for municipalities, HOAs, boards, public properties, parks, common areas, and right-of-way concerns."
+  },
+  {
+    title: "Mobile and Baldwin Counties",
+    text: "Serving the Gulf Coast with local context for storm exposure, mature live oaks, development pressure, preservation questions, and long-term tree maintenance."
+  }
+] as const;
+
 const services = [
-  ["Tree Risk and Storm Damage Assessments", "Independent review of defects, targets, storm damage, likelihood of failure, and practical risk priorities.", ShieldCheck],
-  ["Tree Inventories and Surveys", "Tree-by-tree documentation for HOAs, municipalities, country clubs, campuses, and businesses that need a maintenance plan.", ClipboardCheck],
-  ["Construction Planning and Preservation", "Arborist guidance before construction so valuable trees, root zones, and preservation options are considered early.", Hammer],
-  ["Municipal and Public Property Consulting", "Assessment and survey support for public trees, parks, right-of-way concerns, and municipal tree planning.", Home],
-  ["Work Prioritization and Maintenance Planning", "Clear separation between high-risk work, lower-risk monitoring, removals, pruning needs, and budgetable future maintenance.", Leaf],
-  ["Second Opinions Before Tree Work", "A neutral assessment before approving removal, pruning, cabling, construction impacts, or expensive tree work.", MessageSquareText]
+  {
+    title: "Tree Risk and Storm Damage Assessments",
+    text: "Independent review of defects, targets, storm damage, likelihood of failure, and practical risk priorities.",
+    details: [
+      "Useful after severe weather, before hurricane season, or before approving urgent tree work.",
+      "Helps separate immediate concerns from lower-priority maintenance or monitoring."
+    ],
+    Icon: ShieldCheck
+  },
+  {
+    title: "Tree Inventories and Surveys",
+    text: "Tree-by-tree documentation for HOAs, municipalities, country clubs, campuses, and businesses that need a maintenance plan.",
+    details: [
+      "Helps identify high-risk trees, low-risk trees, removals, pruning needs, and trees that can be monitored.",
+      "Useful for budgeting, board decisions, municipal planning, and contractor scopes of work."
+    ],
+    Icon: ClipboardCheck
+  },
+  {
+    title: "Construction Planning and Preservation",
+    text: "Arborist guidance before construction so valuable trees, root zones, and preservation options are considered early.",
+    details: [
+      "Supports planning around access, grading, root zones, equipment movement, and tree protection expectations.",
+      "Helps determine which trees are worth preserving and which conflicts need to be addressed before work begins."
+    ],
+    Icon: Hammer
+  },
+  {
+    title: "Municipal and Public Property Consulting",
+    text: "Assessment and survey support for public trees, parks, right-of-way concerns, and municipal tree planning.",
+    details: [
+      "Useful for prioritizing limited budgets and documenting public-tree concerns.",
+      "Can support maintenance planning, tree surveys, preservation questions, and risk-based decision-making."
+    ],
+    Icon: Home
+  },
+  {
+    title: "Work Prioritization and Maintenance Planning",
+    text: "Clear separation between high-risk work, lower-risk monitoring, removals, pruning needs, and budgetable future maintenance.",
+    details: [
+      "Creates a practical order of operations instead of treating every tree concern as an emergency.",
+      "Helps property owners and managers compare quotes and phase work logically."
+    ],
+    Icon: Leaf
+  },
+  {
+    title: "Second Opinions Before Tree Work",
+    text: "A neutral assessment before approving removal, pruning, cabling, construction impacts, or expensive tree work.",
+    details: [
+      "Useful when recommendations conflict or when the proposed work is expensive, disruptive, or permanent.",
+      "The goal is clarity before the work is authorized, not selling the work afterward."
+    ],
+    Icon: MessageSquareText
+  }
 ] as const;
 
 const whenToCall = [
   ["Before you approve a tree service quote", "Understand what is actually needed, what can wait, and what should be handled first."],
   ["When you manage more than one tree", "Tree inventories and surveys help boards, businesses, municipalities, and property managers plan maintenance instead of reacting to every concern."],
   ["Before construction or site changes", "Tree preservation decisions are easier when protection zones, access routes, grading, roots, and tree condition are considered early."],
-  ["After storm damage or before hurricane season", "Sort visible damage from real risk, document the condition, and avoid rushed decisions."
-  ]
+  ["After storm damage or before hurricane season", "Sort visible damage from real risk, document the condition, and avoid rushed decisions."]
 ] as const;
 
 const independent = [
@@ -121,9 +183,17 @@ export function TheArboristHomePage() {
 
       <section className="border-y border-teal-300/20 bg-[#07131b] px-4 py-3 text-white sm:px-6 sm:py-4 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-2 text-xs font-black uppercase tracking-[0.12em] text-emerald-50 sm:grid-cols-3 sm:gap-3 sm:text-sm sm:tracking-[0.14em]">
-          <div className="rounded-full border border-teal-300/25 bg-white/[0.03] px-3 py-2.5 sm:px-4 sm:py-3">Residential and Commercial</div>
-          <div className="rounded-full border border-teal-300/25 bg-white/[0.03] px-3 py-2.5 sm:px-4 sm:py-3">Municipal and HOA Consulting</div>
-          <div className="rounded-full border border-teal-300/25 bg-white/[0.03] px-3 py-2.5 sm:px-4 sm:py-3">Mobile and Baldwin Counties</div>
+          {audienceHighlights.map((item) => (
+            <details key={item.title} className="group rounded-[1.6rem] border border-teal-300/25 bg-white/[0.03] px-3 py-2.5 sm:px-4 sm:py-3">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
+                <span>{item.title}</span>
+                <span className="grid size-6 shrink-0 place-items-center rounded-full border border-[#f6c95a]/35 text-sm font-black text-[#f6c95a] transition group-open:rotate-45">+</span>
+              </summary>
+              <p className="mt-3 border-t border-teal-300/15 pt-3 text-sm font-medium normal-case leading-6 tracking-normal text-emerald-50/80">
+                {item.text}
+              </p>
+            </details>
+          ))}
         </div>
       </section>
 
@@ -137,12 +207,28 @@ export function TheArboristHomePage() {
             text="The work starts with the tree, the site, and the decision in front of you. Each assessment is meant to clarify risk, timing, preservation options, maintenance priorities, and the next practical step."
           />
           <div className="mt-8 grid gap-3 sm:mt-10 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-            {services.map(([title, text, Icon]) => (
-              <article key={title} className="rounded-2xl border border-teal-300/20 bg-[#07131b]/80 p-4 shadow-[0_22px_54px_rgba(0,0,0,0.22)] backdrop-blur sm:p-5">
-                <Icon className="size-7 text-[#f6c95a] sm:size-8" aria-hidden="true" />
-                <h3 className="mt-4 text-lg font-black text-white sm:mt-5 sm:text-xl">{title}</h3>
-                <p className="mt-2 text-sm leading-6 text-emerald-50/78 sm:mt-3">{text}</p>
-              </article>
+            {services.map(({ title, text, details, Icon }) => (
+              <details key={title} className="group rounded-2xl border border-teal-300/20 bg-[#07131b]/80 p-4 shadow-[0_22px_54px_rgba(0,0,0,0.22)] backdrop-blur sm:p-5">
+                <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <div className="flex items-start justify-between gap-4">
+                    <Icon className="size-7 shrink-0 text-[#f6c95a] sm:size-8" aria-hidden="true" />
+                    <span className="grid size-7 shrink-0 place-items-center rounded-full border border-[#f6c95a]/35 text-base font-black text-[#f6c95a] transition group-open:rotate-45">+</span>
+                  </div>
+                  <h3 className="mt-4 text-lg font-black text-white sm:mt-5 sm:text-xl">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-emerald-50/78 sm:mt-3">{text}</p>
+                  <p className="mt-3 text-xs font-black uppercase tracking-[0.14em] text-[#f6c95a]/80">Tap to expand</p>
+                </summary>
+                <div className="mt-4 border-t border-teal-300/15 pt-4">
+                  <ul className="space-y-2">
+                    {details.map((detail) => (
+                      <li key={detail} className="flex gap-2 text-sm leading-6 text-emerald-50/82">
+                        <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#f6c95a]" aria-hidden="true" />
+                        <span>{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </details>
             ))}
           </div>
         </div>
