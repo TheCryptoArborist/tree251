@@ -29,28 +29,31 @@ import { ConsultationRequestForm } from "@/components/ConsultationRequestForm";
 import { CredentialBadges } from "@/components/CredentialBadges";
 import { PeterHeadshot } from "@/components/PeterHeadshot";
 import { SocialLinksFooter } from "@/components/SocialLinksFooter";
+import { TreePlanningSection } from "@/components/TreePlanningSection";
 
 const calendlyEmbedUrl = `${calendlySchedulingUrl}?hide_gdpr_banner=1&hide_event_type_details=1&primary_color=f6c95a`;
 
 const services = [
-  ["Tree Risk Assessments", "Independent review of defects, targets, likelihood of failure, and practical next steps.", ShieldCheck],
-  ["Storm Damage and Hurricane Prep", "Guidance before or after severe weather so urgent concerns are separated from normal cleanup.", CloudLightning],
-  ["Work Prioritization", "A clear order of operations so safety items come before cosmetic or optional work.", ClipboardCheck],
-  ["Second Opinions", "A neutral assessment before approving removal, pruning, cabling, or expensive tree work.", MessageSquareText],
-  ["Preservation and Permit Guidance", "Help understanding preservation options, documentation needs, and local review questions.", Leaf],
-  ["Property Owner Consultations", "On-site or phone guidance for homeowners, property managers, HOAs, buyers, and sellers across the Gulf Coast.", Home]
+  ["Tree Risk and Storm Damage Assessments", "Independent review of defects, targets, storm damage, likelihood of failure, and practical risk priorities.", ShieldCheck],
+  ["Tree Inventories and Surveys", "Tree-by-tree documentation for HOAs, municipalities, country clubs, campuses, and businesses that need a maintenance plan.", ClipboardCheck],
+  ["Construction Planning and Preservation", "Arborist guidance before construction so valuable trees, root zones, and preservation options are considered early.", Hammer],
+  ["Municipal and Public Property Consulting", "Assessment and survey support for public trees, parks, right-of-way concerns, and municipal tree planning.", Home],
+  ["Work Prioritization and Maintenance Planning", "Clear separation between high-risk work, lower-risk monitoring, removals, pruning needs, and budgetable future maintenance.", Leaf],
+  ["Second Opinions Before Tree Work", "A neutral assessment before approving removal, pruning, cabling, construction impacts, or expensive tree work.", MessageSquareText]
 ] as const;
 
 const whenToCall = [
   ["Before you approve a tree service quote", "Understand what is actually needed, what can wait, and what should be handled first."],
-  ["After storm damage or before hurricane season", "Sort visible damage from real risk, document the condition, and avoid rushed decisions."],
-  ["When preservation, permits, or property records matter", "Get practical notes for HOAs, insurance, real estate, construction, or local review questions."]
+  ["When you manage more than one tree", "Tree inventories and surveys help boards, businesses, municipalities, and property managers plan maintenance instead of reacting to every concern."],
+  ["Before construction or site changes", "Tree preservation decisions are easier when protection zones, access routes, grading, roots, and tree condition are considered early."],
+  ["After storm damage or before hurricane season", "Sort visible damage from real risk, document the condition, and avoid rushed decisions."
+  ]
 ] as const;
 
 const independent = [
   "Peter does not need to sell removal, pruning, cabling, or cleanup work.",
   "The assessment is focused on the tree, the target, the risk, and the decision in front of you.",
-  "You can use the guidance when comparing quotes or deciding whether work is urgent, optional, or avoidable."
+  "You can use the guidance when comparing quotes, planning maintenance, managing construction impacts, or deciding whether work is urgent, optional, or avoidable."
 ];
 
 function SectionHeading({
@@ -106,7 +109,7 @@ export function TheArboristHomePage() {
             <h1 className="text-4xl font-black leading-[0.98] text-white drop-shadow-[0_10px_22px_rgba(0,0,0,0.35)] sm:text-6xl lg:text-7xl">Concerned About a Tree?</h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-emerald-50 sm:mt-6 sm:text-xl sm:leading-8">Get an independent tree assessment before paying for tree work.</p>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-emerald-100/85 sm:mt-5 sm:text-base sm:leading-7">
-              Peter Toler helps Gulf Coast property owners, including Mobile and Baldwin Counties, understand what is actually needed, what can wait, and what should be prioritized before hiring a tree service.
+              Peter Toler helps Gulf Coast homeowners, HOAs, municipalities, country clubs, businesses, and project teams understand what is actually needed, what can wait, and what should be prioritized before hiring a tree service.
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:flex-wrap">
               <RequestConsultationButton className="min-h-12 w-full sm:w-auto" />
@@ -118,8 +121,8 @@ export function TheArboristHomePage() {
 
       <section className="border-y border-teal-300/20 bg-[#07131b] px-4 py-3 text-white sm:px-6 sm:py-4 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-2 text-xs font-black uppercase tracking-[0.12em] text-emerald-50 sm:grid-cols-3 sm:gap-3 sm:text-sm sm:tracking-[0.14em]">
-          <div className="rounded-full border border-teal-300/25 bg-white/[0.03] px-3 py-2.5 sm:px-4 sm:py-3">ISA Certified Arborist</div>
-          <div className="rounded-full border border-teal-300/25 bg-white/[0.03] px-3 py-2.5 sm:px-4 sm:py-3">Serving the Gulf Coast</div>
+          <div className="rounded-full border border-teal-300/25 bg-white/[0.03] px-3 py-2.5 sm:px-4 sm:py-3">Residential and Commercial</div>
+          <div className="rounded-full border border-teal-300/25 bg-white/[0.03] px-3 py-2.5 sm:px-4 sm:py-3">Municipal and HOA Consulting</div>
           <div className="rounded-full border border-teal-300/25 bg-white/[0.03] px-3 py-2.5 sm:px-4 sm:py-3">Mobile and Baldwin Counties</div>
         </div>
       </section>
@@ -130,8 +133,8 @@ export function TheArboristHomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             light
-            title="Tree consulting that helps you decide."
-            text="The work starts with the tree and the decision in front of you, not with a sales quote. Each assessment is meant to clarify risk, timing, preservation options, and the next practical step."
+            title="Tree consulting that helps you plan, prioritize, and decide."
+            text="The work starts with the tree, the site, and the decision in front of you. Each assessment is meant to clarify risk, timing, preservation options, maintenance priorities, and the next practical step."
           />
           <div className="mt-8 grid gap-3 sm:mt-10 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
             {services.map(([title, text, Icon]) => (
@@ -145,14 +148,16 @@ export function TheArboristHomePage() {
         </div>
       </section>
 
+      <TreePlanningSection />
+
       <section id="when-to-call" className="relative isolate overflow-hidden bg-[#0b1f17] py-12 text-white sm:py-16">
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_12%_18%,rgba(18,192,168,0.16),transparent_26rem),radial-gradient(circle_at_82%_10%,rgba(246,201,90,0.15),transparent_22rem),linear-gradient(135deg,#050b12_0%,#0b1f17_55%,#143527_100%)]" />
         <div className="tree-ring-texture absolute inset-y-0 left-0 -z-10 w-1/2 opacity-50" />
         <div className="mx-auto grid max-w-7xl gap-7 px-4 sm:gap-10 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start lg:px-8">
           <SectionHeading
             light
-            title="When a tree assessment helps."
-            text="A short, independent review can prevent a rushed or expensive decision. These are the situations where consulting guidance is usually most useful."
+            title="When a tree assessment or survey helps."
+            text="A short independent review can prevent a rushed or expensive decision. A broader inventory or survey can help larger properties plan tree maintenance before problems become urgent."
           />
           <div className="grid gap-3 sm:gap-4">
             {whenToCall.map(([title, text]) => (
@@ -183,7 +188,7 @@ export function TheArboristHomePage() {
           <div>
             <h2 className="text-2xl font-black leading-tight text-white sm:text-4xl">Independent advice, not tree work sales.</h2>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-emerald-50/85 sm:mt-4 sm:text-base sm:leading-7">
-              Peter provides practical arborist guidance across the Gulf Coast, including Mobile and Baldwin Counties, for property owners who need a clearer read on tree condition, risk, storm damage, preservation, and local decision-making before paying for work.
+              Peter provides practical arborist guidance across the Gulf Coast for homeowners, municipalities, HOAs, businesses, country clubs, and project teams who need a clearer read on tree condition, risk, preservation, construction impacts, and maintenance priorities.
             </p>
             <div className="mt-6 rounded-2xl border border-teal-300/20 bg-[#07131b] p-4 shadow-[0_18px_42px_rgba(0,0,0,0.2)] sm:mt-8 sm:p-6">
               <CheckList items={independent} />
@@ -192,12 +197,12 @@ export function TheArboristHomePage() {
               <div className="rounded-2xl border border-teal-300/20 bg-white/[0.05] p-4 sm:p-5">
                 <TreePine className="size-7 text-[#f6c95a] sm:size-8" aria-hidden="true" />
                 <h3 className="mt-4 text-lg font-black text-white">Mature-tree decisions</h3>
-                <p className="mt-2 text-sm leading-6 text-emerald-50/80">Guidance for live oaks, storm-exposed trees, property lines, targets, and preservation tradeoffs.</p>
+                <p className="mt-2 text-sm leading-6 text-emerald-50/80">Guidance for live oaks, storm-exposed trees, property lines, targets, inventories, surveys, and preservation tradeoffs.</p>
               </div>
               <div className="rounded-2xl border border-teal-300/20 bg-white/[0.05] p-4 sm:p-5">
                 <Hammer className="size-7 text-[#f6c95a] sm:size-8" aria-hidden="true" />
-                <h3 className="mt-4 text-lg font-black text-white">Contractor clarity</h3>
-                <p className="mt-2 text-sm leading-6 text-emerald-50/80">Better questions and priorities before you compare quotes or authorize work.</p>
+                <h3 className="mt-4 text-lg font-black text-white">Project and contractor clarity</h3>
+                <p className="mt-2 text-sm leading-6 text-emerald-50/80">Better questions and priorities before you compare quotes, approve work, plan construction, or budget maintenance.</p>
               </div>
             </div>
           </div>
@@ -254,7 +259,7 @@ export function TheArboristHomePage() {
             <SectionHeading
               light
               title="Request a Tree Assessment."
-              text="Use the Jotform request below for assessment details and photo uploads. Photos belong inside the request form, so there is no separate Submit Photos button."
+              text="Use the Jotform request below for assessments, inventories, surveys, construction planning, preservation questions, and photo uploads. Photos belong inside the request form."
             />
             <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap">
               <SchedulePhoneButton className="min-h-12 w-full border-teal-300/25 bg-white/[0.06] text-white hover:bg-white/[0.1] sm:w-auto" />
@@ -275,15 +280,16 @@ export function TheArboristHomePage() {
                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#f6c95a]">Peter Toler</p>
               </div>
             </div>
-            <p className="mt-4 max-w-sm leading-6">Independent arborist consulting for Gulf Coast property owners, including Mobile and Baldwin Counties.</p>
+            <p className="mt-4 max-w-sm leading-6">Independent arborist consulting for Gulf Coast homeowners, municipalities, HOAs, country clubs, businesses, and project teams.</p>
           </div>
           <div>
             <p className="font-black uppercase tracking-[0.14em] text-[#f6c95a]">Services</p>
             <ul className="mt-4 space-y-2">
               <li>Tree risk assessments</li>
-              <li>Storm damage evaluations</li>
-              <li>Second opinions before tree work</li>
-              <li>Permit and preservation guidance</li>
+              <li>Tree inventories and surveys</li>
+              <li>Construction planning</li>
+              <li>Tree preservation guidance</li>
+              <li>Municipal and HOA consulting</li>
             </ul>
           </div>
           <div>
