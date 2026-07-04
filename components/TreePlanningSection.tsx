@@ -29,13 +29,31 @@ const inventoryOutcomes = [
 ];
 
 const planningServices = [
-  "Tree inventories",
-  "Tree surveys",
-  "Construction planning",
-  "Tree preservation plans",
-  "Maintenance prioritization",
-  "Municipal and commercial tree assessments"
-];
+  {
+    title: "Tree inventories",
+    text: "A tree-by-tree record for condition, risk priorities, pruning needs, removals, monitoring, and maintenance planning."
+  },
+  {
+    title: "Tree surveys",
+    text: "Documentation for tree locations, site conditions, preservation questions, and planning needs."
+  },
+  {
+    title: "Construction planning",
+    text: "Early arborist input for root zones, access, grading, conflicts, and tree protection expectations."
+  },
+  {
+    title: "Tree preservation plans",
+    text: "Guidance on which trees are realistic preservation candidates and how they should be protected."
+  },
+  {
+    title: "Maintenance prioritization",
+    text: "A practical order for removals, pruning, monitoring, clearance, and future maintenance."
+  },
+  {
+    title: "Municipal and commercial tree assessments",
+    text: "Independent assessment support for common areas, commercial sites, parks, and higher-traffic properties."
+  }
+] as const;
 
 export function TreePlanningSection() {
   return (
@@ -60,11 +78,20 @@ export function TreePlanningSection() {
 
         <div className="mt-8 grid gap-3 sm:mt-10 lg:grid-cols-3">
           {clientGroups.map(({ title, text, Icon }) => (
-            <article key={title} className="rounded-2xl border border-teal-300/20 bg-white/[0.06] p-4 shadow-[0_22px_54px_rgba(0,0,0,0.2)] backdrop-blur sm:p-5">
-              <Icon className="size-7 text-[#f6c95a] sm:size-8" aria-hidden="true" />
-              <h3 className="mt-4 text-lg font-black leading-6 text-white">{title}</h3>
-              <p className="mt-2 text-sm leading-6 text-emerald-50/78">{text}</p>
-            </article>
+            <details key={title} className="group rounded-2xl border border-teal-300/20 bg-white/[0.06] p-4 shadow-[0_22px_54px_rgba(0,0,0,0.2)] backdrop-blur sm:p-5">
+              <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div className="flex items-start justify-between gap-4">
+                  <Icon className="size-7 shrink-0 text-[#f6c95a] sm:size-8" aria-hidden="true" />
+                  <span className="grid size-7 shrink-0 place-items-center rounded-full border border-[#f6c95a]/35 text-base font-black text-[#f6c95a] transition group-open:rotate-45">+</span>
+                </div>
+                <h3 className="mt-4 text-lg font-black leading-6 text-white">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-emerald-50/78">{text}</p>
+                <p className="mt-3 text-xs font-black uppercase tracking-[0.14em] text-[#f6c95a]/80">Tap to expand</p>
+              </summary>
+              <p className="mt-4 border-t border-teal-300/15 pt-4 text-sm leading-6 text-emerald-50/82">
+                This supports planning, documentation, prioritization, and better decision-making before maintenance or project work begins.
+              </p>
+            </details>
           ))}
         </div>
 
@@ -91,9 +118,15 @@ export function TreePlanningSection() {
             </div>
             <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
               {planningServices.map((service) => (
-                <div key={service} className="rounded-full border border-teal-300/20 bg-white/[0.05] px-4 py-2.5 text-sm font-black text-emerald-50">
-                  {service}
-                </div>
+                <details key={service.title} className="group rounded-2xl border border-teal-300/20 bg-white/[0.05] px-4 py-2.5 text-sm text-emerald-50">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-black [&::-webkit-details-marker]:hidden">
+                    <span>{service.title}</span>
+                    <span className="grid size-6 shrink-0 place-items-center rounded-full border border-[#f6c95a]/35 text-sm font-black text-[#f6c95a] transition group-open:rotate-45">+</span>
+                  </summary>
+                  <p className="mt-3 border-t border-teal-300/15 pt-3 font-medium leading-6 text-emerald-50/78">
+                    {service.text}
+                  </p>
+                </details>
               ))}
             </div>
           </div>
