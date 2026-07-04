@@ -3,7 +3,8 @@ import {
   ArboristLogo,
   consultationAnchor,
   isaCredentialUrl,
-  phoneConsultationAnchor
+  phoneConsultationAnchor,
+  socialLinks
 } from "@/components/ConsultBranding";
 import { ArrowRight, BadgeCheck } from "lucide-react";
 
@@ -13,9 +14,37 @@ const desktopNavItems = [
   { href: "/#about", label: "About" }
 ];
 
+const headerSocialLinks = socialLinks.filter((link) => link.label !== "Google");
+const shortSocialLabels: Record<string, string> = {
+  Facebook: "FB",
+  Instagram: "IG",
+  LinkedIn: "IN",
+  YouTube: "YT"
+};
+
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-teal-300/20 bg-[#050b12]/95 text-white shadow-[0_14px_34px_rgba(0,0,0,0.34)] backdrop-blur-xl">
+      <div className="border-b border-teal-300/10 bg-[#030806]/80">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.14em] text-emerald-50/70 sm:px-6 lg:px-8">
+          <span className="shrink-0 text-[#f6c95a]">Follow</span>
+          <nav aria-label="Social media profiles" className="flex min-w-0 flex-1 items-center justify-end gap-1.5 overflow-x-auto">
+            {headerSocialLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                className="shrink-0 rounded-full border border-teal-300/20 px-2 py-1 transition hover:border-[#f6c95a]/70 hover:bg-white/10 hover:text-white focus-ring sm:px-2.5"
+              >
+                <span className="sm:hidden">{shortSocialLabels[link.label] ?? link.label}</span>
+                <span className="hidden sm:inline">{link.label}</span>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </div>
+
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-3 py-2 sm:px-6 sm:py-3 lg:px-8">
         <Link href="/" className="flex min-w-0 items-center gap-2.5 focus-ring sm:gap-3">
           <ArboristLogo showText={false} compact />
