@@ -13,26 +13,20 @@ const desktopNavItems = [
   { href: "/#about", label: "About" }
 ];
 
-const mobileNavItems = [
-  { href: "/#services", label: "Services" },
-  { href: "/#about", label: "About" },
-  { href: phoneConsultationAnchor, label: "Schedule" }
-];
-
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-teal-300/20 bg-[#050b12]/95 text-white shadow-[0_18px_44px_rgba(0,0,0,0.36)] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-teal-300/20 bg-[#050b12]/95 text-white shadow-[0_14px_34px_rgba(0,0,0,0.34)] backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-3 py-2 sm:px-6 sm:py-3 lg:px-8">
         <Link href="/" className="flex min-w-0 items-center gap-2.5 focus-ring sm:gap-3">
-          <ArboristLogo showText={false} />
+          <ArboristLogo showText={false} compact />
           <span className="min-w-0">
-            <span className="block text-base font-black uppercase leading-none tracking-[0.08em] text-white sm:text-xl">
+            <span className="block text-base font-black uppercase leading-none tracking-[0.07em] text-white sm:text-xl">
               The Arborist
             </span>
             <span className="mt-0.5 block text-xs font-black leading-tight text-[#f6c95a] sm:mt-1 sm:text-sm">
               Peter Toler
             </span>
-            <span className="hidden truncate text-xs font-bold leading-tight text-emerald-100/80 sm:block">
+            <span className="hidden truncate text-xs font-bold leading-tight text-emerald-100/80 min-[430px]:block">
               ISA Certified Arborist serving the Gulf Coast
             </span>
           </span>
@@ -81,18 +75,27 @@ export function SiteHeader() {
       </div>
 
       <nav
-        aria-label="Mobile navigation"
-        className="flex gap-2 overflow-x-auto border-t border-teal-300/15 px-3 py-1.5 text-xs font-bold text-emerald-50/80 sm:px-6 lg:hidden"
+        aria-label="Mobile quick actions"
+        className="grid grid-cols-3 gap-2 border-t border-teal-300/15 px-3 py-1.5 text-center text-xs font-black text-emerald-50/90 lg:hidden"
       >
-        {mobileNavItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="shrink-0 rounded-full px-3 py-2 transition hover:bg-white/10 hover:text-white focus-ring"
-          >
-            {item.label}
-          </Link>
-        ))}
+        <Link
+          href="/#services"
+          className="rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
+        >
+          Services
+        </Link>
+        <Link
+          href={phoneConsultationAnchor}
+          className="rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
+        >
+          Schedule
+        </Link>
+        <Link
+          href={consultationAnchor}
+          className="rounded-full bg-[#f6c95a] px-2 py-2.5 text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
+        >
+          Request
+        </Link>
       </nav>
     </header>
   );
