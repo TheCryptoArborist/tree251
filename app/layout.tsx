@@ -7,6 +7,14 @@ const siteTitle = "The Arborist | Peter Toler, ISA Certified Arborist";
 const siteDescription =
   "Request an independent tree assessment from Peter Toler, ISA Certified Arborist serving the Gulf Coast, including Mobile and Baldwin Counties, Alabama, before paying for tree removal, pruning, storm cleanup, or permit-related tree work.";
 
+const socialProfileUrls = [
+  "https://www.facebook.com/ptarborist",
+  "https://www.instagram.com/ptarborist",
+  "https://www.linkedin.com/in/ptarborist",
+  "http://www.youtube.com/@TheArboristPT",
+  "https://maps.app.goo.gl/cShPmYshpMQvxFTT6?g_st=ic"
+];
+
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
@@ -15,6 +23,7 @@ const structuredData = {
   url: siteUrl,
   image: `${siteUrl}/arborist-logo-cropped.png`,
   description: siteDescription,
+  sameAs: socialProfileUrls,
   founder: {
     "@type": "Person",
     name: "Peter Toler",
