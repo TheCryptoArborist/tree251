@@ -12,11 +12,12 @@ export function ConsultationRequestForm() {
           Assessment request
         </p>
         <h3 className="mt-2 text-xl font-black text-white sm:text-2xl">
-          Request an assessment and upload photos.
+          Request an assessment, survey, inventory, or planning consult.
         </h3>
         <p className="mt-2 text-sm leading-6 text-emerald-50/80">
           This is Peter&apos;s Jotform intake for tree assessments, storm damage concerns,
-          preservation questions, appointment details, and tree photos.
+          inventories, tree surveys, construction planning, preservation questions,
+          appointment details, and tree photos.
         </p>
         <div className="mt-4 grid gap-2 text-sm leading-6 text-emerald-50/85 sm:grid-cols-3 sm:gap-3">
           <div className="flex gap-3 rounded-xl border border-teal-300/20 bg-white/[0.06] p-3">
@@ -25,11 +26,11 @@ export function ConsultationRequestForm() {
           </div>
           <div className="flex gap-3 rounded-xl border border-teal-300/20 bg-white/[0.06] p-3">
             <ImageUp className="mt-0.5 size-5 shrink-0 text-[#f6c95a]" aria-hidden="true" />
-            <span>Attach photos inside this request form.</span>
+            <span>Attach photos or site context inside the form.</span>
           </div>
           <div className="flex gap-3 rounded-xl border border-teal-300/20 bg-white/[0.06] p-3">
             <ShieldCheck className="mt-0.5 size-5 shrink-0 text-[#f6c95a]" aria-hidden="true" />
-            <span>Peter does not sell tree removal or pruning work.</span>
+            <span>Peter provides independent guidance, not tree work sales.</span>
           </div>
         </div>
         <a
