@@ -15,6 +15,21 @@ export const calendlySchedulingUrl =
 
 export const jotformConsultationUrl = "https://form.jotform.com/221198646412861";
 
+export const facebookUrl = "https://www.facebook.com/ptarborist";
+export const instagramUrl = "https://www.instagram.com/ptarborist";
+export const linkedinUrl = "https://www.linkedin.com/in/ptarborist";
+export const youtubeUrl = "http://www.youtube.com/@TheArboristPT";
+export const googleBusinessProfileUrl = "https://maps.app.goo.gl/cShPmYshpMQvxFTT6?g_st=ic";
+export const googleReviewUrl = "http://g.page/r/CdmRJY0DlABmEAo/review";
+
+export const socialLinks = [
+  { label: "Facebook", href: facebookUrl },
+  { label: "Instagram", href: instagramUrl },
+  { label: "LinkedIn", href: linkedinUrl },
+  { label: "YouTube", href: youtubeUrl },
+  { label: "Google", href: googleBusinessProfileUrl }
+] as const;
+
 export const consultationAnchor = "/#consultation-request";
 export const phoneConsultationAnchor = "/#phone-consultation";
 export const scheduleCallAnchor = phoneConsultationAnchor;
