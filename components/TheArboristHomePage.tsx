@@ -28,6 +28,7 @@ import {
 import { ConsultationRequestForm } from "@/components/ConsultationRequestForm";
 import { CredentialBadges } from "@/components/CredentialBadges";
 import { PeterHeadshot } from "@/components/PeterHeadshot";
+import { SocialLinksFooter } from "@/components/SocialLinksFooter";
 
 const calendlyEmbedUrl = `${calendlySchedulingUrl}?hide_gdpr_banner=1&hide_event_type_details=1&primary_color=f6c95a`;
 
@@ -265,7 +266,7 @@ export function TheArboristHomePage() {
       </section>
 
       <footer className="border-t border-teal-300/15 bg-[#030806] px-4 py-10 text-sm text-emerald-50/75 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[1fr_1fr_1fr]">
+        <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
           <div>
             <div className="flex items-center gap-3">
               <ArboristLogo showText={false} />
@@ -302,6 +303,7 @@ export function TheArboristHomePage() {
               </li>
             </ul>
           </div>
+          <SocialLinksFooter />
         </div>
       </footer>
     </div>
