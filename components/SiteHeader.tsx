@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import {
   ArboristLogo,
   consultationAnchor,
@@ -6,7 +6,14 @@ import {
   phoneConsultationAnchor,
   socialLinks
 } from "@/components/ConsultBranding";
-import { ArrowRight, BadgeCheck } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Facebook,
+  Instagram,
+  Linkedin,
+  Youtube
+} from "lucide-react";
 
 const desktopNavItems = [
   { href: "/#services", label: "Services" },
@@ -15,11 +22,12 @@ const desktopNavItems = [
 ];
 
 const headerSocialLinks = socialLinks.filter((link) => link.label !== "Google");
-const shortSocialLabels: Record<string, string> = {
-  Facebook: "FB",
-  Instagram: "IG",
-  LinkedIn: "IN",
-  YouTube: "YT"
+
+const socialIcons: Record<string, typeof Facebook> = {
+  Facebook,
+  Instagram,
+  LinkedIn: Linkedin,
+  YouTube: Youtube
 };
 
 export function SiteHeader() {
@@ -30,19 +38,28 @@ export function SiteHeader() {
           <p className="mb-2 text-center text-[11px] font-black uppercase tracking-[0.18em] text-[#f6c95a] lg:mb-0 lg:text-left">
             Follow The Arborist
           </p>
-          <nav aria-label="Social media profiles" className="grid grid-cols-4 gap-1.5 lg:flex lg:items-center lg:justify-end">
-            {headerSocialLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noreferrer"
-                className="min-h-9 rounded-full border border-[#f6c95a]/50 bg-[#f6c95a] px-2 py-2 text-center text-[11px] font-black uppercase tracking-[0.08em] text-[#06110d] shadow-[0_10px_22px_rgba(246,201,90,0.16)] transition hover:bg-[#ffdc70] focus-ring sm:px-3 lg:min-h-0 lg:border-teal-300/20 lg:bg-white/[0.04] lg:py-1.5 lg:text-xs lg:text-emerald-50/90 lg:shadow-none lg:hover:border-[#f6c95a]/70 lg:hover:bg-white/10 lg:hover:text-white"
-              >
-                <span className="sm:hidden">{shortSocialLabels[link.label] ?? link.label}</span>
-                <span className="hidden sm:inline">{link.label}</span>
-              </a>
-            ))}
+
+          <nav
+            aria-label="Social media profiles"
+            className="grid grid-cols-4 gap-1.5 lg:flex lg:items-center lg:justify-end"
+          >
+            {headerSocialLinks.map((link) => {
+              const Icon = socialIcons[link.label];
+
+              return (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={link.label}
+                  title={link.label}
+                  className="flex min-h-9 items-center justify-center rounded-full border border-[#f6c95a]/50 bg-[#f6c95a] px-2 py-2 text-[#06110d] shadow-[0_10px_22px_rgba(246,201,90,0.16)] transition hover:bg-[#ffdc70] focus-ring sm:px-3 lg:min-h-0 lg:border-teal-300/20 lg:bg-white/[0.04] lg:px-3.5 lg:py-1.5 lg:text-emerald-50/90 lg:shadow-none lg:hover:border-[#f6c95a]/70 lg:hover:bg-white/10 lg:hover:text-white"
+                >
+                  <Icon className="size-4 sm:size-5" aria-hidden="true" />
+                </a>
+              );
+            })}
           </nav>
         </div>
       </div>
@@ -94,6 +111,7 @@ export function SiteHeader() {
             <BadgeCheck className="size-4 text-[#f6c95a]" aria-hidden="true" />
             Verify ISA
           </a>
+
           <Link
             href={consultationAnchor}
             className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full bg-[#f6c95a] px-3 py-2 text-xs font-black text-[#06110d] shadow-[0_12px_28px_rgba(246,201,90,0.22)] transition hover:bg-[#ffdc70] focus-ring sm:px-4 sm:py-2.5 sm:text-sm"
