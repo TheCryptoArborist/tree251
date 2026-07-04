@@ -1,12 +1,12 @@
-export function PeterHeadshot({ className = "" }: { className?: string }) {
+﻿export function PeterHeadshot({ className = "" }: { className?: string }) {
   return (
     <img
-      src="/peter-toler-headshot.svg"
+      src="/assets/peter-toler-headshot.jpg?v=6"
       alt="Peter Toler, ISA Certified Arborist"
-      width={197}
-      height={245}
+      width={320}
+      height={400}
       className={className}
-      loading="lazy"
+      loading="eager"
       decoding="async"
     />
   );
