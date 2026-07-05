@@ -5,7 +5,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 const siteUrl = "https://tree251.xyz";
 const siteTitle = "The Arborist | Peter Toler, ISA Certified Arborist";
 const siteDescription =
-  "Request an independent tree assessment from Peter Toler, ISA Certified Arborist serving the Gulf Coast, including Mobile and Baldwin Counties, Alabama, before paying for tree removal, pruning, storm cleanup, or permit-related tree work.";
+  "Independent arborist consulting from Peter Toler, ISA Certified Arborist serving the Gulf Coast, including Mobile and Baldwin Counties. Request tree risk assessments, storm evaluations, tree inventories, surveys, construction planning, preservation guidance, municipal consulting, HOA consulting, and second opinions before paying for tree work.";
 
 const socialProfileUrls = [
   "https://www.facebook.com/ptarborist",
@@ -13,6 +13,23 @@ const socialProfileUrls = [
   "https://www.linkedin.com/in/ptarborist",
   "http://www.youtube.com/@TheArboristPT",
   "https://maps.app.goo.gl/cShPmYshpMQvxFTT6?g_st=ic"
+];
+
+const serviceTypes = [
+  "Tree Risk Assessments",
+  "Storm Damage Evaluations",
+  "Tree Inventories",
+  "Tree Surveys",
+  "Construction Planning",
+  "Tree Preservation Planning",
+  "Municipal Tree Consulting",
+  "HOA Tree Consulting",
+  "Commercial Tree Assessments",
+  "Maintenance Prioritization",
+  "Work Prioritization",
+  "Second Opinions Before Hiring a Tree Service",
+  "Tree Permit and Tree Commission Guidance",
+  "Property Owner Consultations"
 ];
 
 const structuredData = {
@@ -43,15 +60,18 @@ const structuredData = {
       name: "Baldwin County, Alabama"
     }
   ],
-  serviceType: [
-    "Tree Risk Assessments",
-    "Storm Damage Evaluations",
-    "Work Prioritization",
-    "Second Opinions Before Hiring a Tree Service",
-    "Tree Preservation Guidance",
-    "Tree Permit and Tree Commission Guidance",
-    "Property Owner Consultations"
-  ]
+  serviceType: serviceTypes,
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Independent arborist consulting services",
+    itemListElement: serviceTypes.map((service) => ({
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: service
+      }
+    }))
+  }
 };
 
 export const metadata: Metadata = {
@@ -62,6 +82,19 @@ export const metadata: Metadata = {
     template: "%s | The Arborist"
   },
   description: siteDescription,
+  keywords: [
+    "ISA Certified Arborist Mobile Alabama",
+    "independent tree assessment",
+    "tree risk assessment",
+    "tree inventory",
+    "tree survey",
+    "tree preservation planning",
+    "construction planning arborist",
+    "municipal tree consulting",
+    "HOA tree consulting",
+    "Mobile County arborist",
+    "Baldwin County arborist"
+  ],
   alternates: {
     canonical: "/"
   },
