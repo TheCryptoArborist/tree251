@@ -28,9 +28,12 @@ import {
 import { AudienceTrustSection } from "@/components/AudienceTrustSection";
 import { ConsultationRequestForm } from "@/components/ConsultationRequestForm";
 import { CredentialBadges } from "@/components/CredentialBadges";
+import { FAQSection } from "@/components/FAQSection";
+import { GoogleReviewsSection } from "@/components/GoogleReviewsSection";
 import { PeterHeadshot } from "@/components/PeterHeadshot";
 import { SocialLinksFooter } from "@/components/SocialLinksFooter";
 import { TreePlanningSection } from "@/components/TreePlanningSection";
+import { WhatYouReceiveSection } from "@/components/WhatYouReceiveSection";
 
 const calendlyEmbedUrl = `${calendlySchedulingUrl}?hide_gdpr_banner=1&hide_event_type_details=1&primary_color=f6c95a`;
 
@@ -203,7 +206,11 @@ export function TheArboristHomePage() {
         </div>
       </section>
 
+      <WhatYouReceiveSection />
+
       <CredentialBadges />
+
+      <GoogleReviewsSection />
 
       <section id="phone-consultation" className="relative isolate scroll-mt-28 overflow-hidden bg-[#0b1f17] py-12 text-white sm:py-16">
         <Image
@@ -245,6 +252,8 @@ export function TheArboristHomePage() {
         </div>
       </section>
 
+      <FAQSection />
+
       <section id="consultation-request" className="relative isolate scroll-mt-28 overflow-hidden bg-[#050b12] py-12 text-white sm:py-16">
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_85%_15%,rgba(246,201,90,0.16),transparent_24rem),radial-gradient(circle_at_12%_82%,rgba(18,192,168,0.12),transparent_22rem)]" />
         <div className="tree-ring-texture absolute inset-y-0 right-0 -z-10 w-1/2 rotate-180 opacity-40" />
@@ -253,7 +262,7 @@ export function TheArboristHomePage() {
             <SectionHeading
               light
               title="Request a Tree Assessment."
-              text="Use the Jotform request below for assessments, inventories, surveys, construction planning, preservation questions, and photo uploads. Photos belong inside the request form."
+              text="Serving the Gulf Coast, including Mobile County, Baldwin County, municipalities, HOAs, commercial properties, and construction/planning teams. Use the Jotform request below for assessments, inventories, surveys, construction planning, preservation questions, and photo uploads."
             />
             <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap">
               <SchedulePhoneButton className="min-h-12 w-full border-teal-300/25 bg-white/[0.06] text-white hover:bg-white/[0.1] sm:w-auto" />
