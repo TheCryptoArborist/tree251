@@ -17,8 +17,9 @@ import {
 
 const desktopNavItems = [
   { href: "/#services", label: "Services" },
-  { href: "/#when-to-call", label: "When to Call" },
-  { href: "/#about", label: "About" }
+  { href: "/#tree-planning", label: "Planning" },
+  { href: "/#about", label: "About" },
+  { href: "/#google-reviews", label: "Reviews" }
 ];
 
 const headerSocialLinks = socialLinks.filter((link) => link.label !== "Google");
