@@ -28,6 +28,7 @@ import {
 import { AudienceTrustSection } from "@/components/AudienceTrustSection";
 import { ConsultationRequestForm } from "@/components/ConsultationRequestForm";
 import { CredentialBadges } from "@/components/CredentialBadges";
+import { EngagementToolsSection } from "@/components/EngagementToolsSection";
 import { FAQSection } from "@/components/FAQSection";
 import { GoogleReviewsSection } from "@/components/GoogleReviewsSection";
 import { PeterHeadshot } from "@/components/PeterHeadshot";
@@ -123,6 +124,8 @@ export function TheArboristHomePage() {
       </section>
 
       <AudienceTrustSection />
+
+      <EngagementToolsSection />
 
       <section id="services" className="relative isolate overflow-hidden bg-[#050b12] py-12 text-white sm:py-16">
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_10%_0%,rgba(18,192,168,0.18),transparent_28rem),radial-gradient(circle_at_86%_24%,rgba(246,201,90,0.14),transparent_24rem),linear-gradient(145deg,#050b12_0%,#07131b_46%,#0b1f17_100%)]" />
