@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 const desktopNavItems = [
+  { href: "/#start-here", label: "Start Here" },
   { href: "/#services", label: "Services" },
   { href: "/#tree-planning", label: "Planning" },
   { href: "/#about", label: "About" },
@@ -55,6 +56,9 @@ export function SiteHeader() {
                   rel="noreferrer"
                   aria-label={link.label}
                   title={link.label}
+                  data-track-event="Social Link Click"
+                  data-track-label={link.label}
+                  data-track-location="top_social_bar"
                   className="flex min-h-9 items-center justify-center rounded-full border border-[#f6c95a]/50 bg-[#f6c95a] px-2 py-2 text-[#06110d] shadow-[0_10px_22px_rgba(246,201,90,0.16)] transition hover:bg-[#ffdc70] focus-ring sm:px-3 lg:min-h-0 lg:border-teal-300/20 lg:bg-white/[0.04] lg:px-3.5 lg:py-1.5 lg:text-emerald-50/90 lg:shadow-none lg:hover:border-[#f6c95a]/70 lg:hover:bg-white/10 lg:hover:text-white"
                 >
                   <Icon className="size-4 sm:size-5" aria-hidden="true" />
@@ -89,6 +93,9 @@ export function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
+              data-track-event="Navigation Click"
+              data-track-label={item.label}
+              data-track-location="desktop_header"
               className="rounded-full px-3 py-2 transition hover:bg-white/10 hover:text-white focus-ring"
             >
               {item.label}
@@ -96,6 +103,8 @@ export function SiteHeader() {
           ))}
           <Link
             href={phoneConsultationAnchor}
+            data-track-event="Schedule Phone Click"
+            data-track-location="desktop_header"
             className="rounded-full px-3 py-2 transition hover:bg-white/10 hover:text-white focus-ring"
           >
             Schedule
@@ -107,6 +116,8 @@ export function SiteHeader() {
             href={isaCredentialUrl}
             target="_blank"
             rel="noreferrer"
+            data-track-event="Verify ISA Click"
+            data-track-location="header"
             className="hidden items-center justify-center gap-2 rounded-full border border-teal-300/25 bg-white/[0.04] px-3.5 py-2.5 text-sm font-black text-white transition hover:border-[#f6c95a]/70 hover:bg-white/10 focus-ring xl:inline-flex"
           >
             <BadgeCheck className="size-4 text-[#f6c95a]" aria-hidden="true" />
@@ -115,6 +126,8 @@ export function SiteHeader() {
 
           <Link
             href={consultationAnchor}
+            data-track-event="Request Assessment Click"
+            data-track-location="header"
             className="hidden min-h-11 items-center justify-center gap-1.5 rounded-full bg-[#f6c95a] px-3 py-2 text-xs font-black text-[#06110d] shadow-[0_12px_28px_rgba(246,201,90,0.22)] transition hover:bg-[#ffdc70] focus-ring sm:inline-flex sm:px-4 sm:py-2.5 sm:text-sm"
           >
             <span className="sm:hidden">Request</span>
@@ -129,19 +142,26 @@ export function SiteHeader() {
         className="grid grid-cols-3 gap-2 border-t border-teal-300/15 px-3 py-1.5 text-center text-xs font-black text-emerald-50/90 lg:hidden"
       >
         <Link
-          href="/#services"
+          href="/#start-here"
+          data-track-event="Navigation Click"
+          data-track-label="Start Here"
+          data-track-location="mobile_header"
           className="rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
         >
-          Services
+          Start Here
         </Link>
         <Link
           href={phoneConsultationAnchor}
+          data-track-event="Schedule Phone Click"
+          data-track-location="mobile_header"
           className="rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
         >
           Schedule
         </Link>
         <Link
           href={consultationAnchor}
+          data-track-event="Request Assessment Click"
+          data-track-location="mobile_header"
           className="rounded-full bg-[#f6c95a] px-2 py-2.5 text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
         >
           Request
