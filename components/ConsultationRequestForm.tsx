@@ -3,6 +3,12 @@ import { jotformConsultationUrl } from "@/components/ConsultBranding";
 
 const jotformEmbedUrl = `${jotformConsultationUrl}?embed=1`;
 
+const nextSteps = [
+  "Peter reviews your request details, photos, property context, and stated concerns.",
+  "The right consultation path is identified: assessment, inventory, survey, planning, preservation, or second opinion.",
+  "Peter follows up about scheduling, next steps, and whether any additional photos or information would be helpful."
+];
+
 export function ConsultationRequestForm() {
   return (
     <div className="overflow-hidden rounded-2xl border border-teal-300/20 bg-[#07131b] shadow-[0_24px_64px_rgba(0,0,0,0.3)]">
@@ -33,10 +39,29 @@ export function ConsultationRequestForm() {
             <span>Peter provides independent guidance, not tree work sales.</span>
           </div>
         </div>
+
+        <div className="mt-5 rounded-2xl border border-[#f6c95a]/25 bg-[#050b12]/72 p-4">
+          <p className="text-sm font-black uppercase tracking-[0.14em] text-[#f6c95a]">
+            What happens after you submit?
+          </p>
+          <ol className="mt-3 space-y-2">
+            {nextSteps.map((step, index) => (
+              <li key={step} className="flex gap-3 text-sm leading-6 text-emerald-50/80">
+                <span className="grid size-6 shrink-0 place-items-center rounded-full bg-[#f6c95a] text-xs font-black text-[#06110d]">
+                  {index + 1}
+                </span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+
         <a
           href={jotformConsultationUrl}
           target="_blank"
           rel="noreferrer"
+          data-track-event="Open Jotform Click"
+          data-track-location="request_form_panel"
           className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-5 py-3 text-sm font-black uppercase tracking-[0.04em] text-[#06110d] shadow-[0_18px_38px_rgba(246,201,90,0.2)] transition hover:bg-[#ffdc70] focus-ring sm:w-auto"
         >
           Open Form in New Tab
