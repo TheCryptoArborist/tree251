@@ -20,14 +20,20 @@ function getTrackingProps(element: HTMLElement) {
   return props;
 }
 
+function sendEvent(eventName: string, props: Record<string, string> = {}) {
+  window.plausible?.(eventName, { props });
+  window.gtag?.("event", eventName, props);
+}
+
 function sendTrackingEvent(element: HTMLElement) {
   const eventName = element.dataset.trackEvent;
   if (!eventName) return;
 
-  const props = getTrackingProps(element);
+  sendEvent(eventName, getTrackingProps(element));
+}
 
-  window.plausible?.(eventName, { props });
-  window.gtag?.("event", eventName, props);
+function getText(element: Element | null) {
+  return element?.textContent?.replace(/\s+/g, " ").trim() ?? "";
 }
 
 export function AnalyticsEventsBridge() {
@@ -37,16 +43,36 @@ export function AnalyticsEventsBridge() {
       if (!(target instanceof Element)) return;
 
       const trackedElement = target.closest("[data-track-event]") as HTMLElement | null;
-      if (!trackedElement) return;
+      if (trackedElement) {
+        sendTrackingEvent(trackedElement);
+        return;
+      }
 
-      sendTrackingEvent(trackedElement);
+      const selfCheckButton = target.closest("#start-here button") as HTMLButtonElement | null;
+      if (selfCheckButton) {
+        sendEvent("Self Check Option Click", {
+          label: getText(selfCheckButton.querySelector("span span span")) || getText(selfCheckButton),
+          location: "start_here"
+        });
+      }
     };
 
     const handleToggle = (event: Event) => {
       const target = event.target;
       if (!(target instanceof HTMLDetailsElement) || !target.open) return;
 
-      sendTrackingEvent(target);
+      if (target.dataset.trackEvent) {
+        sendTrackingEvent(target);
+        return;
+      }
+
+      const section = target.closest("section") as HTMLElement | null;
+      const summary = target.querySelector("summary");
+
+      sendEvent("Accordion Open", {
+        label: getText(summary),
+        section: section?.id || "unknown"
+      });
     };
 
     document.addEventListener("click", handleClick);
