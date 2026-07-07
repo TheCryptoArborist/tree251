@@ -88,6 +88,8 @@ export function RequestConsultationButton({
   return (
     <a
       href={href}
+      data-track-event="Request Assessment Click"
+      data-track-location="site_cta"
       className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-6 py-3 text-center text-sm font-black uppercase tracking-[0.04em] text-[#06110d] shadow-[0_18px_38px_rgba(246,201,90,0.2)] transition hover:bg-[#ffdc70] focus-ring sm:w-auto ${className}`}
     >
       Request a Tree Assessment
@@ -108,6 +110,8 @@ export function VerifyIsaButton({
       href={href}
       target="_blank"
       rel="noreferrer"
+      data-track-event="Verify ISA Click"
+      data-track-location="site_cta"
       className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-teal-300/35 bg-[#07131b] px-5 py-3 text-center text-sm font-black text-white transition hover:border-[#f6c95a]/70 hover:bg-[#0b1f17] focus-ring sm:w-auto ${className}`}
     >
       <BadgeCheck className="size-4 text-[#f6c95a]" aria-hidden="true" />
@@ -132,6 +136,8 @@ export function SchedulePhoneButton({
       href={href}
       target={isExternal ? "_blank" : undefined}
       rel={isExternal ? "noreferrer" : undefined}
+      data-track-event="Schedule Phone Click"
+      data-track-location="site_cta"
       className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-teal-300/35 bg-[#07131b] px-5 py-3 text-center text-sm font-black uppercase tracking-[0.04em] text-white transition hover:border-[#f6c95a]/70 hover:bg-[#0b1f17] focus-ring sm:w-auto ${className}`}
     >
       <CalendarDays className="size-4 text-[#f6c95a]" aria-hidden="true" />
@@ -150,6 +156,8 @@ export function SubmitPhotosButton({
   return (
     <a
       href={href}
+      data-track-event="Submit Photos Click"
+      data-track-location="site_cta"
       className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-teal-300/35 bg-[#07131b] px-4 py-3 text-center text-sm font-bold text-white transition hover:border-[#f6c95a]/70 hover:bg-[#0b1f17] focus-ring sm:w-auto ${className}`}
     >
       <ImageUp className="size-4 text-[#f6c95a]" aria-hidden="true" />
