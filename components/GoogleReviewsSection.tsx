@@ -33,6 +33,8 @@ export function GoogleReviewsSection() {
               href={googleBusinessProfileUrl}
               target="_blank"
               rel="noreferrer"
+              data-track-event="Read Google Reviews Click"
+              data-track-location="google_reviews_section"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-teal-300/35 bg-[#07131b] px-5 py-3 text-sm font-black uppercase tracking-[0.04em] text-white transition hover:border-[#f6c95a]/70 hover:bg-[#0b1f17] focus-ring"
             >
               Read Reviews on Google
@@ -42,6 +44,8 @@ export function GoogleReviewsSection() {
               href={googleReviewUrl}
               target="_blank"
               rel="noreferrer"
+              data-track-event="Leave Google Review Click"
+              data-track-location="google_reviews_section"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-5 py-3 text-sm font-black uppercase tracking-[0.04em] text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
             >
               Leave a Google Review
