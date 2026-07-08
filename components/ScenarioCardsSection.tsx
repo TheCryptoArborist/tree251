@@ -1,4 +1,4 @@
-import { Building2, ClipboardCheck, Construction, Home, TreePine } from "lucide-react";
+import { Building2, ClipboardCheck, Construction, Home, Shovel, TreePine } from "lucide-react";
 import { consultationAnchor } from "@/components/ConsultBranding";
 
 const scenarios = [
@@ -19,6 +19,15 @@ const scenarios = [
     outcome:
       "A tree inventory or survey can organize removals, pruning, monitoring, preservation options, and maintenance cycles.",
     Icon: ClipboardCheck
+  },
+  {
+    title: "Plumbing lateral near a historic tree",
+    audience: "Contractor / historic property",
+    situation:
+      "A plumbing contractor replacing a lateral near a large historic tree needs to avoid unnecessary root damage or tree removal.",
+    outcome:
+      "ANSI A300-informed arborist guidance helps evaluate root-zone conflicts, routing concerns, preservation options, and what should be documented before excavation begins.",
+    Icon: Shovel
   },
   {
     title: "Construction near mature trees",
@@ -55,11 +64,11 @@ export function ScenarioCardsSection() {
             See where independent arborist guidance fits.
           </h2>
           <p className="mt-3 text-sm leading-6 text-emerald-50/80 sm:mt-4 sm:text-base sm:leading-7">
-            These examples help homeowners, boards, municipalities, property managers, and project teams recognize when a consultation can make the next decision clearer.
+            These examples help homeowners, contractors, boards, municipalities, property managers, and project teams recognize when a consultation can make the next decision clearer.
           </p>
         </div>
 
-        <div className="mt-8 grid gap-3 sm:mt-10 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-8 grid gap-3 sm:mt-10 sm:grid-cols-2 xl:grid-cols-5">
           {scenarios.map(({ title, audience, situation, outcome, Icon }) => (
             <article key={title} className="rounded-2xl border border-teal-300/20 bg-white/[0.06] p-4 shadow-[0_18px_42px_rgba(0,0,0,0.18)] backdrop-blur transition hover:border-[#f6c95a]/45 sm:p-5">
               <Icon className="size-8 text-[#f6c95a]" aria-hidden="true" />
