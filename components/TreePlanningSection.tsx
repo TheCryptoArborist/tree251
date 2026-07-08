@@ -45,6 +45,11 @@ const planningServices = [
       "Early arborist input helps identify preservation conflicts, root-zone concerns, access issues, grading impacts, and tree-protection needs before construction decisions are locked in."
   },
   {
+    title: "Utility and excavation root protection",
+    detail:
+      "ANSI A300-informed arborist guidance for plumbing laterals, sewer lines, drainage, irrigation, trenching, boring, and underground utility work near mature or historic trees."
+  },
+  {
     title: "Tree preservation plans",
     detail:
       "A preservation plan helps define which trees are worth protecting, what protection measures are needed, and how work should be staged around valuable trees."
@@ -73,12 +78,13 @@ export function TreePlanningSection() {
             More than one tree? You need a plan.
           </p>
           <h2 className="mt-3 text-2xl font-black leading-tight text-white sm:text-4xl">
-            Tree inventories, surveys, and preservation planning for larger properties.
+            Tree inventories, surveys, excavation, and preservation planning for larger properties.
           </h2>
           <p className="mt-3 text-sm leading-6 text-emerald-50/80 sm:mt-4 sm:text-base sm:leading-7">
             Peter works with homeowners, municipalities, HOAs, country clubs, businesses, campuses,
-            and project teams that need more than a one-tree opinion. A tree inventory or survey gives
-            you a practical view of what you have, what needs attention, and what can be planned over time.
+            contractors, and project teams that need more than a one-tree opinion. A tree inventory,
+            survey, or root-protection consultation gives you a practical view of what you have,
+            what needs attention, and what can be planned before damage happens.
           </p>
         </div>
 
