@@ -59,6 +59,16 @@ const concernOptions: ConcernOption[] = [
     }
   },
   {
+    id: "review",
+    label: "Permit, Tree Commission, or DIY work question",
+    helper: "You need help understanding whether proposed tree work should be reviewed, documented, or handled by qualified help.",
+    recommendation: {
+      title: "Permit / Tree Commission Guidance",
+      text: "Peter does not issue permits or speak on behalf of any municipality. He provides independent arborist guidance to help property owners understand tree-related questions, documentation needs, work feasibility, and when municipal review or qualified contractor involvement may be needed.",
+      action: "Request permit guidance"
+    }
+  },
+  {
     id: "inventory",
     label: "I manage multiple trees",
     helper: "HOA, business, municipality, country club, campus, or large property.",
@@ -94,7 +104,7 @@ const concernOptions: ConcernOption[] = [
     helper: "You need help choosing the right consultation path.",
     recommendation: {
       title: "General Arborist Consultation",
-      text: "Start with a consultation. Peter can help determine whether you need a risk assessment, inventory, survey, preservation review, root-protection guidance, or second opinion.",
+      text: "Start with a consultation. Peter can help determine whether you need a risk assessment, inventory, survey, preservation review, root-protection guidance, permit guidance, or second opinion.",
       action: "Start with a consultation"
     }
   }
@@ -111,6 +121,8 @@ const photoGuide = [
 const questionPrompts = [
   "Is this tree a risk or just something to monitor?",
   "Should I get a second opinion before approving removal?",
+  "Do I need permit or Tree Commission guidance?",
+  "Is this work appropriate for me to do myself?",
   "Do I need a tree inventory or survey for this property?",
   "Could construction or trenching damage this tree?",
   "Can a utility line be routed around important roots?",
@@ -118,7 +130,7 @@ const questionPrompts = [
 ];
 
 function getRecommendation(selectedIds: string[]): Recommendation {
-  const priority = ["utility", "construction", "inventory", "storm", "defect", "quote", "not-sure"];
+  const priority = ["review", "utility", "construction", "inventory", "storm", "defect", "quote", "not-sure"];
   const match = priority.find((id) => selectedIds.includes(id));
   return (
     concernOptions.find((option) => option.id === match)?.recommendation ??
