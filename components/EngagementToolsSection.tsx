@@ -79,12 +79,22 @@ const concernOptions: ConcernOption[] = [
     }
   },
   {
+    id: "utility",
+    label: "Utility, plumbing, or trenching near roots",
+    helper: "Sewer lateral, drainage, irrigation, boring, trenching, or underground utility work near a mature tree.",
+    recommendation: {
+      title: "Utility and Excavation Root Protection",
+      text: "ANSI A300-informed arborist guidance can help property owners and contractors evaluate root-zone conflicts, preservation options, and routing concerns before excavation begins.",
+      action: "Request root protection guidance"
+    }
+  },
+  {
     id: "not-sure",
     label: "I am not sure what I need",
     helper: "You need help choosing the right consultation path.",
     recommendation: {
       title: "General Arborist Consultation",
-      text: "Start with a consultation. Peter can help determine whether you need a risk assessment, inventory, survey, preservation review, or second opinion.",
+      text: "Start with a consultation. Peter can help determine whether you need a risk assessment, inventory, survey, preservation review, root-protection guidance, or second opinion.",
       action: "Start with a consultation"
     }
   }
@@ -93,7 +103,7 @@ const concernOptions: ConcernOption[] = [
 const photoGuide = [
   "Whole tree from a distance, including the surrounding area.",
   "Base of the trunk and root flare where the tree meets the ground.",
-  "Close-up of the specific concern, such as cracks, cavities, decay, broken limbs, or soil movement.",
+  "Close-up of the specific concern, such as cracks, cavities, decay, broken limbs, soil movement, exposed roots, or excavation conflict.",
   "Canopy and major limbs from more than one angle when possible.",
   "Targets nearby: house, driveway, road, sidewalk, play area, vehicles, utilities, or structures."
 ];
@@ -102,12 +112,13 @@ const questionPrompts = [
   "Is this tree a risk or just something to monitor?",
   "Should I get a second opinion before approving removal?",
   "Do I need a tree inventory or survey for this property?",
-  "Could construction damage this tree?",
+  "Could construction or trenching damage this tree?",
+  "Can a utility line be routed around important roots?",
   "What photos should I send before a consultation?"
 ];
 
 function getRecommendation(selectedIds: string[]): Recommendation {
-  const priority = ["construction", "inventory", "storm", "defect", "quote", "not-sure"];
+  const priority = ["utility", "construction", "inventory", "storm", "defect", "quote", "not-sure"];
   const match = priority.find((id) => selectedIds.includes(id));
   return (
     concernOptions.find((option) => option.id === match)?.recommendation ??
@@ -191,6 +202,8 @@ export function EngagementToolsSection() {
               <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <a
                   href={consultationAnchor}
+                  data-track-event="Request Assessment Click"
+                  data-track-location="self_check_recommendation"
                   className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-5 py-3 text-sm font-black uppercase tracking-[0.04em] text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
                 >
                   {recommendation.action}
@@ -198,6 +211,8 @@ export function EngagementToolsSection() {
                 </a>
                 <a
                   href={phoneConsultationAnchor}
+                  data-track-event="Schedule Phone Click"
+                  data-track-location="self_check_recommendation"
                   className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-teal-300/30 bg-[#07131b] px-5 py-3 text-sm font-black uppercase tracking-[0.04em] text-white transition hover:border-[#f6c95a]/70 hover:bg-[#0b1f17] focus-ring"
                 >
                   Schedule a quick call
@@ -228,6 +243,8 @@ export function EngagementToolsSection() {
               </ul>
               <a
                 href={consultationAnchor}
+                data-track-event="Submit Photos Click"
+                data-track-location="photo_guide"
                 className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-5 py-3 text-sm font-black uppercase tracking-[0.04em] text-[#06110d] transition hover:bg-[#ffdc70] focus-ring sm:w-auto"
               >
                 Submit photos with request
@@ -256,6 +273,8 @@ export function EngagementToolsSection() {
               </div>
               <a
                 href={consultationAnchor}
+                data-track-event="Ask Arborist Click"
+                data-track-location="ask_arborist_panel"
                 className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-teal-300/30 bg-[#07131b] px-5 py-3 text-sm font-black uppercase tracking-[0.04em] text-white transition hover:border-[#f6c95a]/70 hover:bg-[#0b1f17] focus-ring sm:w-auto"
               >
                 Ask through the request form
