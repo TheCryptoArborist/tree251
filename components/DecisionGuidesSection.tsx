@@ -26,6 +26,14 @@ const constructionPlanner = [
   "Tree protection expectations that can be communicated to contractors or project teams."
 ];
 
+const utilityPlanner = [
+  "Plumbing laterals, sewer lines, drainage, irrigation, boring, trenching, or underground utilities near mature trees.",
+  "Whether the existing trench can be reused or the new line can be rerouted around important roots.",
+  "Whether hand digging, air excavation, boring, or adjusted routing may reduce root impacts.",
+  "Whether proposed root cutting could create decline, instability, or a future risk concern.",
+  "What should be documented before excavation begins."
+];
+
 const seasonalTiming = [
   {
     season: "Before hurricane season",
@@ -36,8 +44,8 @@ const seasonalTiming = [
     text: "Document damage, separate cleanup from risk, and avoid rushed removal or pruning decisions."
   },
   {
-    season: "Before construction",
-    text: "Plan tree preservation before access routes, grading, trenching, and staging areas are set."
+    season: "Before construction or excavation",
+    text: "Plan preservation and root protection before access routes, grading, trenching, boring, and staging areas are set."
   },
   {
     season: "Before annual budgeting",
@@ -57,14 +65,14 @@ export function DecisionGuidesSection() {
             Decision guides
           </p>
           <h2 className="mt-3 text-2xl font-black leading-tight text-white sm:text-4xl">
-            Practical checklists for storm damage, inventories, and construction planning.
+            Practical checklists for storm damage, inventories, excavation, and construction planning.
           </h2>
           <p className="mt-3 text-sm leading-6 text-emerald-50/80 sm:mt-4 sm:text-base sm:leading-7">
-            These guides help visitors understand when to request an independent assessment, when a broader inventory makes sense, and why tree preservation should be addressed before construction begins.
+            These guides help visitors understand when to request an independent assessment, when a broader inventory makes sense, and why tree preservation and root protection should be addressed before construction or excavation begins.
           </p>
         </div>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-3">
+        <div className="mt-8 grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
           <details className="group rounded-2xl border border-teal-300/20 bg-white/[0.06] p-4 shadow-[0_20px_48px_rgba(0,0,0,0.2)] backdrop-blur open:border-[#f6c95a]/45 sm:p-5" open>
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 [&::-webkit-details-marker]:hidden">
               <span className="flex items-center gap-3">
@@ -83,6 +91,8 @@ export function DecisionGuidesSection() {
             </ul>
             <a
               href={consultationAnchor}
+              data-track-event="Request Assessment Click"
+              data-track-location="storm_decision_guide"
               className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-5 py-3 text-sm font-black uppercase tracking-[0.04em] text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
             >
               Request storm guidance
@@ -111,9 +121,41 @@ export function DecisionGuidesSection() {
             </ul>
             <a
               href={consultationAnchor}
+              data-track-event="Request Assessment Click"
+              data-track-location="inventory_decision_guide"
               className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-5 py-3 text-sm font-black uppercase tracking-[0.04em] text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
             >
               Ask about an inventory
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </a>
+          </details>
+
+          <details className="group rounded-2xl border border-teal-300/20 bg-white/[0.06] p-4 shadow-[0_20px_48px_rgba(0,0,0,0.2)] backdrop-blur open:border-[#f6c95a]/45 sm:p-5">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 [&::-webkit-details-marker]:hidden">
+              <span className="flex items-center gap-3">
+                <Construction className="size-8 shrink-0 text-[#f6c95a]" aria-hidden="true" />
+                <span className="text-xl font-black text-white">Utility and excavation root protection</span>
+              </span>
+              <span className="grid size-7 shrink-0 place-items-center rounded-full border border-[#f6c95a]/45 text-[#f6c95a] transition group-open:rotate-45">+</span>
+            </summary>
+            <p className="mt-4 border-t border-teal-300/15 pt-4 text-sm leading-6 text-emerald-50/78">
+              Call before trenching, boring, or utility replacement may affect mature tree roots.
+            </p>
+            <ul className="mt-4 space-y-3">
+              {utilityPlanner.map((item) => (
+                <li key={item} className="flex gap-3 text-sm leading-6 text-emerald-50/80">
+                  <Construction className="mt-0.5 size-5 shrink-0 text-[#f6c95a]" aria-hidden="true" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <a
+              href={consultationAnchor}
+              data-track-event="Request Assessment Click"
+              data-track-location="utility_excavation_decision_guide"
+              className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-5 py-3 text-sm font-black uppercase tracking-[0.04em] text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
+            >
+              Request root protection guidance
               <ArrowRight className="size-4" aria-hidden="true" />
             </a>
           </details>
@@ -139,6 +181,8 @@ export function DecisionGuidesSection() {
             </ul>
             <a
               href={consultationAnchor}
+              data-track-event="Request Assessment Click"
+              data-track-location="construction_decision_guide"
               className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-5 py-3 text-sm font-black uppercase tracking-[0.04em] text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
             >
               Request planning guidance
@@ -162,6 +206,8 @@ export function DecisionGuidesSection() {
           </div>
           <a
             href={phoneConsultationAnchor}
+            data-track-event="Schedule Phone Click"
+            data-track-location="timing_decision_guide"
             className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-teal-300/30 bg-[#07131b] px-5 py-3 text-sm font-black uppercase tracking-[0.04em] text-white transition hover:border-[#f6c95a]/70 hover:bg-[#0b1f17] focus-ring sm:w-auto"
           >
             Talk through timing
