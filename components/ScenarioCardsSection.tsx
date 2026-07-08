@@ -1,4 +1,4 @@
-import { Building2, ClipboardCheck, Construction, Home, Shovel, TreePine } from "lucide-react";
+import { Building2, ClipboardCheck, Construction, FileQuestion, Home, Shovel, TreePine } from "lucide-react";
 import { consultationAnchor } from "@/components/ConsultBranding";
 
 const scenarios = [
@@ -10,6 +10,15 @@ const scenarios = [
     outcome:
       "Peter helps clarify whether removal appears necessary, whether pruning or monitoring may be reasonable, and what questions to ask the tree service.",
     Icon: Home
+  },
+  {
+    title: "Tree-work process guidance",
+    audience: "Property owner / municipal question",
+    situation:
+      "A property owner wants to prune, remove, or alter a tree and is not sure whether municipal review, Tree Commission questions, historic-area concerns, or professional documentation may be involved.",
+    outcome:
+      "Peter does not issue permits or speak on behalf of any municipality. He provides independent arborist guidance to help clarify tree-related questions, documentation needs, work feasibility, and when municipal review or qualified contractor involvement may be needed.",
+    Icon: FileQuestion
   },
   {
     title: "HOA tree inventory",
@@ -68,7 +77,7 @@ export function ScenarioCardsSection() {
           </p>
         </div>
 
-        <div className="mt-8 grid gap-3 sm:mt-10 sm:grid-cols-2 xl:grid-cols-5">
+        <div className="mt-8 grid gap-3 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3">
           {scenarios.map(({ title, audience, situation, outcome, Icon }) => (
             <article key={title} className="rounded-2xl border border-teal-300/20 bg-white/[0.06] p-4 shadow-[0_18px_42px_rgba(0,0,0,0.18)] backdrop-blur transition hover:border-[#f6c95a]/45 sm:p-5">
               <Icon className="size-8 text-[#f6c95a]" aria-hidden="true" />
