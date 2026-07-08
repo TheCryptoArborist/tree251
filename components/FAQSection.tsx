@@ -15,6 +15,11 @@ const faqs = [
       "As early as possible. Tree preservation is much easier before access routes, grading, trenching, staging areas, and construction limits are finalized."
   },
   {
+    question: "Can you help with plumbing or utility work near trees?",
+    answer:
+      "Yes. Peter does not design plumbing systems, but he can provide arborist guidance when trenching, boring, drainage, sewer, irrigation, or utility work may affect mature tree roots. This helps property owners and contractors understand root impacts, preservation options, and risk concerns before excavation begins."
+  },
+  {
     question: "Do you work with HOAs, municipalities, and commercial properties?",
     answer:
       "Yes. Peter works with homeowners, HOAs, municipalities, country clubs, businesses, campuses, property managers, and project teams across the Gulf Coast."
