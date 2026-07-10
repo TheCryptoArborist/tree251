@@ -18,6 +18,7 @@ import {
 const desktopNavItems = [
   { href: "/#start-here", label: "Start Here" },
   { href: "/#services", label: "Services" },
+  { href: "/real-estate", label: "Real Estate" },
   { href: "/#tree-planning", label: "Planning" },
   { href: "/#about", label: "About" },
   { href: "/#google-reviews", label: "Reviews" }
@@ -87,7 +88,7 @@ export function SiteHeader() {
 
         <nav
           aria-label="Primary navigation"
-          className="hidden items-center gap-1 text-sm font-bold text-emerald-50/80 lg:flex"
+          className="hidden items-center gap-0.5 text-sm font-bold text-emerald-50/80 lg:flex xl:gap-1"
         >
           {desktopNavItems.map((item) => (
             <Link
@@ -96,7 +97,7 @@ export function SiteHeader() {
               data-track-event="Navigation Click"
               data-track-label={item.label}
               data-track-location="desktop_header"
-              className="rounded-full px-3 py-2 transition hover:bg-white/10 hover:text-white focus-ring"
+              className="rounded-full px-2.5 py-2 transition hover:bg-white/10 hover:text-white focus-ring xl:px-3"
             >
               {item.label}
             </Link>
@@ -105,7 +106,7 @@ export function SiteHeader() {
             href={phoneConsultationAnchor}
             data-track-event="Schedule Phone Click"
             data-track-location="desktop_header"
-            className="rounded-full px-3 py-2 transition hover:bg-white/10 hover:text-white focus-ring"
+            className="rounded-full px-2.5 py-2 transition hover:bg-white/10 hover:text-white focus-ring xl:px-3"
           >
             Schedule
           </Link>
@@ -118,7 +119,7 @@ export function SiteHeader() {
             rel="noreferrer"
             data-track-event="Verify ISA Click"
             data-track-location="header"
-            className="hidden items-center justify-center gap-2 rounded-full border border-teal-300/25 bg-white/[0.04] px-3.5 py-2.5 text-sm font-black text-white transition hover:border-[#f6c95a]/70 hover:bg-white/10 focus-ring xl:inline-flex"
+            className="hidden items-center justify-center gap-2 rounded-full border border-teal-300/25 bg-white/[0.04] px-3.5 py-2.5 text-sm font-black text-white transition hover:border-[#f6c95a]/70 hover:bg-white/10 focus-ring 2xl:inline-flex"
           >
             <BadgeCheck className="size-4 text-[#f6c95a]" aria-hidden="true" />
             Verify ISA
@@ -139,22 +140,31 @@ export function SiteHeader() {
 
       <nav
         aria-label="Mobile quick actions"
-        className="grid grid-cols-3 gap-2 border-t border-teal-300/15 px-3 py-1.5 text-center text-xs font-black text-emerald-50/90 lg:hidden"
+        className="grid grid-cols-4 gap-1.5 border-t border-teal-300/15 px-2.5 py-1.5 text-center text-[11px] font-black text-emerald-50/90 lg:hidden"
       >
         <Link
           href="/#start-here"
           data-track-event="Navigation Click"
           data-track-label="Start Here"
           data-track-location="mobile_header"
-          className="rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
+          className="rounded-full border border-white/10 px-1.5 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
         >
           Start Here
+        </Link>
+        <Link
+          href="/real-estate"
+          data-track-event="Navigation Click"
+          data-track-label="Real Estate"
+          data-track-location="mobile_header"
+          className="rounded-full border border-white/10 px-1.5 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
+        >
+          Real Estate
         </Link>
         <Link
           href={phoneConsultationAnchor}
           data-track-event="Schedule Phone Click"
           data-track-location="mobile_header"
-          className="rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
+          className="rounded-full border border-white/10 px-1.5 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
         >
           Schedule
         </Link>
@@ -162,7 +172,7 @@ export function SiteHeader() {
           href={consultationAnchor}
           data-track-event="Request Assessment Click"
           data-track-location="mobile_header"
-          className="rounded-full bg-[#f6c95a] px-2 py-2.5 text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
+          className="rounded-full bg-[#f6c95a] px-1.5 py-2.5 text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
         >
           Request
         </Link>
