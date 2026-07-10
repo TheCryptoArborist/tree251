@@ -32,6 +32,7 @@ import { EngagementToolsSection } from "@/components/EngagementToolsSection";
 import { FAQSection } from "@/components/FAQSection";
 import { GoogleReviewsSection } from "@/components/GoogleReviewsSection";
 import { PeterHeadshot } from "@/components/PeterHeadshot";
+import { RealEstateHomeSection } from "@/components/RealEstateHomeSection";
 import { SocialLinksFooter } from "@/components/SocialLinksFooter";
 import { TreePlanningSection } from "@/components/TreePlanningSection";
 import { WhatYouReceiveSection } from "@/components/WhatYouReceiveSection";
@@ -124,6 +125,8 @@ export function TheArboristHomePage() {
       </section>
 
       <AudienceTrustSection />
+
+      <RealEstateHomeSection />
 
       <EngagementToolsSection />
 
