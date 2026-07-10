@@ -13,6 +13,7 @@ const socialProfileUrls = [
   "https://www.instagram.com/ptarborist",
   "https://www.linkedin.com/in/ptarborist",
   "http://www.youtube.com/@TheArboristPT",
+  "https://www.tiktok.com/@arborist63",
   "https://maps.app.goo.gl/cShPmYshpMQvxFTT6?g_st=ic"
 ];
 
