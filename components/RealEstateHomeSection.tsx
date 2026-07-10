@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, Building2, ClipboardCheck, Home, SearchCheck } from "lucide-react";
+import { ArrowRight, ClipboardCheck, Home, SearchCheck } from "lucide-react";
 import { consultationAnchor } from "@/components/ConsultBranding";
 
 const audiences = [
-  { label: "Homebuyers", Icon: Home },
-  { label: "Real estate agents", Icon: SearchCheck },
-  { label: "Home sellers", Icon: ClipboardCheck },
-  { label: "Property investors", Icon: Building2 }
+  { label: "Buying", detail: "Identify risk, maintenance priorities, and likely costs before closing.", Icon: Home },
+  { label: "Selling", detail: "Address concerns early and present mature trees as managed assets.", Icon: ClipboardCheck },
+  { label: "Representing a client", detail: "Bring independent tree guidance into due diligence and negotiations.", Icon: SearchCheck }
 ] as const;
 
 export function RealEstateHomeSection() {
@@ -15,7 +14,7 @@ export function RealEstateHomeSection() {
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_15%_20%,rgba(246,201,90,0.14),transparent_24rem),radial-gradient(circle_at_86%_72%,rgba(18,192,168,0.13),transparent_24rem),linear-gradient(135deg,#050b12_0%,#07131b_52%,#0b1f17_100%)]" />
       <div className="tree-ring-texture absolute inset-y-0 right-0 -z-10 w-1/2 rotate-180 opacity-30" />
 
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:px-8">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-center lg:px-8">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-[#f6c95a] sm:text-sm">
             Real estate tree due diligence
@@ -24,7 +23,7 @@ export function RealEstateHomeSection() {
             Buying or selling property? Do not overlook the trees.
           </h2>
           <p className="mt-4 max-w-3xl text-sm leading-6 text-emerald-50/80 sm:text-base sm:leading-7">
-            Mature trees may add significant value, shade, and character to a property, but they may also carry deferred maintenance, root damage, structural defects, storm history, or future costs. An independent arborist assessment helps identify those concerns before closing.
+            A home inspection evaluates the house. Tree due diligence evaluates the trees. Choose the path that fits your role and understand risk, maintenance, preservation opportunities, and future costs before closing.
           </p>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -48,12 +47,14 @@ export function RealEstateHomeSection() {
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
-          {audiences.map(({ label, Icon }) => (
-            <div key={label} className="rounded-2xl border border-teal-300/20 bg-white/[0.06] p-4 shadow-[0_18px_42px_rgba(0,0,0,0.18)] backdrop-blur sm:p-5">
+        <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+          {audiences.map(({ label, detail, Icon }) => (
+            <Link href={`/real-estate#${label === "Buying" ? "buyers" : label === "Selling" ? "sellers" : "professionals"}`} key={label} className="group rounded-2xl border border-teal-300/20 bg-white/[0.06] p-4 shadow-[0_18px_42px_rgba(0,0,0,0.18)] backdrop-blur transition hover:border-[#f6c95a]/55 hover:bg-white/[0.09] focus-ring sm:p-5">
               <Icon className="size-7 text-[#f6c95a]" aria-hidden="true" />
-              <p className="mt-4 text-base font-black text-white">{label}</p>
-            </div>
+              <p className="mt-3 text-base font-black text-white">I’m {label.toLowerCase()}</p>
+              <p className="mt-2 text-sm leading-6 text-emerald-50/75">{detail}</p>
+              <span className="mt-3 inline-flex items-center gap-1 text-xs font-black uppercase tracking-[0.08em] text-[#f6c95a]">Choose this path <ArrowRight className="size-3.5 transition group-hover:translate-x-1" /></span>
+            </Link>
           ))}
         </div>
       </div>
