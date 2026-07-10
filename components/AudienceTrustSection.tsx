@@ -1,4 +1,5 @@
 import { DecisionGuidesSection } from "@/components/DecisionGuidesSection";
+import { RealEstateHomeSection } from "@/components/RealEstateHomeSection";
 
 const audienceGroups = [
   {
@@ -43,6 +44,7 @@ export function AudienceTrustSection() {
       </section>
 
       <DecisionGuidesSection />
+      <RealEstateHomeSection />
     </>
   );
 }
