@@ -14,6 +14,7 @@ import {
   Linkedin,
   Youtube
 } from "lucide-react";
+import type { SVGProps } from "react";
 
 const desktopNavItems = [
   { href: "/#start-here", label: "Start Here" },
@@ -26,11 +27,20 @@ const desktopNavItems = [
 
 const headerSocialLinks = socialLinks.filter((link) => link.label !== "Google");
 
-const socialIcons: Record<string, typeof Facebook> = {
+function TikTokIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M15.6 3c.3 1.8 1.4 3.3 3.1 4.1.7.3 1.5.5 2.3.5v3.6c-1.9 0-3.7-.6-5.3-1.7v7.1a5.6 5.6 0 1 1-4.8-5.5v3.7a2 2 0 1 0 1.2 1.8V3h3.5Z" />
+    </svg>
+  );
+}
+
+const socialIcons: Record<string, React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>> = {
   Facebook,
   Instagram,
   LinkedIn: Linkedin,
-  YouTube: Youtube
+  YouTube: Youtube,
+  TikTok: TikTokIcon
 };
 
 export function SiteHeader() {
@@ -44,7 +54,7 @@ export function SiteHeader() {
 
           <nav
             aria-label="Social media profiles"
-            className="grid grid-cols-4 gap-1.5 lg:flex lg:items-center lg:justify-end"
+            className="grid grid-cols-5 gap-1.5 lg:flex lg:items-center lg:justify-end"
           >
             {headerSocialLinks.map((link) => {
               const Icon = socialIcons[link.label];
@@ -62,7 +72,7 @@ export function SiteHeader() {
                   data-track-location="top_social_bar"
                   className="flex min-h-9 items-center justify-center rounded-full border border-[#f6c95a]/50 bg-[#f6c95a] px-2 py-2 text-[#06110d] shadow-[0_10px_22px_rgba(246,201,90,0.16)] transition hover:bg-[#ffdc70] focus-ring sm:px-3 lg:min-h-0 lg:border-teal-300/20 lg:bg-white/[0.04] lg:px-3.5 lg:py-1.5 lg:text-emerald-50/90 lg:shadow-none lg:hover:border-[#f6c95a]/70 lg:hover:bg-white/10 lg:hover:text-white"
                 >
-                  <Icon className="size-4 sm:size-5" aria-hidden="true" />
+                  <Icon className="size-4 sm:size-5" aria-hidden />
                 </a>
               );
             })}
@@ -152,15 +162,6 @@ export function SiteHeader() {
           Start Here
         </Link>
         <Link
-          href="/real-estate"
-          data-track-event="Navigation Click"
-          data-track-label="Real Estate"
-          data-track-location="mobile_header"
-          className="rounded-full border border-white/10 px-1.5 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
-        >
-          Real Estate
-        </Link>
-        <Link
           href={phoneConsultationAnchor}
           data-track-event="Schedule Phone Click"
           data-track-location="mobile_header"
@@ -175,6 +176,15 @@ export function SiteHeader() {
           className="rounded-full bg-[#f6c95a] px-1.5 py-2.5 text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
         >
           Request
+        </Link>
+        <Link
+          href="/real-estate"
+          data-track-event="Navigation Click"
+          data-track-label="Real Estate"
+          data-track-location="mobile_header"
+          className="rounded-full border border-white/10 px-1.5 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
+        >
+          Real Estate
         </Link>
       </nav>
     </header>
