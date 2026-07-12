@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -36,13 +37,13 @@ const timeline = [
   ["1974", "Mobile and Pau establish their sister-city relationship."],
   ["1979", "Hurricane Frederic strikes the Alabama Gulf Coast and causes severe damage across Mobile, including extensive tree loss."],
   ["April 26, 1981", "L'Arbre de Pau is dedicated in Mobile as a living symbol of friendship and recovery."],
-  ["Present day", "The original live oak remains at the monument near Fort Condé and continues to serve as a living memorial."]
+  ["Present day", "The original live oak remains at the monument near Fort CondÃ© and continues to serve as a living memorial."]
 ] as const;
 
 const facts = [
-  "The name L'Arbre de Pau translates from French as “The Tree of Pau.”",
+  "The name L'Arbre de Pau translates from French as â€œThe Tree of Pau.â€",
   "Mobile was founded as part of French colonial Louisiana, making a gift from Pau especially meaningful within the city's French heritage.",
-  "Fort Condé recalls the French fortification that protected colonial Mobile; the present reconstructed fort opened during the United States Bicentennial era.",
+  "Fort CondÃ© recalls the French fortification that protected colonial Mobile; the present reconstructed fort opened during the United States Bicentennial era.",
   "Hurricane Frederic made landfall in September 1979 and was one of the defining natural disasters in modern Mobile history.",
   "Living memorials require continuing care. Unlike stone monuments, trees change, age, recover from storms, and depend on stewardship."
 ] as const;
@@ -50,11 +51,11 @@ const facts = [
 const faqs = [
   {
     question: "What does L'Arbre de Pau mean?",
-    answer: "It means “The Tree of Pau” in French, referring to Pau, France, Mobile's sister city."
+    answer: "It means â€œThe Tree of Pauâ€ in French, referring to Pau, France, Mobile's sister city."
   },
   {
     question: "Where is L'Arbre de Pau?",
-    answer: "The monument and live oak are in downtown Mobile near Fort Condé, within the city's historic core."
+    answer: "The monument and live oak are in downtown Mobile near Fort CondÃ©, within the city's historic core."
   },
   {
     question: "Why was the tree planted?",
@@ -76,15 +77,15 @@ const faqs = [
 
 const sources = [
   {
-    label: "National Hurricane Center — Hurricane Frederic historical records",
+    label: "National Hurricane Center â€” Hurricane Frederic historical records",
     href: "https://www.nhc.noaa.gov/data/tcr/"
   },
   {
-    label: "History Museum of Mobile — Fort Condé and colonial Mobile",
+    label: "History Museum of Mobile â€” Fort CondÃ© and colonial Mobile",
     href: "https://www.historymuseumofmobile.com/"
   },
   {
-    label: "The Arborist — field verification and modern documentation of the original live oak",
+    label: "The Arborist â€” field verification and modern documentation of the original live oak",
     href: "https://tree251.xyz"
   }
 ] as const;
@@ -101,13 +102,13 @@ export default function LArbreDePauPage() {
             Historic Trees of Mobile
           </Link>
           <p className="mt-8 text-xs font-black uppercase tracking-[0.18em] text-[#f6c95a] sm:text-sm">
-            Living monument • Downtown Mobile
+            Living monument â€¢ Downtown Mobile
           </p>
           <h1 className="mt-4 max-w-5xl text-4xl font-black leading-[0.98] text-white sm:text-6xl lg:text-7xl">
             L&apos;Arbre de Pau
           </h1>
           <p className="mt-6 max-w-3xl text-base leading-7 text-emerald-50/84 sm:text-xl sm:leading-8">
-            The original live oak dedicated on April 26, 1981, stands near Fort Condé as a living symbol of friendship between Mobile and Pau, France, and of Mobile&apos;s recovery after Hurricane Frederic.
+            The original live oak dedicated on April 26, 1981, stands near Fort CondÃ© as a living symbol of friendship between Mobile and Pau, France, and of Mobile&apos;s recovery after Hurricane Frederic.
           </p>
 
           <div className="mt-8 grid gap-4 md:grid-cols-2">
@@ -171,7 +172,7 @@ export default function LArbreDePauPage() {
             <Flag className="size-9 text-[#f6c95a]" aria-hidden="true" />
             <h2 className="mt-4 text-3xl font-black text-white">About the monument</h2>
             <p className="mt-4 text-base leading-7 text-emerald-50/80">
-              L&apos;Arbre de Pau translates as <strong className="text-white">“The Tree of Pau.”</strong> The dedication linked a living tree to international friendship and to Mobile&apos;s recovery after a catastrophic hurricane. The choice of a tree made the memorial dynamic: it would grow with the city rather than simply mark a moment in stone.
+              L&apos;Arbre de Pau translates as <strong className="text-white">â€œThe Tree of Pau.â€</strong> The dedication linked a living tree to international friendship and to Mobile&apos;s recovery after a catastrophic hurricane. The choice of a tree made the memorial dynamic: it would grow with the city rather than simply mark a moment in stone.
             </p>
             <div className="mt-6 rounded-2xl border border-[#f6c95a]/25 bg-[#050b12]/72 p-5">
               <p className="text-sm font-black uppercase tracking-[0.14em] text-[#f6c95a]">Monument inscription</p>
@@ -185,7 +186,7 @@ export default function LArbreDePauPage() {
             <MapPin className="size-9 text-[#f6c95a]" aria-hidden="true" />
             <h2 className="mt-4 text-3xl font-black text-white">The tree today</h2>
             <p className="mt-4 text-base leading-7 text-emerald-50/80">
-              The original 1981 live oak remains at the monument near Fort Condé in downtown Mobile. Its setting connects the dedication to the city&apos;s French colonial history and to a public landscape visited by residents, students, historians, and travelers.
+              The original 1981 live oak remains at the monument near Fort CondÃ© in downtown Mobile. Its setting connects the dedication to the city&apos;s French colonial history and to a public landscape visited by residents, students, historians, and travelers.
             </p>
             <p className="mt-4 text-sm leading-6 text-emerald-50/72">
               Field verification by The Arborist identifies the tree as a live oak and confirms that the original planting remains present.
@@ -215,7 +216,7 @@ export default function LArbreDePauPage() {
                 Mobile and Pau formed a sister-city relationship in 1974. Such partnerships are intended to encourage cultural exchange, civic friendship, and mutual understanding. Presenting a tree after Hurricane Frederic gave that relationship a permanent, visible expression in Mobile&apos;s landscape.
               </p>
               <p className="mt-4 text-base leading-7 text-emerald-50/80">
-                The gift also resonates with Mobile&apos;s French heritage. Mobile began as a French colonial settlement, and Fort Condé is one of the city&apos;s most recognizable reminders of that history.
+                The gift also resonates with Mobile&apos;s French heritage. Mobile began as a French colonial settlement, and Fort CondÃ© is one of the city&apos;s most recognizable reminders of that history.
               </p>
             </article>
           </div>
@@ -329,3 +330,4 @@ export default function LArbreDePauPage() {
     </div>
   );
 }
+
