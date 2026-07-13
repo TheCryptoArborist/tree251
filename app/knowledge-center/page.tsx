@@ -44,12 +44,13 @@ export default function KnowledgeCenterPage() {
               <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">Open reference <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
             </Link>
 
-            <a href="https://library.municode.com/al/mobile/codes/code_of_ordinances?nodeId=COMOALVOII_CH65TRPRMA" target="_blank" rel="noreferrer" className="rounded-2xl border border-teal-300/20 bg-white/[0.05] p-6 transition hover:border-teal-300/50 hover:bg-white/[0.08] focus-ring">
+            <Link href="/knowledge-center/laws-regulations/mobile-chapter-65" className="group rounded-2xl border border-teal-300/20 bg-white/[0.05] p-6 transition hover:border-teal-300/50 hover:bg-white/[0.08] focus-ring">
               <Landmark className="size-9 text-[#f6c95a]" aria-hidden="true" />
               <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Official code</p>
               <h2 className="mt-2 text-2xl font-black">Mobile Chapter 65</h2>
-              <p className="mt-3 text-sm leading-6 text-emerald-50/78">Tree Protection and Management. Open the official Municode publication.</p>
-            </a>
+              <p className="mt-3 text-sm leading-6 text-emerald-50/78">Tree Protection and Management: permits, heritage trees, public trees, construction protection, contractors, tree abuse, and enforcement.</p>
+              <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">Open reference <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
+            </Link>
 
             <a href="https://alison.legislature.state.al.us/files/pdf/SearchableInstruments/2015RS/Acts/2015-116.pdf" target="_blank" rel="noreferrer" className="rounded-2xl border border-teal-300/20 bg-white/[0.05] p-6 transition hover:border-teal-300/50 hover:bg-white/[0.08] focus-ring">
               <BookOpen className="size-9 text-[#f6c95a]" aria-hidden="true" />
