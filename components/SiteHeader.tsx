@@ -21,6 +21,7 @@ const desktopNavItems = [
   { href: "/#services", label: "Services" },
   { href: "/real-estate", label: "Real Estate" },
   { href: "/historic-trees", label: "Historic Trees" },
+  { href: "/knowledge-center", label: "Library" },
   { href: "/#tree-planning", label: "Planning" },
   { href: "/#about", label: "About" },
   { href: "/#google-reviews", label: "Reviews" }
@@ -151,14 +152,14 @@ export function SiteHeader() {
 
       <nav
         aria-label="Mobile quick actions"
-        className="grid grid-cols-5 gap-1 border-t border-teal-300/15 px-2 py-1.5 text-center text-[10px] font-black text-emerald-50/90 lg:hidden"
+        className="flex gap-1 overflow-x-auto border-t border-teal-300/15 px-2 py-1.5 text-center text-[10px] font-black text-emerald-50/90 lg:hidden"
       >
         <Link
           href="/#start-here"
           data-track-event="Navigation Click"
           data-track-label="Start Here"
           data-track-location="mobile_header"
-          className="rounded-full border border-white/10 px-1 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
+          className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
         >
           Start Here
         </Link>
@@ -166,7 +167,7 @@ export function SiteHeader() {
           href={phoneConsultationAnchor}
           data-track-event="Schedule Phone Click"
           data-track-location="mobile_header"
-          className="rounded-full border border-white/10 px-1 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
+          className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
         >
           Schedule
         </Link>
@@ -174,7 +175,7 @@ export function SiteHeader() {
           href={consultationAnchor}
           data-track-event="Request Assessment Click"
           data-track-location="mobile_header"
-          className="rounded-full bg-[#f6c95a] px-1 py-2.5 text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
+          className="min-w-[5.2rem] rounded-full bg-[#f6c95a] px-2 py-2.5 text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
         >
           Request
         </Link>
@@ -183,7 +184,7 @@ export function SiteHeader() {
           data-track-event="Navigation Click"
           data-track-label="Real Estate"
           data-track-location="mobile_header"
-          className="rounded-full border border-white/10 px-1 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
+          className="min-w-[5.8rem] rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
         >
           Real Estate
         </Link>
@@ -192,9 +193,18 @@ export function SiteHeader() {
           data-track-event="Navigation Click"
           data-track-label="Historic Trees"
           data-track-location="mobile_header"
-          className="rounded-full border border-white/10 px-1 py-2.5 leading-tight transition hover:bg-white/10 hover:text-white focus-ring"
+          className="min-w-[6.4rem] rounded-full border border-white/10 px-2 py-2.5 leading-tight transition hover:bg-white/10 hover:text-white focus-ring"
         >
           Historic Trees
+        </Link>
+        <Link
+          href="/knowledge-center"
+          data-track-event="Navigation Click"
+          data-track-label="Library"
+          data-track-location="mobile_header"
+          className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
+        >
+          Library
         </Link>
       </nav>
     </header>
