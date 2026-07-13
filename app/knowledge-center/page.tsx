@@ -3,9 +3,9 @@ import Link from "next/link";
 import { ArrowRight, BookOpen, ExternalLink, Landmark, Scale, TreePine } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Mobile Tree Knowledge Center",
+  title: "Gulf Coast Tree Knowledge Center",
   description:
-    "A source-linked library of Mobile, Alabama tree laws, property-maintenance provisions, historic trees, and public educational resources from The Arborist.",
+    "A source-linked library of Gulf Coast tree laws, property-maintenance provisions, historic trees, and public educational resources from The Arborist.",
   alternates: { canonical: "/knowledge-center" }
 };
 
@@ -26,9 +26,9 @@ export default function KnowledgeCenterPage() {
         <div className="tree-ring-texture absolute inset-y-0 right-0 -z-10 w-1/2 opacity-30" />
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-[#f6c95a] sm:text-sm">Source-linked public education</p>
-          <h1 className="mt-4 max-w-5xl text-4xl font-black leading-[0.98] sm:text-6xl">Mobile Tree Knowledge Center</h1>
+          <h1 className="mt-4 max-w-5xl text-4xl font-black leading-[0.98] sm:text-6xl">Gulf Coast Tree Knowledge Center</h1>
           <p className="mt-6 max-w-3xl text-base leading-7 text-emerald-50/84 sm:text-xl sm:leading-8">
-            Plain-language orientation to Mobile&apos;s tree laws, official resources, historic trees, and urban-forestry topics - with direct links to the controlling sources.
+            Plain-language orientation to Gulf Coast tree laws, official resources, historic trees, and urban-forestry topics - with direct links to the controlling sources.
           </p>
         </div>
       </section>
@@ -58,6 +58,14 @@ export default function KnowledgeCenterPage() {
               <h2 className="mt-2 text-2xl font-black">Alabama Act 2015-116</h2>
               <p className="mt-3 text-sm leading-6 text-emerald-50/78">Open the official enrolled act concerning tree protection in a Class 2 municipality.</p>
             </a>
+
+            <Link href="/knowledge-center/laws-regulations/orange-beach-article-16" className="group rounded-2xl border border-[#f6c95a]/30 bg-white/[0.05] p-6 transition hover:border-[#f6c95a]/65 hover:bg-white/[0.08] focus-ring">
+              <TreePine className="size-9 text-[#f6c95a]" aria-hidden="true" />
+              <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Orange Beach, Alabama</p>
+              <h2 className="mt-2 text-2xl font-black">Article 16: Tree Protection and Landscaping</h2>
+              <p className="mt-3 text-sm leading-6 text-emerald-50/78">Protected and heritage trees, landscaping, tree surveys, construction protection, removal permits, replacement, and enforcement.</p>
+              <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">Open reference <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
+            </Link>
           </div>
         </div>
       </section>
