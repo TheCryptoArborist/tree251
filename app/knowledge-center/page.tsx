@@ -1,22 +1,40 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, BookOpen, ExternalLink, Landmark, Scale, TreePine } from "lucide-react";
+import { ArrowRight, BookOpen, ExternalLink, Landmark, MapPin, Scale, TreePine } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Gulf Coast Tree Knowledge Center",
   description:
-    "A source-linked library of Gulf Coast tree laws, property-maintenance provisions, historic trees, and public educational resources from The Arborist.",
+    "A jurisdiction-organized, source-linked library of Alabama and Gulf Coast municipal tree laws, property-maintenance provisions, and official resources.",
   alternates: { canonical: "/knowledge-center" }
 };
 
-const officialResources = [
+const mobileResources = [
   ["Chapter 65 - Tree Protection and Management", "https://library.municode.com/al/mobile/codes/code_of_ordinances?nodeId=COMOALVOII_CH65TRPRMA"],
-  ["Alabama Act 2015-116", "https://alison.legislature.state.al.us/files/pdf/SearchableInstruments/2015RS/Acts/2015-116.pdf"],
-  ["City tree trimming and removal permits", "https://www.cityofmobile.gov/public-works/tree-trimming-removal-permits/"],
-  ["City Urban Forestry tree resources", "https://www.cityofmobile.gov/public-works/environment/trees/"],
+  ["Tree trimming and removal permits", "https://www.cityofmobile.gov/public-works/tree-trimming-removal-permits/"],
+  ["Urban Forestry tree resources", "https://www.cityofmobile.gov/public-works/environment/trees/"],
   ["Urban Forestry FAQs", "https://www.cityofmobile.gov/public-works/urban-forestry-department/urban-forestry-faqs/"],
   ["Mobile Tree Commission", "https://www.buildmobile.org/tree-commission/"]
 ] as const;
+
+const orangeBeachResources = [
+  ["Orange Beach Code of Ordinances", "https://library.municode.com/al/orange_beach/codes/code_of_ordinances"],
+  ["Orange Beach Planning & Zoning", "https://www.orangebeachal.gov/409/Planning-Zoning"]
+] as const;
+
+function ResourceLink({ label, href }: { label: string; href: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="flex min-h-16 items-center justify-between gap-3 rounded-2xl border border-teal-300/20 bg-white/[0.05] p-4 text-sm font-black transition hover:border-[#f6c95a]/60 hover:bg-white/[0.08] focus-ring"
+    >
+      <span>{label}</span>
+      <ExternalLink className="size-4 shrink-0 text-[#f6c95a]" aria-hidden="true" />
+    </a>
+  );
+}
 
 export default function KnowledgeCenterPage() {
   return (
@@ -25,65 +43,116 @@ export default function KnowledgeCenterPage() {
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_15%_18%,rgba(246,201,90,0.16),transparent_24rem),radial-gradient(circle_at_84%_75%,rgba(18,192,168,0.14),transparent_26rem),linear-gradient(135deg,#050b12_0%,#07131b_52%,#0b1f17_100%)]" />
         <div className="tree-ring-texture absolute inset-y-0 right-0 -z-10 w-1/2 opacity-30" />
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#f6c95a] sm:text-sm">Source-linked public education</p>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#f6c95a] sm:text-sm">Organized by jurisdiction</p>
           <h1 className="mt-4 max-w-5xl text-4xl font-black leading-[0.98] sm:text-6xl">Gulf Coast Tree Knowledge Center</h1>
           <p className="mt-6 max-w-3xl text-base leading-7 text-emerald-50/84 sm:text-xl sm:leading-8">
-            Plain-language orientation to Gulf Coast tree laws, official resources, historic trees, and urban-forestry topics - with direct links to the controlling sources.
+            Select the state or municipality whose tree laws and official resources you need. Each jurisdiction is grouped separately to prevent confusion between state law and local requirements.
           </p>
+          <nav aria-label="Knowledge Center jurisdictions" className="mt-7 flex flex-wrap gap-2">
+            <a href="#alabama" className="rounded-full border border-[#f6c95a]/35 bg-white/[0.05] px-4 py-2 text-sm font-black transition hover:border-[#f6c95a]/70 focus-ring">State of Alabama</a>
+            <a href="#mobile" className="rounded-full border border-teal-300/25 bg-white/[0.05] px-4 py-2 text-sm font-black transition hover:border-[#f6c95a]/70 focus-ring">Mobile</a>
+            <a href="#orange-beach" className="rounded-full border border-teal-300/25 bg-white/[0.05] px-4 py-2 text-sm font-black transition hover:border-[#f6c95a]/70 focus-ring">Orange Beach</a>
+          </nav>
         </div>
       </section>
 
-      <section className="py-12 sm:py-16">
+      <section id="alabama" className="scroll-mt-40 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          <div className="flex items-start gap-4">
+            <div className="grid size-12 shrink-0 place-items-center rounded-2xl border border-[#f6c95a]/35 bg-[#f6c95a]/10">
+              <Landmark className="size-7 text-[#f6c95a]" aria-hidden="true" />
+            </div>
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Statewide law</p>
+              <h2 className="mt-1 text-3xl font-black sm:text-4xl">State of Alabama</h2>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-emerald-50/72">State legislation and codified provisions that are separate from municipal ordinances.</p>
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <Link href="/knowledge-center/laws-regulations/alabama-act-2015-116" className="group rounded-2xl border border-[#f6c95a]/35 bg-white/[0.06] p-6 transition hover:border-[#f6c95a]/70 hover:bg-white/[0.09] focus-ring">
+              <BookOpen className="size-9 text-[#f6c95a]" aria-hidden="true" />
+              <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Act 2015-116 · HB207</p>
+              <h3 className="mt-2 text-2xl font-black">Tree Commission in a Class 2 Municipality</h3>
+              <p className="mt-3 text-sm leading-6 text-emerald-50/78">Clean, section-by-section enacted text with struck-through prior language omitted.</p>
+              <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">Open state reference <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section id="mobile" className="scroll-mt-40 border-y border-teal-300/15 bg-[#07131b] py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-start gap-4">
+            <div className="grid size-12 shrink-0 place-items-center rounded-2xl border border-teal-300/25 bg-teal-300/10">
+              <MapPin className="size-7 text-[#f6c95a]" aria-hidden="true" />
+            </div>
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Municipal documents</p>
+              <h2 className="mt-1 text-3xl font-black sm:text-4xl">Mobile, Alabama</h2>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-emerald-50/72">City codes, hazard-tree provisions, permits, Tree Commission information, and Urban Forestry resources.</p>
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-5 md:grid-cols-2">
             <Link href="/knowledge-center/laws-regulations/mobile-property-maintenance-code" className="group rounded-2xl border border-[#f6c95a]/35 bg-white/[0.06] p-6 transition hover:border-[#f6c95a]/70 hover:bg-white/[0.09] focus-ring">
               <Scale className="size-9 text-[#f6c95a]" aria-hidden="true" />
-              <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Laws &amp; Regulations</p>
-              <h2 className="mt-2 text-2xl font-black">Property Maintenance Code: Trees</h2>
-              <p className="mt-3 text-sm leading-6 text-emerald-50/78">Definitions, hazard-tree and hazard-limb provisions, and related nuisance-abatement obligations in Chapter 52.</p>
-              <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">Open reference <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
+              <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Chapter 52</p>
+              <h3 className="mt-2 text-2xl font-black">Property Maintenance Code: Trees</h3>
+              <p className="mt-3 text-sm leading-6 text-emerald-50/78">Definitions, hazard-tree and hazard-limb provisions, and related nuisance-abatement obligations.</p>
+              <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">Open Mobile reference <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
             </Link>
 
             <Link href="/knowledge-center/laws-regulations/mobile-chapter-65" className="group rounded-2xl border border-teal-300/20 bg-white/[0.05] p-6 transition hover:border-teal-300/50 hover:bg-white/[0.08] focus-ring">
               <Landmark className="size-9 text-[#f6c95a]" aria-hidden="true" />
-              <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Official code</p>
-              <h2 className="mt-2 text-2xl font-black">Mobile Chapter 65</h2>
-              <p className="mt-3 text-sm leading-6 text-emerald-50/78">Tree Protection and Management: permits, heritage trees, public trees, construction protection, contractors, tree abuse, and enforcement.</p>
-              <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">Open reference <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
+              <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Chapter 65</p>
+              <h3 className="mt-2 text-2xl font-black">Tree Protection and Management</h3>
+              <p className="mt-3 text-sm leading-6 text-emerald-50/78">Permits, heritage trees, public trees, construction protection, contractors, tree abuse, and enforcement.</p>
+              <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">Open Mobile reference <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
             </Link>
+          </div>
 
-            <Link href="/knowledge-center/laws-regulations/alabama-act-2015-116" className="group rounded-2xl border border-teal-300/20 bg-white/[0.05] p-6 transition hover:border-teal-300/50 hover:bg-white/[0.08] focus-ring">
-              <BookOpen className="size-9 text-[#f6c95a]" aria-hidden="true" />
-              <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">State law</p>
-              <h2 className="mt-2 text-2xl font-black">Alabama Act 2015-116</h2>
-              <p className="mt-3 text-sm leading-6 text-emerald-50/78">Read a clean, section-by-section listing of the enacted text with struck-through prior language omitted.</p>
-              <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">Open reference <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
-            </Link>
-
-            <Link href="/knowledge-center/laws-regulations/orange-beach-article-16" className="group rounded-2xl border border-[#f6c95a]/30 bg-white/[0.05] p-6 transition hover:border-[#f6c95a]/65 hover:bg-white/[0.08] focus-ring">
-              <TreePine className="size-9 text-[#f6c95a]" aria-hidden="true" />
-              <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Orange Beach, Alabama</p>
-              <h2 className="mt-2 text-2xl font-black">Article 16: Tree Protection and Landscaping</h2>
-              <p className="mt-3 text-sm leading-6 text-emerald-50/78">Protected and heritage trees, landscaping, tree surveys, construction protection, removal permits, replacement, and enforcement.</p>
-              <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">Open reference <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
-            </Link>
+          <div className="mt-10">
+            <h3 className="text-xl font-black">Official Mobile resources</h3>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {mobileResources.map(([label, href]) => <ResourceLink key={href} label={label} href={href} />)}
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="border-y border-teal-300/15 bg-[#07131b] py-12 sm:py-16">
+      <section id="orange-beach" className="scroll-mt-40 py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <TreePine className="size-9 text-[#f6c95a]" aria-hidden="true" />
-          <h2 className="mt-4 text-3xl font-black sm:text-4xl">Official Mobile tree resources</h2>
-          <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {officialResources.map(([label, href]) => (
-              <a key={href} href={href} target="_blank" rel="noreferrer" className="flex min-h-16 items-center justify-between gap-3 rounded-2xl border border-teal-300/20 bg-white/[0.05] p-4 text-sm font-black transition hover:border-[#f6c95a]/60 hover:bg-white/[0.08] focus-ring">
-                <span>{label}</span><ExternalLink className="size-4 shrink-0 text-[#f6c95a]" aria-hidden="true" />
-              </a>
-            ))}
+          <div className="flex items-start gap-4">
+            <div className="grid size-12 shrink-0 place-items-center rounded-2xl border border-[#f6c95a]/35 bg-[#f6c95a]/10">
+              <TreePine className="size-7 text-[#f6c95a]" aria-hidden="true" />
+            </div>
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Municipal documents</p>
+              <h2 className="mt-1 text-3xl font-black sm:text-4xl">Orange Beach, Alabama</h2>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-emerald-50/72">Tree protection, landscaping, surveys, construction protection, removal permits, and replacement requirements.</p>
+            </div>
           </div>
-          <p className="mt-8 rounded-2xl border border-[#f6c95a]/25 bg-[#050b12]/75 p-5 text-sm leading-6 text-emerald-50/76">
-            The Arborist does not issue citations or permits and does not speak on behalf of the City of Mobile or any municipality. This library is educational, is not legal advice, and should be checked against current official sources.
+
+          <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <Link href="/knowledge-center/laws-regulations/orange-beach-article-16" className="group rounded-2xl border border-[#f6c95a]/30 bg-white/[0.05] p-6 transition hover:border-[#f6c95a]/65 hover:bg-white/[0.08] focus-ring">
+              <TreePine className="size-9 text-[#f6c95a]" aria-hidden="true" />
+              <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Article 16</p>
+              <h3 className="mt-2 text-2xl font-black">Tree Protection and Landscaping</h3>
+              <p className="mt-3 text-sm leading-6 text-emerald-50/78">Protected and heritage trees, landscape plans, tree surveys, construction protection, permits, replacement, and enforcement.</p>
+              <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">Open Orange Beach reference <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
+            </Link>
+          </div>
+
+          <div className="mt-10">
+            <h3 className="text-xl font-black">Official Orange Beach resources</h3>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {orangeBeachResources.map(([label, href]) => <ResourceLink key={href} label={label} href={href} />)}
+            </div>
+          </div>
+
+          <p className="mt-10 rounded-2xl border border-[#f6c95a]/25 bg-[#07131b] p-5 text-sm leading-6 text-emerald-50/76">
+            The Arborist does not issue citations or permits and does not speak on behalf of the State of Alabama, the City of Mobile, the City of Orange Beach, or any municipality. This library is educational, is not legal advice, and should be checked against current official sources.
           </p>
         </div>
       </section>
