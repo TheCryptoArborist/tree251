@@ -49,7 +49,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-teal-300/20 bg-[#050b12]/95 text-white shadow-[0_14px_34px_rgba(0,0,0,0.34)] backdrop-blur-xl">
       <div className="border-b border-[#f6c95a]/30 bg-[#07131b]">
-        <div className="mx-auto max-w-7xl px-3 py-2 sm:px-6 lg:flex lg:items-center lg:justify-between lg:gap-4 lg:px-8 lg:py-1.5">
+        <div className="mx-auto max-w-[1480px] px-3 py-2 sm:px-6 lg:flex lg:items-center lg:justify-between lg:gap-4 lg:px-8 lg:py-1.5">
           <p className="mb-2 text-center text-[11px] font-black uppercase tracking-[0.18em] text-[#f6c95a] lg:mb-0 lg:text-left">
             Follow The Arborist
           </p>
@@ -83,9 +83,9 @@ export function SiteHeader() {
       </div>
 
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-3 py-2 sm:px-6 sm:py-3 lg:px-8">
-        <Link href="/" className="flex min-w-0 items-center gap-2.5 focus-ring sm:gap-3">
-          <ArboristLogo showText={false} compact />
-          <span className="min-w-0">
+        <Link href="/" className="flex shrink-0 items-start gap-3 focus-ring sm:gap-3.5">
+          <ArboristLogo showText={false} compact className="shrink-0" />
+          <span className="min-w-0 pt-0.5">
             <span className="block text-base font-black uppercase leading-none tracking-[0.07em] text-white sm:text-xl">
               The Arborist
             </span>
