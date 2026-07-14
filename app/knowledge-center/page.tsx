@@ -52,12 +52,13 @@ export default function KnowledgeCenterPage() {
               <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">Open reference <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
             </Link>
 
-            <a href="https://alison.legislature.state.al.us/files/pdf/SearchableInstruments/2015RS/Acts/2015-116.pdf" target="_blank" rel="noreferrer" className="rounded-2xl border border-teal-300/20 bg-white/[0.05] p-6 transition hover:border-teal-300/50 hover:bg-white/[0.08] focus-ring">
+            <Link href="/knowledge-center/laws-regulations/alabama-act-2015-116" className="group rounded-2xl border border-teal-300/20 bg-white/[0.05] p-6 transition hover:border-teal-300/50 hover:bg-white/[0.08] focus-ring">
               <BookOpen className="size-9 text-[#f6c95a]" aria-hidden="true" />
               <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">State law</p>
               <h2 className="mt-2 text-2xl font-black">Alabama Act 2015-116</h2>
-              <p className="mt-3 text-sm leading-6 text-emerald-50/78">Open the official enrolled act concerning tree protection in a Class 2 municipality.</p>
-            </a>
+              <p className="mt-3 text-sm leading-6 text-emerald-50/78">Read a clean, section-by-section listing of the enacted text with struck-through prior language omitted.</p>
+              <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">Open reference <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
+            </Link>
 
             <Link href="/knowledge-center/laws-regulations/orange-beach-article-16" className="group rounded-2xl border border-[#f6c95a]/30 bg-white/[0.05] p-6 transition hover:border-[#f6c95a]/65 hover:bg-white/[0.08] focus-ring">
               <TreePine className="size-9 text-[#f6c95a]" aria-hidden="true" />
