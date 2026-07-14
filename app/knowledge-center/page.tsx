@@ -22,6 +22,11 @@ const orangeBeachResources = [
   ["Orange Beach Planning & Zoning", "https://www.orangebeachal.gov/409/Planning-Zoning"]
 ] as const;
 
+const dauphinIslandResources = [
+  ["Town ordinances", "https://www.townofdauphinisland.org/town-ordinances"],
+  ["Ordinance 87C PDF", "https://233b9393-d606-4527-bb55-be83050c5c72.filesusr.com/ugd/222868_f2eceba6d269496db76a9c4c1923a65f.pdf"]
+] as const;
+
 function ResourceLink({ label, href }: { label: string; href: string }) {
   return (
     <a
@@ -52,6 +57,7 @@ export default function KnowledgeCenterPage() {
             <a href="#alabama" className="rounded-full border border-[#f6c95a]/35 bg-white/[0.05] px-4 py-2 text-sm font-black transition hover:border-[#f6c95a]/70 focus-ring">State of Alabama</a>
             <a href="#mobile" className="rounded-full border border-teal-300/25 bg-white/[0.05] px-4 py-2 text-sm font-black transition hover:border-[#f6c95a]/70 focus-ring">Mobile</a>
             <a href="#orange-beach" className="rounded-full border border-teal-300/25 bg-white/[0.05] px-4 py-2 text-sm font-black transition hover:border-[#f6c95a]/70 focus-ring">Orange Beach</a>
+            <a href="#dauphin-island" className="rounded-full border border-teal-300/25 bg-white/[0.05] px-4 py-2 text-sm font-black transition hover:border-[#f6c95a]/70 focus-ring">Dauphin Island</a>
           </nav>
         </div>
       </section>
@@ -151,8 +157,41 @@ export default function KnowledgeCenterPage() {
             </div>
           </div>
 
-          <p className="mt-10 rounded-2xl border border-[#f6c95a]/25 bg-[#07131b] p-5 text-sm leading-6 text-emerald-50/76">
-            The Arborist does not issue citations or permits and does not speak on behalf of the State of Alabama, the City of Mobile, the City of Orange Beach, or any municipality. This library is educational, is not legal advice, and should be checked against current official sources.
+        </div>
+      </section>
+
+      <section id="dauphin-island" className="scroll-mt-40 border-y border-teal-300/15 bg-[#07131b] py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-start gap-4">
+            <div className="grid size-12 shrink-0 place-items-center rounded-2xl border border-teal-300/25 bg-teal-300/10">
+              <TreePine className="size-7 text-[#f6c95a]" aria-hidden="true" />
+            </div>
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Municipal documents</p>
+              <h2 className="mt-1 text-3xl font-black sm:text-4xl">Dauphin Island, Alabama</h2>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-emerald-50/72">Protected and heritage trees, construction impact zones, permits, mitigation fees, prohibited acts, exemptions, enforcement, and the Town Tree Committee.</p>
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <Link href="/knowledge-center/laws-regulations/dauphin-island-ordinance-87c" className="group rounded-2xl border border-[#f6c95a]/30 bg-white/[0.05] p-6 transition hover:border-[#f6c95a]/65 hover:bg-white/[0.08] focus-ring">
+              <TreePine className="size-9 text-[#f6c95a]" aria-hidden="true" />
+              <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Ordinance 87C · Effective April 28, 2026</p>
+              <h3 className="mt-2 text-2xl font-black">Trees and Vegetation Protection</h3>
+              <p className="mt-3 text-sm leading-6 text-emerald-50/78">A section-by-section guide covering protected trees, construction, permits, mitigation, prohibited acts, exemptions, enforcement, and the Tree Committee.</p>
+              <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">Open Dauphin Island reference <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
+            </Link>
+          </div>
+
+          <div className="mt-10">
+            <h3 className="text-xl font-black">Official Dauphin Island resources</h3>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {dauphinIslandResources.map(([label, href]) => <ResourceLink key={href} label={label} href={href} />)}
+            </div>
+          </div>
+
+          <p className="mt-10 rounded-2xl border border-[#f6c95a]/25 bg-[#050b12]/75 p-5 text-sm leading-6 text-emerald-50/76">
+            The Arborist does not issue citations or permits and does not speak on behalf of the State of Alabama, the City of Mobile, the City of Orange Beach, the Town of Dauphin Island, or any municipality. This library is educational, is not legal advice, and should be checked against current official sources.
           </p>
         </div>
       </section>
