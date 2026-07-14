@@ -32,7 +32,7 @@ export function ConsultationRequestForm() {
           </div>
           <div className="flex gap-3 rounded-xl border border-teal-300/20 bg-white/[0.06] p-3">
             <ImageUp className="mt-0.5 size-5 shrink-0 text-[#f6c95a]" aria-hidden="true" />
-            <span>Attach photos or site context inside the form.</span>
+            <span>Choose photos from your device or use your phone camera inside the form.</span>
           </div>
           <div className="flex gap-3 rounded-xl border border-teal-300/20 bg-white/[0.06] p-3">
             <ShieldCheck className="mt-0.5 size-5 shrink-0 text-[#f6c95a]" aria-hidden="true" />
@@ -64,7 +64,7 @@ export function ConsultationRequestForm() {
           data-track-location="request_form_panel"
           className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-5 py-3 text-sm font-black uppercase tracking-[0.04em] text-[#06110d] shadow-[0_18px_38px_rgba(246,201,90,0.2)] transition hover:bg-[#ffdc70] focus-ring sm:w-auto"
         >
-          Open Form in New Tab
+          Open Form / Add Photos
           <ExternalLink className="size-4" aria-hidden="true" />
         </a>
       </div>
@@ -74,7 +74,7 @@ export function ConsultationRequestForm() {
         title="Consult Request with Peter Toler, ISA Certified Consulting Arborist"
         className="h-[820px] w-full bg-white sm:h-[1120px]"
         loading="lazy"
-        allow="clipboard-write"
+        allow="camera; clipboard-write"
       />
     </div>
   );
