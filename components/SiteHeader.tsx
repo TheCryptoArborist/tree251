@@ -3,12 +3,12 @@ import {
   ArboristLogo,
   consultationAnchor,
   isaCredentialUrl,
-  phoneConsultationAnchor,
   socialLinks
 } from "@/components/ConsultBranding";
 import {
   ArrowRight,
   BadgeCheck,
+  ChevronDown,
   Facebook,
   Instagram,
   Linkedin,
@@ -20,11 +20,14 @@ const desktopNavItems = [
   { href: "/#start-here", label: "Start Here" },
   { href: "/#services", label: "Services" },
   { href: "/real-estate", label: "Real Estate" },
+  { href: "/#google-reviews", label: "Reviews" },
+  { href: "/#about", label: "About" }
+];
+
+const resourceNavItems = [
   { href: "/historic-trees", label: "Historic Trees" },
-  { href: "/knowledge-center", label: "Library" },
-  { href: "/#tree-planning", label: "Planning" },
-  { href: "/#about", label: "About" },
-  { href: "/#google-reviews", label: "Reviews" }
+  { href: "/knowledge-center", label: "Tree Codes" },
+  { href: "/#tree-planning", label: "Tree Planning" }
 ];
 
 const headerSocialLinks = socialLinks.filter((link) => link.label !== "Google");
@@ -114,14 +117,31 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <Link
-            href={phoneConsultationAnchor}
-            data-track-event="Schedule Phone Click"
-            data-track-location="desktop_header"
-            className="rounded-full px-2.5 py-2 transition hover:bg-white/10 hover:text-white focus-ring xl:px-3"
-          >
-            Schedule
-          </Link>
+
+          <div className="group relative">
+            <button
+              type="button"
+              aria-haspopup="true"
+              className="inline-flex items-center gap-1 rounded-full px-2.5 py-2 transition hover:bg-white/10 hover:text-white focus-ring xl:px-3"
+            >
+              Resources
+              <ChevronDown className="size-3.5 transition group-hover:rotate-180 group-focus-within:rotate-180" aria-hidden="true" />
+            </button>
+            <div className="invisible absolute right-0 top-full z-50 mt-2 w-52 translate-y-1 rounded-2xl border border-teal-300/20 bg-[#07131b] p-2 opacity-0 shadow-[0_18px_44px_rgba(0,0,0,0.45)] transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+              {resourceNavItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  data-track-event="Navigation Click"
+                  data-track-label={item.label}
+                  data-track-location="desktop_resources_menu"
+                  className="block rounded-xl px-3 py-2.5 text-sm text-emerald-50/85 transition hover:bg-white/10 hover:text-white focus-ring"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
@@ -164,20 +184,13 @@ export function SiteHeader() {
           Start Here
         </Link>
         <Link
-          href={phoneConsultationAnchor}
-          data-track-event="Schedule Phone Click"
+          href="/#services"
+          data-track-event="Navigation Click"
+          data-track-label="Services"
           data-track-location="mobile_header"
           className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
         >
-          Schedule
-        </Link>
-        <Link
-          href={consultationAnchor}
-          data-track-event="Request Assessment Click"
-          data-track-location="mobile_header"
-          className="min-w-[5.2rem] rounded-full bg-[#f6c95a] px-2 py-2.5 text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
-        >
-          Request
+          Services
         </Link>
         <Link
           href="/real-estate"
@@ -187,6 +200,15 @@ export function SiteHeader() {
           className="min-w-[5.8rem] rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
         >
           Real Estate
+        </Link>
+        <Link
+          href="/#google-reviews"
+          data-track-event="Navigation Click"
+          data-track-label="Reviews"
+          data-track-location="mobile_header"
+          className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
+        >
+          Reviews
         </Link>
         <Link
           href="/historic-trees"
@@ -200,11 +222,28 @@ export function SiteHeader() {
         <Link
           href="/knowledge-center"
           data-track-event="Navigation Click"
-          data-track-label="Library"
+          data-track-label="Tree Codes"
           data-track-location="mobile_header"
           className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
         >
-          Library
+          Tree Codes
+        </Link>
+        <Link
+          href="/#tree-planning"
+          data-track-event="Navigation Click"
+          data-track-label="Tree Planning"
+          data-track-location="mobile_header"
+          className="min-w-[6rem] rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
+        >
+          Tree Planning
+        </Link>
+        <Link
+          href={consultationAnchor}
+          data-track-event="Request Assessment Click"
+          data-track-location="mobile_header"
+          className="min-w-[5.2rem] rounded-full bg-[#f6c95a] px-2 py-2.5 text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
+        >
+          Request
         </Link>
       </nav>
     </header>
