@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { ExternalLink, Info, TreePine } from "lucide-react";
+import { ArrowRight, ExternalLink, Info, TreePine } from "lucide-react";
+import Link from "next/link";
 
 const calculatorUrl =
   "https://www.davey.com/residential-tree-services/tree-benefit-calculator/";
@@ -39,53 +40,46 @@ export default function TreeBenefitCalculatorPage() {
             Tree Benefit Calculator
           </h1>
           <p className="mt-5 max-w-3xl text-base leading-7 text-emerald-50/82 sm:text-xl sm:leading-8">
-            Use this third-party calculator to explore estimated environmental and economic benefits associated with an individual tree.
+            Explore estimated environmental and economic benefits associated with an individual tree using a third-party calculator provided by The Davey Tree Expert Company.
           </p>
-          <a
-            href={calculatorUrl}
-            target="_blank"
-            rel="noreferrer"
-            data-track-event="External Resource Click"
-            data-track-label="Davey Tree Benefit Calculator"
-            data-track-location="tree_benefit_calculator_hero"
-            className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-6 py-3 text-sm font-black uppercase tracking-[0.04em] text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
-          >
-            Open calculator on Davey.com
-            <ExternalLink className="size-4" aria-hidden="true" />
-          </a>
         </div>
       </section>
 
       <section className="py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl border border-teal-300/20 bg-white/[0.04] p-3 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:p-5">
-            <div className="mb-4 flex items-start gap-3 rounded-2xl border border-[#f6c95a]/25 bg-[#f6c95a]/[0.07] p-4 text-sm leading-6 text-emerald-50/85">
-              <Info className="mt-0.5 size-5 shrink-0 text-[#f6c95a]" aria-hidden="true" />
-              <p>
-                This calculator is provided by The Davey Tree Expert Company and may not permit display inside another website. If the embedded view does not load, use the button above or the fallback link below.
-              </p>
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-teal-300/20 bg-white/[0.04] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:p-10">
+            <div className="flex items-start gap-4">
+              <div className="grid size-12 shrink-0 place-items-center rounded-2xl border border-[#f6c95a]/35 bg-[#f6c95a]/10 text-[#f6c95a]">
+                <ExternalLink className="size-6" aria-hidden="true" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-black sm:text-3xl">
+                  Open the calculator on Davey.com
+                </h2>
+                <p className="mt-3 leading-7 text-emerald-50/78">
+                  Davey does not allow this calculator to display reliably inside another website. The button below opens the official calculator in a new browser tab so every feature can work as intended.
+                </p>
+              </div>
             </div>
 
-            <iframe
-              src={calculatorUrl}
-              title="Davey Tree Benefit Calculator"
-              loading="lazy"
-              className="h-[950px] w-full rounded-2xl border border-teal-300/20 bg-white"
-            />
+            <a
+              href={calculatorUrl}
+              target="_blank"
+              rel="noreferrer"
+              data-track-event="External Resource Click"
+              data-track-label="Davey Tree Benefit Calculator"
+              data-track-location="tree_benefit_calculator_main"
+              className="mt-8 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-6 py-3 text-sm font-black uppercase tracking-[0.04em] text-[#06110d] transition hover:bg-[#ffdc70] focus-ring sm:w-auto"
+            >
+              Launch Tree Benefit Calculator
+              <ExternalLink className="size-4" aria-hidden="true" />
+            </a>
 
-            <div className="mt-5 text-center">
-              <a
-                href={calculatorUrl}
-                target="_blank"
-                rel="noreferrer"
-                data-track-event="External Resource Click"
-                data-track-label="Davey Tree Benefit Calculator Fallback"
-                data-track-location="tree_benefit_calculator_fallback"
-                className="inline-flex items-center gap-2 text-sm font-black text-[#f6c95a] hover:text-[#ffdc70] focus-ring"
-              >
-                Calculator not visible? Open it directly on Davey.com.
-                <ExternalLink className="size-4" aria-hidden="true" />
-              </a>
+            <div className="mt-8 flex items-start gap-3 rounded-2xl border border-teal-300/20 bg-[#07131b] p-4 text-sm leading-6 text-emerald-50/80">
+              <Info className="mt-0.5 size-5 shrink-0 text-[#f6c95a]" aria-hidden="true" />
+              <p>
+                This is an independent third-party resource. The Arborist is not affiliated with The Davey Tree Expert Company and does not control the calculator, its availability, or its results.
+              </p>
             </div>
           </div>
         </div>
@@ -98,8 +92,17 @@ export default function TreeBenefitCalculatorPage() {
             Calculator results are generalized estimates. They are not a tree appraisal, tree risk assessment, property valuation, legal opinion, insurance determination, or guarantee of future benefits. Site conditions, tree condition, species, size, maintenance history, targets, climate, and local context all affect the value and performance of a tree.
           </p>
           <p className="mt-4 leading-7 text-emerald-50/78">
-            The Arborist is not affiliated with The Davey Tree Expert Company and does not control or warrant this third-party calculator. For decisions involving risk, preservation, construction, real estate, or maintenance planning, request an on-site evaluation from a qualified arborist.
+            For decisions involving risk, preservation, construction, real estate, or maintenance planning, request an on-site evaluation from a qualified arborist.
           </p>
+          <Link
+            href="/#consultation"
+            data-track-event="Request Assessment Click"
+            data-track-location="tree_benefit_calculator_limitations"
+            className="mt-7 inline-flex items-center gap-2 font-black text-[#f6c95a] hover:text-[#ffdc70] focus-ring"
+          >
+            Request an arborist assessment
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </Link>
         </div>
       </section>
     </div>
