@@ -29,6 +29,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.8
+    },
+    {
+      url: `${siteUrl}/resources/tree-benefit-calculator`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.6
     }
   ];
 }
