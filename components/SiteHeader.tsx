@@ -27,7 +27,8 @@ const desktopNavItems = [
 const resourceNavItems = [
   { href: "/historic-trees", label: "Historic Trees" },
   { href: "/knowledge-center", label: "Tree Codes" },
-  { href: "/#tree-planning", label: "Tree Planning" }
+  { href: "/#tree-planning", label: "Tree Planning" },
+  { href: "/resources/tree-benefit-calculator", label: "Tree Benefit Calculator" }
 ];
 
 const headerSocialLinks = socialLinks.filter((link) => link.label !== "Google");
@@ -127,7 +128,7 @@ export function SiteHeader() {
               Resources
               <ChevronDown className="size-3.5 transition group-hover:rotate-180 group-focus-within:rotate-180" aria-hidden="true" />
             </button>
-            <div className="invisible absolute right-0 top-full z-50 mt-2 w-52 translate-y-1 rounded-2xl border border-teal-300/20 bg-[#07131b] p-2 opacity-0 shadow-[0_18px_44px_rgba(0,0,0,0.45)] transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+            <div className="invisible absolute right-0 top-full z-50 mt-2 w-60 translate-y-1 rounded-2xl border border-teal-300/20 bg-[#07131b] p-2 opacity-0 shadow-[0_18px_44px_rgba(0,0,0,0.45)] transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
               {resourceNavItems.map((item) => (
                 <Link
                   key={item.href}
@@ -236,6 +237,15 @@ export function SiteHeader() {
           className="min-w-[6rem] rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring"
         >
           Tree Planning
+        </Link>
+        <Link
+          href="/resources/tree-benefit-calculator"
+          data-track-event="Navigation Click"
+          data-track-label="Tree Benefit Calculator"
+          data-track-location="mobile_header"
+          className="min-w-[7.8rem] rounded-full border border-white/10 px-2 py-2.5 leading-tight transition hover:bg-white/10 hover:text-white focus-ring"
+        >
+          Benefit Calculator
         </Link>
         <Link
           href={consultationAnchor}
