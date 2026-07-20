@@ -66,7 +66,7 @@ export default function HistoricTreesPage() {
               href="/historic-trees/larbre-de-pau"
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-teal-300/25 bg-white/[0.06] px-6 py-3 text-sm font-black uppercase tracking-[0.04em] text-white transition hover:bg-white/[0.1] focus-ring"
             >
-              View the Featured Tree
+              View Our First Featured Tree
             </Link>
           </div>
         </div>
