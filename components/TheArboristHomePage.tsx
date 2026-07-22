@@ -1,18 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  ArrowRight,
   BadgeCheck,
-  CalendarDays,
+  BookOpen,
+  Building2,
   CheckCircle2,
-  CloudLightning,
   ClipboardCheck,
-  ExternalLink,
+  CloudLightning,
   Hammer,
   Home,
-  Leaf,
-  MessageSquareText,
+  Landmark,
   ShieldCheck,
-  TreePine
+  TreePine,
+  Users
 } from "lucide-react";
 import {
   ArboristLogo,
@@ -27,32 +28,93 @@ import {
 } from "@/components/ConsultBranding";
 import { AudienceTrustSection } from "@/components/AudienceTrustSection";
 import { ConsultationRequestForm } from "@/components/ConsultationRequestForm";
-import { CredentialBadges } from "@/components/CredentialBadges";
-import { EngagementToolsSection } from "@/components/EngagementToolsSection";
 import { FAQSection } from "@/components/FAQSection";
 import { GoogleReviewsSection } from "@/components/GoogleReviewsSection";
 import { PeterHeadshot } from "@/components/PeterHeadshot";
-import { RealEstateHomeSection } from "@/components/RealEstateHomeSection";
 import { SocialLinksFooter } from "@/components/SocialLinksFooter";
-import { TreePlanningSection } from "@/components/TreePlanningSection";
 import { WhatYouReceiveSection } from "@/components/WhatYouReceiveSection";
 
-const calendlyEmbedUrl = `${calendlySchedulingUrl}?hide_gdpr_banner=1&hide_event_type_details=1&primary_color=f6c95a`;
-
-const services = [
-  ["Tree Risk and Storm Damage Assessments", "Independent review of defects, targets, storm damage, likelihood of failure, and practical risk priorities.", ShieldCheck],
-  ["Tree Inventories and Surveys", "Tree-by-tree documentation for HOAs, municipalities, country clubs, campuses, and businesses that need a maintenance plan.", ClipboardCheck],
-  ["Construction Planning and Preservation", "Arborist guidance before construction so valuable trees, root zones, and preservation options are considered early.", Hammer],
-  ["Municipal and Public Property Consulting", "Assessment and survey support for public trees, parks, right-of-way concerns, and municipal tree planning.", Home],
-  ["Work Prioritization and Maintenance Planning", "Clear separation between high-risk work, lower-risk monitoring, removals, pruning needs, and budgetable future maintenance.", Leaf],
-  ["Second Opinions Before Tree Work", "A neutral assessment before approving removal, pruning, cabling, construction impacts, or expensive tree work.", MessageSquareText]
+const audiencePathways = [
+  {
+    title: "Homeowners",
+    text: "Independent guidance for storm damage, defects, removal decisions, pruning proposals, and second opinions before approving tree work.",
+    href: consultationAnchor,
+    label: "Request an assessment",
+    icon: Home
+  },
+  {
+    title: "Property Managers, HOAs, and Businesses",
+    text: "Tree inventories, maintenance priorities, risk screening, budgeting, and practical plans for properties with multiple trees.",
+    href: "/#services",
+    label: "Explore consulting services",
+    icon: Building2
+  },
+  {
+    title: "Real Estate",
+    text: "Tree-related due diligence for buyers, sellers, agents, inspectors, and property owners before a transaction or major decision.",
+    href: "/real-estate",
+    label: "Explore real estate services",
+    icon: Users
+  },
+  {
+    title: "Municipalities and Project Teams",
+    text: "Support for public trees, surveys, construction planning, preservation decisions, right-of-way concerns, and long-range maintenance.",
+    href: "/#services",
+    label: "Review project support",
+    icon: Landmark
+  }
 ] as const;
 
-const whenToCall = [
-  ["Before you approve a tree service quote", "Understand what is actually needed, what can wait, and what should be handled first."],
-  ["When you manage more than one tree", "Tree inventories and surveys help boards, businesses, municipalities, and property managers plan maintenance instead of reacting to every concern."],
-  ["Before construction or site changes", "Tree preservation decisions are easier when protection zones, access routes, grading, roots, and tree condition are considered early."],
-  ["After storm damage or before hurricane season", "Sort visible damage from real risk, document the condition, and avoid rushed decisions."]
+const serviceGroups = [
+  {
+    title: "Assess",
+    text: "Tree risk, storm damage, visible defects, targets, and second opinions before removal or major work.",
+    items: ["Tree risk assessments", "Storm damage evaluations", "Second opinions before tree work"],
+    icon: ShieldCheck
+  },
+  {
+    title: "Plan",
+    text: "Clear priorities for properties with one tree or hundreds of trees, including maintenance, surveys, and budgeting.",
+    items: ["Tree inventories and surveys", "Work prioritization", "Municipal, HOA, and commercial planning"],
+    icon: ClipboardCheck
+  },
+  {
+    title: "Preserve",
+    text: "Arborist input before construction, grading, trenching, access changes, or other work that could affect valuable trees.",
+    items: ["Construction planning", "Root-zone protection", "Mature-tree preservation guidance"],
+    icon: Hammer
+  }
+] as const;
+
+const resources = [
+  {
+    title: "Hidden Giants & Historic Trees",
+    text: "Explore remarkable Gulf Coast trees, their stories, measurements, arboricultural observations, and preservation value.",
+    href: "/historic-trees",
+    icon: TreePine,
+    external: false
+  },
+  {
+    title: "Emergency Tree Board",
+    text: "Public tree-hazard awareness, weather context, outage resources, and emergency safety information for Mobile and the Gulf Coast.",
+    href: "https://mobile-tree-emergency.netlify.app",
+    icon: CloudLightning,
+    external: true
+  },
+  {
+    title: "Tree Codes & Guidance",
+    text: "General educational guidance about tree-related codes, permits, planning requirements, and public processes.",
+    href: "/knowledge-center",
+    icon: BookOpen,
+    external: false
+  },
+  {
+    title: "Tree Benefit Calculator",
+    text: "Use a third-party tool to explore estimated environmental and economic benefits associated with an individual tree.",
+    href: "/resources/tree-benefit-calculator",
+    icon: TreePine,
+    external: false
+  }
 ] as const;
 
 const independent = [
@@ -78,7 +140,7 @@ function SectionHeading({
   );
 }
 
-function CheckList({ items }: { items: string[] }) {
+function CheckList({ items }: { items: readonly string[] }) {
   return (
     <ul className="space-y-3">
       {items.map((item) => (
@@ -114,7 +176,7 @@ export function TheArboristHomePage() {
             <h1 className="text-4xl font-black leading-[0.98] text-white drop-shadow-[0_10px_22px_rgba(0,0,0,0.35)] sm:text-6xl lg:text-7xl">Concerned About a Tree?</h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-emerald-50 sm:mt-6 sm:text-xl sm:leading-8">Get an independent tree assessment before paying for tree work.</p>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-emerald-100/85 sm:mt-5 sm:text-base sm:leading-7">
-              Peter Toler helps Gulf Coast homeowners, HOAs, municipalities, country clubs, businesses, and project teams understand what is actually needed, what can wait, and what should be prioritized before hiring a tree service.
+              Peter Toler helps Gulf Coast property owners and project teams understand what is needed, what can wait, and what should be prioritized before hiring a tree service.
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:flex-wrap">
               <RequestConsultationButton className="min-h-12 w-full sm:w-auto" />
@@ -126,9 +188,27 @@ export function TheArboristHomePage() {
 
       <AudienceTrustSection />
 
-      <RealEstateHomeSection />
-
-      <EngagementToolsSection />
+      <section id="start-here" className="bg-stone-50 py-12 sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            title="Start with the kind of decision you need to make."
+            text="Different properties require different levels of documentation and planning. Choose the pathway that best matches your situation."
+          />
+          <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2">
+            {audiencePathways.map(({ title, text, href, label, icon: Icon }) => (
+              <article key={title} className="rounded-2xl border border-emerald-950/10 bg-white p-5 shadow-[0_18px_44px_rgba(6,17,13,0.08)] sm:p-6">
+                <Icon className="size-8 text-emerald-800" aria-hidden="true" />
+                <h3 className="mt-4 text-xl font-black text-emerald-950">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-stone-700">{text}</p>
+                <Link href={href} className="mt-5 inline-flex items-center gap-2 text-sm font-black text-emerald-800 hover:text-emerald-950 focus-ring">
+                  {label}
+                  <ArrowRight className="size-4" aria-hidden="true" />
+                </Link>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section id="services" className="relative isolate overflow-hidden bg-[#050b12] py-12 text-white sm:py-16">
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_10%_0%,rgba(18,192,168,0.18),transparent_28rem),radial-gradient(circle_at_86%_24%,rgba(246,201,90,0.14),transparent_24rem),linear-gradient(145deg,#050b12_0%,#07131b_46%,#0b1f17_100%)]" />
@@ -136,39 +216,57 @@ export function TheArboristHomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             light
-            title="Tree consulting that helps you plan, prioritize, and decide."
-            text="The work starts with the tree, the site, and the decision in front of you. Each assessment is meant to clarify risk, timing, preservation options, maintenance priorities, and the next practical step."
+            title="Assess. Plan. Preserve."
+            text="The work starts with the tree, the site, and the decision in front of you. Each service is designed to clarify risk, timing, preservation options, maintenance priorities, and the next practical step."
           />
-          <div className="mt-8 grid gap-3 sm:mt-10 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-            {services.map(([title, text, Icon]) => (
-              <article key={title} className="rounded-2xl border border-teal-300/20 bg-[#07131b]/80 p-4 shadow-[0_22px_54px_rgba(0,0,0,0.22)] backdrop-blur sm:p-5">
-                <Icon className="size-7 text-[#f6c95a] sm:size-8" aria-hidden="true" />
-                <h3 className="mt-4 text-lg font-black text-white sm:mt-5 sm:text-xl">{title}</h3>
-                <p className="mt-2 text-sm leading-6 text-emerald-50/78 sm:mt-3">{text}</p>
+          <div className="mt-8 grid gap-4 sm:mt-10 lg:grid-cols-3">
+            {serviceGroups.map(({ title, text, items, icon: Icon }) => (
+              <article key={title} className="rounded-2xl border border-teal-300/20 bg-[#07131b]/80 p-5 shadow-[0_22px_54px_rgba(0,0,0,0.22)] backdrop-blur sm:p-6">
+                <Icon className="size-8 text-[#f6c95a]" aria-hidden="true" />
+                <h3 className="mt-5 text-2xl font-black text-white">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-emerald-50/78">{text}</p>
+                <div className="mt-5">
+                  <CheckList items={items} />
+                </div>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <TreePlanningSection />
+      <WhatYouReceiveSection />
 
-      <section id="when-to-call" className="relative isolate overflow-hidden bg-[#0b1f17] py-12 text-white sm:py-16">
-        <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_12%_18%,rgba(18,192,168,0.16),transparent_26rem),radial-gradient(circle_at_82%_10%,rgba(246,201,90,0.15),transparent_22rem),linear-gradient(135deg,#050b12_0%,#0b1f17_55%,#143527_100%)]" />
-        <div className="tree-ring-texture absolute inset-y-0 left-0 -z-10 w-1/2 opacity-50" />
-        <div className="mx-auto grid max-w-7xl gap-7 px-4 sm:gap-10 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start lg:px-8">
+      <section id="resources-projects" className="bg-[#0b1f17] py-12 text-white sm:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             light
-            title="When a tree assessment or survey helps."
-            text="A short independent review can prevent a rushed or expensive decision. A broader inventory or survey can help larger properties plan tree maintenance before problems become urgent."
+            title="Explore tree resources and signature projects."
+            text="Educational tools, public-awareness projects, and regional tree stories are organized here so they support the business website without competing with the primary assessment pathway."
           />
-          <div className="grid gap-3 sm:gap-4">
-            {whenToCall.map(([title, text]) => (
-              <article key={title} className="rounded-2xl border border-teal-300/20 bg-white/[0.06] p-4 shadow-[0_18px_42px_rgba(0,0,0,0.16)] backdrop-blur sm:p-5">
-                <h3 className="text-base font-black text-[#f6c95a] sm:text-lg">{title}</h3>
-                <p className="mt-2 text-sm leading-6 text-emerald-50/80">{text}</p>
-              </article>
-            ))}
+          <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2">
+            {resources.map(({ title, text, href, icon: Icon, external }) => {
+              const card = (
+                <>
+                  <Icon className="size-8 text-[#f6c95a]" aria-hidden="true" />
+                  <h3 className="mt-4 text-xl font-black text-white">{title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-emerald-50/78">{text}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">
+                    Explore resource
+                    <ArrowRight className="size-4" aria-hidden="true" />
+                  </span>
+                </>
+              );
+
+              return external ? (
+                <a key={title} href={href} target="_blank" rel="noreferrer" className="rounded-2xl border border-teal-300/20 bg-white/[0.05] p-5 shadow-[0_18px_44px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:bg-white/[0.08] focus-ring sm:p-6">
+                  {card}
+                </a>
+              ) : (
+                <Link key={title} href={href} className="rounded-2xl border border-teal-300/20 bg-white/[0.05] p-5 shadow-[0_18px_44px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:bg-white/[0.08] focus-ring sm:p-6">
+                  {card}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -191,74 +289,31 @@ export function TheArboristHomePage() {
           <div>
             <h2 className="text-2xl font-black leading-tight text-white sm:text-4xl">Independent advice, not tree work sales.</h2>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-emerald-50/85 sm:mt-4 sm:text-base sm:leading-7">
-              Peter provides practical arborist guidance across the Gulf Coast for homeowners, municipalities, HOAs, businesses, country clubs, and project teams who need a clearer read on tree condition, risk, preservation, construction impacts, and maintenance priorities.
+              Peter provides practical arborist guidance for property owners, municipalities, HOAs, businesses, and project teams that need a clearer read on tree condition, risk, preservation, construction impacts, and maintenance priorities.
             </p>
             <div className="mt-6 rounded-2xl border border-teal-300/20 bg-[#07131b] p-4 shadow-[0_18px_42px_rgba(0,0,0,0.2)] sm:mt-8 sm:p-6">
               <CheckList items={independent} />
             </div>
-            <div className="mt-4 grid gap-3 sm:mt-6 sm:grid-cols-2 sm:gap-4">
-              <div className="rounded-2xl border border-teal-300/20 bg-white/[0.05] p-4 sm:p-5">
-                <TreePine className="size-7 text-[#f6c95a] sm:size-8" aria-hidden="true" />
-                <h3 className="mt-4 text-lg font-black text-white">Mature-tree decisions</h3>
-                <p className="mt-2 text-sm leading-6 text-emerald-50/80">Guidance for live oaks, storm-exposed trees, property lines, targets, inventories, surveys, and preservation tradeoffs.</p>
-              </div>
-              <div className="rounded-2xl border border-teal-300/20 bg-white/[0.05] p-4 sm:p-5">
-                <Hammer className="size-7 text-[#f6c95a] sm:size-8" aria-hidden="true" />
-                <h3 className="mt-4 text-lg font-black text-white">Project and contractor clarity</h3>
-                <p className="mt-2 text-sm leading-6 text-emerald-50/80">Better questions and priorities before you compare quotes, approve work, plan construction, or budget maintenance.</p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
-
-      <WhatYouReceiveSection />
-
-      <CredentialBadges />
 
       <GoogleReviewsSection />
 
-      <section id="phone-consultation" className="relative isolate scroll-mt-28 overflow-hidden bg-[#0b1f17] py-12 text-white sm:py-16">
-        <Image
-          src="/consult-request-background.jpeg"
-          alt="Tree canopy background"
-          fill
-          sizes="100vw"
-          className="absolute inset-0 -z-20 object-cover opacity-[0.18]"
-        />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(135deg,rgba(5,11,18,0.96),rgba(11,31,23,0.88))]" />
-        <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:gap-10 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start lg:px-8">
-          <div className="rounded-2xl border border-teal-300/20 bg-white/[0.06] p-5 shadow-[0_20px_54px_rgba(0,0,0,0.24)] backdrop-blur sm:p-6">
-            <CalendarDays className="size-9 text-[#f6c95a] sm:size-10" aria-hidden="true" />
-            <div className="mt-4 sm:mt-5">
-              <SectionHeading
-                light
-                title="Schedule a phone consultation."
-                text="Use the embedded scheduler to book a tree-care phone consultation with Peter. This call is separate from the full Jotform assessment request."
-              />
-            </div>
-            <a
-              href={calendlySchedulingUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-5 py-3 text-sm font-black uppercase tracking-[0.04em] text-[#06110d] shadow-[0_18px_38px_rgba(246,201,90,0.2)] transition hover:bg-[#ffdc70] focus-ring sm:mt-8 sm:w-auto"
-            >
-              Open Scheduler in New Tab
-              <ExternalLink className="size-4" aria-hidden="true" />
-            </a>
+      <FAQSection />
+
+      <section id="phone-consultation" className="border-y border-teal-300/15 bg-[#0b1f17] py-10 text-white sm:py-12">
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+          <div className="max-w-3xl">
+            <h2 className="text-2xl font-black sm:text-3xl">Need to talk through the situation first?</h2>
+            <p className="mt-3 text-sm leading-6 text-emerald-50/80 sm:text-base">Schedule a phone consultation for an initial discussion. A phone consultation is separate from an on-site tree assessment.</p>
           </div>
-          <div className="overflow-hidden rounded-2xl border border-teal-300/20 bg-white shadow-[0_22px_60px_rgba(0,0,0,0.28)]">
-            <iframe
-              src={calendlyEmbedUrl}
-              title="Schedule a phone consultation with Peter Toler"
-              className="h-[560px] w-full bg-white sm:h-[760px]"
-              loading="lazy"
-            />
-          </div>
+          <a href={calendlySchedulingUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-6 py-3 text-sm font-black uppercase tracking-[0.04em] text-[#06110d] transition hover:bg-[#ffdc70] focus-ring">
+            Schedule a Phone Consultation
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </a>
         </div>
       </section>
-
-      <FAQSection />
 
       <section id="consultation-request" className="relative isolate scroll-mt-28 overflow-hidden bg-[#050b12] py-12 text-white sm:py-16">
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_85%_15%,rgba(246,201,90,0.16),transparent_24rem),radial-gradient(circle_at_12%_82%,rgba(18,192,168,0.12),transparent_22rem)]" />
@@ -268,7 +323,7 @@ export function TheArboristHomePage() {
             <SectionHeading
               light
               title="Request a Tree Assessment."
-              text="Serving the Gulf Coast, including Mobile County, Baldwin County, municipalities, HOAs, commercial properties, and construction/planning teams. Use the Jotform request below for assessments, inventories, surveys, construction planning, preservation questions, and photo uploads."
+              text="Serving the Gulf Coast, including Mobile County, Baldwin County, municipalities, HOAs, commercial properties, and construction or planning teams. Use the request form for assessments, inventories, surveys, construction planning, preservation questions, and photo uploads."
             />
             <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap">
               <SchedulePhoneButton className="min-h-12 w-full border-teal-300/25 bg-white/[0.06] text-white hover:bg-white/[0.1] sm:w-auto" />
@@ -289,7 +344,7 @@ export function TheArboristHomePage() {
                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#f6c95a]">Peter Toler</p>
               </div>
             </div>
-            <p className="mt-4 max-w-sm leading-6">Independent arborist consulting for Gulf Coast homeowners, municipalities, HOAs, country clubs, businesses, and project teams.</p>
+            <p className="mt-4 max-w-sm leading-6">Independent arborist consulting for Gulf Coast homeowners, municipalities, HOAs, businesses, and project teams.</p>
           </div>
           <div>
             <p className="font-black uppercase tracking-[0.14em] text-[#f6c95a]">Services</p>
@@ -304,18 +359,10 @@ export function TheArboristHomePage() {
           <div>
             <p className="font-black uppercase tracking-[0.14em] text-[#f6c95a]">Contact</p>
             <ul className="mt-4 space-y-2">
-              <li>
-                <a href={consultationAnchor} className="hover:text-white focus-ring">Request a Tree Assessment</a>
-              </li>
-              <li>
-                <a href={phoneConsultationAnchor} className="hover:text-white focus-ring">Schedule a Phone Consultation</a>
-              </li>
-              <li>
-                <a href={isaCredentialUrl} target="_blank" rel="noreferrer" className="hover:text-white focus-ring">Verify ISA Credentials</a>
-              </li>
-              <li>
-                <Link href={reportVerificationPath} className="text-emerald-50/55 hover:text-white focus-ring">Report verification</Link>
-              </li>
+              <li><a href={consultationAnchor} className="hover:text-white focus-ring">Request a Tree Assessment</a></li>
+              <li><a href={phoneConsultationAnchor} className="hover:text-white focus-ring">Schedule a Phone Consultation</a></li>
+              <li><a href={isaCredentialUrl} target="_blank" rel="noreferrer" className="hover:text-white focus-ring">Verify ISA Credentials</a></li>
+              <li><Link href={reportVerificationPath} className="text-emerald-50/55 hover:text-white focus-ring">Report verification</Link></li>
             </ul>
           </div>
           <SocialLinksFooter />
