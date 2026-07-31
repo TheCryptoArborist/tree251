@@ -1,5 +1,7 @@
+import { Mail } from "lucide-react";
 import { DecisionGuidesSection } from "@/components/DecisionGuidesSection";
 import { RealEstateHomeSection } from "@/components/RealEstateHomeSection";
+import { inventoryMailto } from "@/components/ConsultBranding";
 
 const audienceGroups = [
   {
@@ -40,6 +42,19 @@ export function AudienceTrustSection() {
               </p>
             </details>
           ))}
+        </div>
+      </section>
+
+      <section className="border-b border-emerald-950/10 bg-[#f6c95a] px-4 py-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-black text-[#06110d] sm:text-base">Engineers, municipalities, property managers, and project teams may email Peter directly.</p>
+            <a href={inventoryMailto} className="mt-1 inline-block break-all text-sm font-bold text-emerald-950 underline decoration-emerald-900/35 underline-offset-4 hover:decoration-emerald-900 focus-ring">petertoler@me.com</a>
+          </div>
+          <a href={inventoryMailto} className="inline-flex min-h-12 w-full shrink-0 items-center justify-center gap-2 rounded-full bg-[#07131b] px-6 py-3 text-sm font-black uppercase tracking-[0.04em] text-white transition hover:bg-emerald-950 focus-ring sm:w-auto">
+            <Mail className="size-4 text-[#f6c95a]" aria-hidden="true" />
+            Email Peter
+          </a>
         </div>
       </section>
 
