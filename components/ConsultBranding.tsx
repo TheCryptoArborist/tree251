@@ -1,8 +1,11 @@
 import Image from "next/image";
-import { ArrowRight, BadgeCheck, CalendarDays, ImageUp } from "lucide-react";
+import { ArrowRight, BadgeCheck, CalendarDays, ImageUp, Mail } from "lucide-react";
 
 export const consultationMailto =
   "mailto:petertoler@me.com?subject=Request%20a%20Tree%20Assessment";
+
+export const inventoryMailto =
+  "mailto:petertoler@me.com?subject=Tree%20Inventory%20or%20Arborist%20Consulting%20Inquiry";
 
 export const reportVerificationMailto =
   "mailto:petertoler@me.com?subject=Verify%20Report";
@@ -96,6 +99,28 @@ export function RequestConsultationButton({
     >
       Request a Tree Assessment
       <ArrowRight className="size-4" aria-hidden="true" />
+    </a>
+  );
+}
+
+export function EmailPeterButton({
+  href = inventoryMailto,
+  className = "",
+  label = "Email Peter"
+}: {
+  href?: string;
+  className?: string;
+  label?: string;
+}) {
+  return (
+    <a
+      href={href}
+      data-track-event="Email Peter Click"
+      data-track-location="site_cta"
+      className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-[#f6c95a]/55 bg-[#07131b] px-5 py-3 text-center text-sm font-black uppercase tracking-[0.04em] text-white transition hover:border-[#f6c95a] hover:bg-[#0b1f17] focus-ring sm:w-auto ${className}`}
+    >
+      <Mail className="size-4 text-[#f6c95a]" aria-hidden="true" />
+      {label}
     </a>
   );
 }
