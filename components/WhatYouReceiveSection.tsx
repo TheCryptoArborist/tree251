@@ -1,5 +1,5 @@
 import { ClipboardCheck, FileText, MessageSquareText, ShieldCheck } from "lucide-react";
-import { RealEstateHomeSection } from "@/components/RealEstateHomeSection";
+import { TreeInventoryHomeSection } from "@/components/TreeInventoryHomeSection";
 
 const deliverables = [
   {
@@ -15,15 +15,15 @@ const deliverables = [
     Icon: ShieldCheck
   },
   {
-    title: "Inventory or survey summaries",
+    title: "Inventory and project data",
     text:
-      "For larger properties, tree-by-tree findings can support maintenance planning, board discussions, municipal records, budgets, and contractor scopes.",
+      "Tree-by-tree records may include species, diameter, condition, location, photographs, recommendations, priority fields, and project-specific information for planning or permitting.",
     Icon: ClipboardCheck
   },
   {
-    title: "Documentation when needed",
+    title: "Defined project deliverables",
     text:
-      "Written notes, recommendations, photos, or summaries can be used with tree services, HOAs, municipalities, contractors, insurance, or construction teams.",
+      "Depending on scope, deliverables may include spreadsheets, numbered schedules, maps, plan-overlay data, photographs, summaries, recommendations, or permit-support documentation.",
     Icon: FileText
   }
 ] as const;
@@ -31,6 +31,8 @@ const deliverables = [
 export function WhatYouReceiveSection() {
   return (
     <>
+      <TreeInventoryHomeSection />
+
       <section id="what-you-receive" className="relative isolate overflow-hidden bg-[#07131b] py-12 text-white sm:py-16">
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_18%_18%,rgba(246,201,90,0.12),transparent_22rem),radial-gradient(circle_at_82%_30%,rgba(18,192,168,0.12),transparent_24rem),linear-gradient(135deg,#050b12_0%,#07131b_55%,#0b1f17_100%)]" />
         <div className="tree-ring-texture absolute inset-y-0 left-0 -z-10 w-1/2 opacity-30" />
@@ -41,10 +43,10 @@ export function WhatYouReceiveSection() {
               What you receive
             </p>
             <h2 className="mt-3 text-2xl font-black leading-tight text-white sm:text-4xl">
-              Guidance you can use before hiring, budgeting, or building.
+              Guidance and documentation built around the assignment.
             </h2>
             <p className="mt-3 text-sm leading-6 text-emerald-50/80 sm:mt-4 sm:text-base sm:leading-7">
-              A consultation should leave you with usable direction, not just a general opinion. The goal is to help you understand the tree-related decision in front of you and the next practical step.
+              A consultation or inventory should leave you with usable direction, not just a general opinion. The exact documentation depends on whether the assignment involves an individual tree, a managed property, a construction project, permitting, or long-term planning.
             </p>
           </div>
 
@@ -59,8 +61,6 @@ export function WhatYouReceiveSection() {
           </div>
         </div>
       </section>
-
-      <RealEstateHomeSection />
     </>
   );
 }
