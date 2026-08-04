@@ -23,6 +23,7 @@ export const instagramUrl = "https://www.instagram.com/ptarborist";
 export const linkedinUrl = "https://www.linkedin.com/in/ptarborist";
 export const youtubeUrl = "http://www.youtube.com/@TheArboristPT";
 export const tiktokUrl = "https://www.tiktok.com/@arborist63";
+export const redditUrl = "https://www.reddit.com/r/GulfCoastArborist/";
 export const googleBusinessProfileUrl = "https://maps.app.goo.gl/cShPmYshpMQvxFTT6?g_st=ic";
 export const googleReviewUrl = "http://g.page/r/CdmRJY0DlABmEAo/review";
 
@@ -32,6 +33,7 @@ export const socialLinks = [
   { label: "LinkedIn", href: linkedinUrl },
   { label: "YouTube", href: youtubeUrl },
   { label: "TikTok", href: tiktokUrl },
+  { label: "Reddit", href: redditUrl },
   { label: "Google", href: googleBusinessProfileUrl }
 ] as const;
 
