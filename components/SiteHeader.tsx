@@ -52,13 +52,22 @@ function RedditIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function SubstackIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M4 3h16v2H4V3Zm0 4h16v2H4V7Zm0 4h16v10l8-5 8 5V11Z" />
+    </svg>
+  );
+}
+
 const socialIcons: Record<string, React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>> = {
   Facebook,
   Instagram,
   LinkedIn: Linkedin,
+  Substack: SubstackIcon,
+  Reddit: RedditIcon,
   YouTube: Youtube,
-  TikTok: TikTokIcon,
-  Reddit: RedditIcon
+  TikTok: TikTokIcon
 };
 
 export function SiteHeader() {
@@ -71,7 +80,7 @@ export function SiteHeader() {
               Follow The Arborist
             </p>
 
-            <nav aria-label="Social media profiles" className="grid grid-cols-6 gap-1.5 lg:flex lg:items-center lg:justify-end">
+            <nav aria-label="Social media profiles" className="grid grid-cols-7 gap-1 lg:flex lg:items-center lg:justify-end lg:gap-1.5">
               {headerSocialLinks.map((link) => {
                 const Icon = socialIcons[link.label];
 
@@ -86,7 +95,7 @@ export function SiteHeader() {
                     data-track-event="Social Link Click"
                     data-track-label={link.label}
                     data-track-location="top_social_bar"
-                    className="flex min-h-9 items-center justify-center rounded-full border border-[#f6c95a]/50 bg-[#f6c95a] px-2 py-2 text-[#06110d] shadow-[0_10px_22px_rgba(246,201,90,0.16)] transition hover:bg-[#ffdc70] focus-ring sm:px-3 lg:min-h-0 lg:border-teal-300/20 lg:bg-white/[0.04] lg:px-3.5 lg:py-1.5 lg:text-emerald-50/90 lg:shadow-none lg:hover:border-[#f6c95a]/70 lg:hover:bg-white/10 lg:hover:text-white"
+                    className="flex min-h-9 items-center justify-center rounded-full border border-[#f6c95a]/50 bg-[#f6c95a] px-1.5 py-2 text-[#06110d] shadow-[0_10px_22px_rgba(246,201,90,0.16)] transition hover:bg-[#ffdc70] focus-ring sm:px-3 lg:min-h-0 lg:border-teal-300/20 lg:bg-white/[0.04] lg:px-3.5 lg:py-1.5 lg:text-emerald-50/90 lg:shadow-none lg:hover:border-[#f6c95a]/70 lg:hover:bg-white/10 lg:hover:text-white"
                   >
                     <Icon className="size-4 sm:size-5" aria-hidden />
                   </a>
