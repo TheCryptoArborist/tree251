@@ -21,6 +21,7 @@ export const jotformConsultationUrl = "https://form.jotform.com/221198646412861"
 export const facebookUrl = "https://www.facebook.com/ptarborist";
 export const instagramUrl = "https://www.instagram.com/ptarborist";
 export const linkedinUrl = "https://www.linkedin.com/in/ptarborist";
+export const substackUrl = "https://substack.com/@ptarborist";
 export const youtubeUrl = "http://www.youtube.com/@TheArboristPT";
 export const tiktokUrl = "https://www.tiktok.com/@arborist63";
 export const redditUrl = "https://www.reddit.com/r/GulfCoastArborist/";
@@ -31,9 +32,10 @@ export const socialLinks = [
   { label: "Facebook", href: facebookUrl },
   { label: "Instagram", href: instagramUrl },
   { label: "LinkedIn", href: linkedinUrl },
+  { label: "Substack", href: substackUrl },
+  { label: "Reddit", href: redditUrl },
   { label: "YouTube", href: youtubeUrl },
   { label: "TikTok", href: tiktokUrl },
-  { label: "Reddit", href: redditUrl },
   { label: "Google", href: googleBusinessProfileUrl }
 ] as const;
 
