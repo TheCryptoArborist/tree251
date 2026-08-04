@@ -1,5 +1,5 @@
-import { Mail } from "lucide-react";
-import { inventoryMailto } from "@/components/ConsultBranding";
+import { ArrowRight, BookOpen, Mail } from "lucide-react";
+import { inventoryMailto, substackUrl } from "@/components/ConsultBranding";
 
 const audienceGroups = [
   {
@@ -52,6 +52,22 @@ export function AudienceTrustSection() {
           <a href={inventoryMailto} data-track-event="Email Peter Click" data-track-location="homepage_contact_strip" className="inline-flex min-h-12 w-full shrink-0 items-center justify-center gap-2 rounded-full bg-[#07131b] px-6 py-3 text-sm font-black uppercase tracking-[0.04em] text-white transition hover:bg-emerald-950 focus-ring sm:w-auto">
             <Mail className="size-4 text-[#f6c95a]" aria-hidden="true" />
             Email Peter
+          </a>
+        </div>
+      </section>
+
+      <section className="border-b border-teal-300/15 bg-[#0b1f17] px-4 py-5 text-white sm:px-6 sm:py-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex max-w-3xl gap-3">
+            <BookOpen className="mt-0.5 size-6 shrink-0 text-[#f6c95a]" aria-hidden="true" />
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.12em] text-[#f6c95a]">Long-form tree education</p>
+              <p className="mt-1 text-sm leading-6 text-emerald-50/82 sm:text-base">Read Peter&apos;s articles, case studies, and Gulf Coast tree-care discussions on Substack.</p>
+            </div>
+          </div>
+          <a href={substackUrl} target="_blank" rel="noreferrer" data-track-event="Social Link Click" data-track-label="Substack" data-track-location="homepage_substack_strip" className="inline-flex min-h-12 w-full shrink-0 items-center justify-center gap-2 rounded-full border border-[#f6c95a]/55 bg-white/[0.06] px-6 py-3 text-sm font-black uppercase tracking-[0.04em] text-white transition hover:border-[#f6c95a] hover:bg-white/[0.1] focus-ring sm:w-auto">
+            Read on Substack
+            <ArrowRight className="size-4 text-[#f6c95a]" aria-hidden="true" />
           </a>
         </div>
       </section>
