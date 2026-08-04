@@ -44,12 +44,21 @@ function TikTokIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+function RedditIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M20.5 12.1c.9.4 1.5 1.3 1.5 2.3 0 1.1-.7 2.1-1.8 2.5.1.3.1.7.1 1 0 3.1-3.7 5.6-8.3 5.6S3.7 21 3.7 17.9c0-.3 0-.7.1-1A2.7 2.7 0 0 1 2 14.4c0-1.5 1.2-2.7 2.7-2.7.7 0 1.3.2 1.8.7 1.4-.9 3.3-1.5 5.3-1.6l1-4.7c.1-.4.5-.7.9-.6l3.3.7a2.3 2.3 0 1 1-.3 1.4l-2.6-.5-.8 3.8c2 .2 3.8.7 5.2 1.6.5-.5 1.2-.7 2-.4ZM8.5 16.4a1.4 1.4 0 1 0 0-2.8 1.4 1.4 0 0 0 0 2.8Zm7 0a1.4 1.4 0 1 0 0-2.8 1.4 1.4 0 0 0 0 2.8Zm.2 3.2a.7.7 0 0 0-1-.1c-.6.5-1.6.8-2.7.8s-2.1-.3-2.7-.8a.7.7 0 1 0-.9 1.1c.9.7 2.2 1.1 3.6 1.1s2.7-.4 3.6-1.1c.3-.2.4-.7.1-1Z" />
+    </svg>
+  );
+}
+
 const socialIcons: Record<string, React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>> = {
   Facebook,
   Instagram,
   LinkedIn: Linkedin,
   YouTube: Youtube,
-  TikTok: TikTokIcon
+  TikTok: TikTokIcon,
+  Reddit: RedditIcon
 };
 
 export function SiteHeader() {
@@ -62,7 +71,7 @@ export function SiteHeader() {
               Follow The Arborist
             </p>
 
-            <nav aria-label="Social media profiles" className="grid grid-cols-5 gap-1.5 lg:flex lg:items-center lg:justify-end">
+            <nav aria-label="Social media profiles" className="grid grid-cols-6 gap-1.5 lg:flex lg:items-center lg:justify-end">
               {headerSocialLinks.map((link) => {
                 const Icon = socialIcons[link.label];
 
