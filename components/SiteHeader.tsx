@@ -14,6 +14,7 @@ import {
   Instagram,
   Linkedin,
   Mail,
+  MessageCircle,
   Phone,
   Youtube
 } from "lucide-react";
@@ -35,6 +36,7 @@ const resourceNavItems = [
 ];
 
 const headerSocialLinks = socialLinks.filter((link) => link.label !== "Google");
+const jotformAgentUrl = "https://agent.jotform.com/019fdd4d6df8700084324166264c1bd3dc5a";
 
 function TikTokIcon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -189,14 +191,25 @@ export function SiteHeader() {
         </nav>
       </header>
 
-      <nav aria-label="Mobile contact actions" className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-3 border-t border-teal-300/20 bg-[#050b12]/97 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-14px_34px_rgba(0,0,0,0.4)] backdrop-blur-xl lg:hidden">
+      <nav aria-label="Mobile contact actions" className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-teal-300/20 bg-[#050b12]/97 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-14px_34px_rgba(0,0,0,0.4)] backdrop-blur-xl lg:hidden">
         <a href={inventoryMailto} data-track-event="Email Peter Click" data-track-location="mobile_sticky_bar" className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-black uppercase tracking-[0.04em] text-white focus-ring">
           <Mail className="size-4 text-[#f6c95a]" aria-hidden="true" />
           Email
         </a>
-        <a href="tel:+12512190140" data-track-event="Phone Click" data-track-location="mobile_sticky_bar" className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl border-x border-white/10 text-[10px] font-black uppercase tracking-[0.04em] text-white focus-ring">
+        <a href="tel:+12512190140" data-track-event="Phone Click" data-track-location="mobile_sticky_bar" className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl border-l border-white/10 text-[10px] font-black uppercase tracking-[0.04em] text-white focus-ring">
           <Phone className="size-4 text-[#f6c95a]" aria-hidden="true" />
           Call
+        </a>
+        <a
+          href={jotformAgentUrl}
+          target="_blank"
+          rel="noreferrer"
+          data-track-event="AI Agent Click"
+          data-track-location="mobile_sticky_bar"
+          className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl border-x border-white/10 text-[10px] font-black uppercase tracking-[0.04em] text-white focus-ring"
+        >
+          <MessageCircle className="size-4 text-[#f6c95a]" aria-hidden="true" />
+          Chat
         </a>
         <Link href={consultationAnchor} data-track-event="Request Assessment Click" data-track-location="mobile_sticky_bar" className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl bg-[#f6c95a] text-[10px] font-black uppercase tracking-[0.04em] text-[#06110d] focus-ring">
           <ArrowRight className="size-4" aria-hidden="true" />
