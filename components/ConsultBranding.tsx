@@ -2,13 +2,13 @@ import Image from "next/image";
 import { ArrowRight, BadgeCheck, CalendarDays, ImageUp, Mail } from "lucide-react";
 
 export const consultationMailto =
-  "mailto:petertoler@me.com?subject=Request%20a%20Tree%20Assessment";
+  "mailto:consultingarborist@icloud.com?subject=Request%20a%20Tree%20Assessment";
 
 export const inventoryMailto =
-  "mailto:petertoler@me.com?subject=Tree%20Inventory%20or%20Arborist%20Consulting%20Inquiry";
+  "mailto:consultingarborist@icloud.com?subject=Tree%20Inventory%20or%20Arborist%20Consulting%20Inquiry";
 
 export const reportVerificationMailto =
-  "mailto:petertoler@me.com?subject=Verify%20Report";
+  "mailto:consultingarborist@icloud.com?subject=Verify%20Report";
 
 export const isaCredentialUrl =
   "https://certificates.directory.isa-arbor.com/profile/becbda421a7e286db985d6fe607e5436b09df137?search_term=toler&page=1";
