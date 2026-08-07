@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { AnalyticsEventsBridge } from "@/components/AnalyticsEventsBridge";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -165,6 +166,10 @@ export default function RootLayout({
         >
           Top ↑
         </a>
+        <Script
+          src="https://cdn.jotfor.ms/agent/embedjs/019fdd4d6df8700084324166264c1bd3dc5a/embed.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
