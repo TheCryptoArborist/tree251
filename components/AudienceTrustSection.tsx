@@ -1,5 +1,5 @@
-import { Mail } from "lucide-react";
-import { inventoryMailto } from "@/components/ConsultBranding";
+import { ArrowRight, Mail } from "lucide-react";
+import { consultationAnchor, inventoryMailto } from "@/components/ConsultBranding";
 
 const audienceGroups = [
   {
@@ -35,9 +35,21 @@ export function AudienceTrustSection() {
                   +
                 </span>
               </summary>
-              <p className="mt-3 border-t border-teal-300/15 pt-3 text-left text-sm font-medium normal-case leading-6 tracking-normal text-emerald-50/80">
-                {group.detail}
-              </p>
+              <div className="mt-3 border-t border-teal-300/15 pt-3 text-left normal-case tracking-normal">
+                <p className="text-sm font-medium leading-6 text-emerald-50/80">
+                  {group.detail}
+                </p>
+                <a
+                  href={consultationAnchor}
+                  data-track-event="Request Assessment Click"
+                  data-track-label={group.title}
+                  data-track-location="audience_dropdown"
+                  className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-[#f6c95a]/40 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.06em] text-[#f6c95a] transition hover:border-[#f6c95a] hover:bg-[#f6c95a]/10 focus-ring"
+                >
+                  Request an Assessment
+                  <ArrowRight className="size-3" aria-hidden="true" />
+                </a>
+              </div>
             </details>
           ))}
         </div>
