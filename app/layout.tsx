@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
 import { AnalyticsEventsBridge } from "@/components/AnalyticsEventsBridge";
+import { DesktopJotformAgent } from "@/components/DesktopJotformAgent";
 import { SiteHeader } from "@/components/SiteHeader";
 
 const siteUrl = "https://tree251.xyz";
@@ -166,10 +166,7 @@ export default function RootLayout({
         >
           Top ↑
         </a>
-        <Script
-          src="https://cdn.jotfor.ms/agent/embedjs/019fdd4d6df8700084324166264c1bd3dc5a/embed.js"
-          strategy="afterInteractive"
-        />
+        <DesktopJotformAgent />
       </body>
     </html>
   );
