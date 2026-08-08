@@ -7,7 +7,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 const siteUrl = "https://tree251.xyz";
 const siteTitle = "The Arborist | Peter Toler, ISA Certified Arborist";
 const siteDescription =
-  "Independent arborist consulting from Peter Toler, ISA Certified Arborist serving the Gulf Coast, including Mobile and Baldwin Counties. Request tree risk assessments, real estate tree due diligence, pre-purchase and pre-listing assessments, tree inventories, surveys, construction planning, utility and excavation root protection, preservation guidance, municipal consulting, HOA consulting, and second opinions before paying for tree work.";
+  "Independent arborist consulting from Peter Toler, ISA Certified Arborist serving the Gulf Coast, including Mobile and Baldwin Counties. Request tree risk assessments, real estate tree due diligence, pre-purchase and pre-listing assessments, tree inventories, surveys, construction and hardscape conflict planning, utility and excavation root protection, preservation guidance, municipal consulting, HOA consulting, and second opinions before paying for tree work.";
 
 const socialProfileUrls = [
   "https://www.facebook.com/ptarborist",
@@ -28,6 +28,8 @@ const serviceTypes = [
   "Tree Inventories",
   "Tree Surveys",
   "Construction Planning",
+  "Construction and Hardscape Conflicts Near Trees",
+  "Retaining Wall and Tree Conflict Consulting",
   "Utility and Excavation Root Protection",
   "Root Management Guidance",
   "Tree Preservation Planning",
@@ -105,6 +107,10 @@ export const metadata: Metadata = {
     "tree survey",
     "tree preservation planning",
     "construction planning arborist",
+    "construction near tree roots",
+    "hardscape conflict near trees",
+    "retaining wall near tree roots",
+    "retaining wall tree consulting",
     "utility excavation root protection",
     "root management arborist",
     "trenching near tree roots",
