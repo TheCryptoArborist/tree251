@@ -1,4 +1,6 @@
-import { ClipboardCheck, FileText, MessageSquareText, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, ClipboardCheck, FileText, MessageSquareText, ShieldCheck } from "lucide-react";
+import { consultationAnchor } from "@/components/ConsultBranding";
 import { TreeInventoryHomeSection } from "@/components/TreeInventoryHomeSection";
 
 const deliverables = [
@@ -31,6 +33,34 @@ const deliverables = [
 export function WhatYouReceiveSection() {
   return (
     <>
+      <section className="border-y border-emerald-950/10 bg-stone-50 py-10 sm:py-14">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="rounded-2xl border border-emerald-950/10 bg-white p-5 shadow-[0_18px_44px_rgba(6,17,13,0.08)] sm:p-7">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-800 sm:text-sm">
+              Construction &amp; hardscape conflicts near trees
+            </p>
+            <h2 className="mt-3 max-w-4xl text-2xl font-black leading-tight text-emerald-950 sm:text-3xl">
+              Plan the work around the tree before excavation begins.
+            </h2>
+            <p className="mt-3 max-w-4xl text-sm leading-6 text-stone-700 sm:text-base sm:leading-7">
+              When a valuable or heritage tree conflicts with a retaining wall, driveway, foundation, grading, trenching, utility work, sidewalk, drainage project, or other site improvement, arborist input can help identify root-zone constraints, preservation options, and practical alternatives before roots are cut or the design is locked in.
+            </p>
+            <p className="mt-3 max-w-4xl text-sm leading-6 text-stone-700 sm:text-base sm:leading-7">
+              The goal is to help property owners, contractors, engineers, and project teams understand the tree-related constraints early enough to make a better construction decision.
+            </p>
+            <Link
+              href={consultationAnchor}
+              data-track-event="Request Assessment Click"
+              data-track-location="construction_conflict_section"
+              className="mt-5 inline-flex items-center gap-2 rounded-full border border-emerald-900/25 bg-emerald-950 px-4 py-2.5 text-sm font-black text-white transition hover:bg-emerald-900 focus-ring"
+            >
+              Request project guidance
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <TreeInventoryHomeSection />
 
       <section id="what-you-receive" className="relative isolate overflow-hidden bg-[#07131b] py-12 text-white sm:py-16">
