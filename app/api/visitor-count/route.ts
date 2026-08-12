@@ -6,7 +6,7 @@ const COUNTER_KEY = "homepage-visits";
 
 function getCounterStore() {
   if (process.env.CONTEXT === "production") {
-    return getStore(STORE_NAME, { consistency: "strong" });
+    return getStore(STORE_NAME);
   }
 
   return getDeployStore(STORE_NAME);
@@ -14,7 +14,7 @@ function getCounterStore() {
 
 async function readCount() {
   const store = getCounterStore();
-  const stored = await store.get(COUNTER_KEY);
+  const stored = await store.get(COUNTER_KEY, { consistency: "strong" });
   const count = Number.parseInt(stored ?? "0", 10);
   return Number.isFinite(count) ? count : 0;
 }
