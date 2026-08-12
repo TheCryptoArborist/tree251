@@ -9,7 +9,7 @@ const buyMeACoffeeUrl = "https://www.buymeacoffee.com/arborist251";
 
 export function SocialLinksFooter() {
   return (
-    <div>
+    <div className="pb-28 sm:pb-0">
       <p className="font-black uppercase tracking-[0.14em] text-[#f6c95a]">Follow The Arborist</p>
       <ul className="mt-4 space-y-2">
         {socialLinks.map((link) => (
