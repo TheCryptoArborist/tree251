@@ -156,6 +156,8 @@ function CheckList({ items }: { items: readonly string[] }) {
 export function TheArboristHomePage() {
   return (
     <div className="bg-[#050b12] text-stone-900">
+      <SalutingBranchesFeature />
+
       <section className="relative isolate overflow-hidden bg-[#050b12] text-white">
         <Image
           src="/consult-request-background.jpeg"
@@ -185,8 +187,6 @@ export function TheArboristHomePage() {
           </div>
         </div>
       </section>
-
-      <SalutingBranchesFeature />
 
       <AudienceTrustSection />
 
