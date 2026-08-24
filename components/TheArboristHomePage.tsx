@@ -31,6 +31,7 @@ import { FAQSection } from "@/components/FAQSection";
 import { GoogleReviewsSection } from "@/components/GoogleReviewsSection";
 import { PeterHeadshot } from "@/components/PeterHeadshot";
 import { SocialLinksFooter } from "@/components/SocialLinksFooter";
+import { SalutingBranchesFeature } from "@/components/SalutingBranchesFeature";
 import { WhatYouReceiveSection } from "@/components/WhatYouReceiveSection";
 
 const audiencePathways = [
@@ -184,6 +185,8 @@ export function TheArboristHomePage() {
           </div>
         </div>
       </section>
+
+      <SalutingBranchesFeature />
 
       <AudienceTrustSection />
 
