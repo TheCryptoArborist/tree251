@@ -13,6 +13,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1
     },
     {
+      url: `${siteUrl}/saluting-branches-mobile-2026`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.9
+    },
+    {
       url: `${siteUrl}/real-estate`,
       lastModified: now,
       changeFrequency: "monthly",
