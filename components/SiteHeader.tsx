@@ -1,20 +1,19 @@
 import Link from "next/link";
 import {
   ArboristLogo,
+  calendlySchedulingUrl,
   consultationAnchor,
-  inventoryMailto,
   isaCredentialUrl,
   socialLinks
 } from "@/components/ConsultBranding";
 import {
   ArrowRight,
   BadgeCheck,
+  CalendarDays,
   ChevronDown,
   Facebook,
   Instagram,
   Linkedin,
-  Mail,
-  MessageCircle,
   Phone,
   Youtube
 } from "lucide-react";
@@ -30,13 +29,13 @@ const desktopNavItems = [
 ];
 
 const resourceNavItems = [
-  { href: "/historic-trees", label: "Historic Trees" },
-  { href: "/knowledge-center", label: "Tree Codes" },
-  { href: "/resources/tree-benefit-calculator", label: "Tree Benefit Calculator" }
-];
+  { href: "/historic-trees", label: "Historic Trees", external: false },
+  { href: "https://mobile-tree-emergency.netlify.app", label: "Emergency Tree Board", external: true },
+  { href: "/knowledge-center", label: "Tree Codes", external: false },
+  { href: "/resources/tree-benefit-calculator", label: "Tree Benefit Calculator", external: false }
+] as const;
 
 const headerSocialLinks = socialLinks.filter((link) => link.label !== "Google");
-const jotformAgentUrl = "https://agent.jotform.com/019fdd4d6df8700084324166264c1bd3dc5a";
 
 function TikTokIcon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -76,16 +75,14 @@ export function SiteHeader() {
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-teal-300/20 bg-[#050b12]/95 text-white shadow-[0_14px_34px_rgba(0,0,0,0.34)] backdrop-blur-xl">
-        <div className="border-b border-[#f6c95a]/30 bg-[#07131b]">
-          <div className="mx-auto max-w-[1480px] px-3 py-2 sm:px-6 lg:flex lg:items-center lg:justify-between lg:gap-4 lg:px-8 lg:py-1.5">
-            <p className="mb-2 text-center text-[11px] font-black uppercase tracking-[0.18em] text-[#f6c95a] lg:mb-0 lg:text-left">
+        <div className="hidden border-b border-[#f6c95a]/30 bg-[#07131b] lg:block">
+          <div className="mx-auto flex max-w-[1480px] items-center justify-between gap-4 px-8 py-1.5">
+            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#f6c95a]">
               Follow The Arborist
             </p>
-
-            <nav aria-label="Social media profiles" className="grid grid-cols-7 gap-1 lg:flex lg:items-center lg:justify-end lg:gap-1.5">
+            <nav aria-label="Social media profiles" className="flex items-center justify-end gap-1.5">
               {headerSocialLinks.map((link) => {
                 const Icon = socialIcons[link.label];
-
                 return (
                   <a
                     key={link.label}
@@ -97,9 +94,9 @@ export function SiteHeader() {
                     data-track-event="Social Link Click"
                     data-track-label={link.label}
                     data-track-location="top_social_bar"
-                    className="flex min-h-9 items-center justify-center rounded-full border border-[#f6c95a]/50 bg-[#f6c95a] px-1.5 py-2 text-[#06110d] shadow-[0_10px_22px_rgba(246,201,90,0.16)] transition hover:bg-[#ffdc70] focus-ring sm:px-3 lg:min-h-0 lg:border-teal-300/20 lg:bg-white/[0.04] lg:px-3.5 lg:py-1.5 lg:text-emerald-50/90 lg:shadow-none lg:hover:border-[#f6c95a]/70 lg:hover:bg-white/10 lg:hover:text-white"
+                    className="flex items-center justify-center rounded-full border border-teal-300/20 bg-white/[0.04] px-3.5 py-1.5 text-emerald-50/90 transition hover:border-[#f6c95a]/70 hover:bg-white/10 hover:text-white focus-ring"
                   >
-                    <Icon className="size-4 sm:size-5" aria-hidden />
+                    <Icon className="size-4" aria-hidden />
                   </a>
                 );
               })}
@@ -107,7 +104,7 @@ export function SiteHeader() {
           </div>
         </div>
 
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-3 py-2 sm:px-6 sm:py-3 lg:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-3 py-2.5 sm:px-6 sm:py-3 lg:px-8">
           <Link href="/" className="flex shrink-0 items-start gap-3 focus-ring sm:gap-3.5">
             <ArboristLogo showText={false} compact className="shrink-0" />
             <span className="min-w-0 pt-0.5">
@@ -136,19 +133,28 @@ export function SiteHeader() {
                 Resources
                 <ChevronDown className="size-3.5 transition group-hover:rotate-180 group-focus-within:rotate-180" aria-hidden="true" />
               </button>
-              <div className="invisible absolute right-0 top-full z-50 mt-2 w-60 translate-y-1 rounded-2xl border border-teal-300/20 bg-[#07131b] p-2 opacity-0 shadow-[0_18px_44px_rgba(0,0,0,0.45)] transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
-                {resourceNavItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    data-track-event="Navigation Click"
-                    data-track-label={item.label}
-                    data-track-location="desktop_resources_menu"
-                    className="block rounded-xl px-3 py-2.5 text-sm text-emerald-50/85 transition hover:bg-white/10 hover:text-white focus-ring"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
+              <div className="invisible absolute right-0 top-full z-50 mt-2 w-64 translate-y-1 rounded-2xl border border-teal-300/20 bg-[#07131b] p-2 opacity-0 shadow-[0_18px_44px_rgba(0,0,0,0.45)] transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                {resourceNavItems.map((item) =>
+                  item.external ? (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block rounded-xl px-3 py-2.5 text-sm text-emerald-50/85 transition hover:bg-white/10 hover:text-white focus-ring"
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="block rounded-xl px-3 py-2.5 text-sm text-emerald-50/85 transition hover:bg-white/10 hover:text-white focus-ring"
+                    >
+                      {item.label}
+                    </Link>
+                  )
+                )}
               </div>
             </div>
           </nav>
@@ -165,12 +171,11 @@ export function SiteHeader() {
               <BadgeCheck className="size-4 text-[#f6c95a]" aria-hidden="true" />
               Verify ISA
             </a>
-
             <Link
               href={consultationAnchor}
               data-track-event="Request Assessment Click"
               data-track-location="header"
-              className="hidden min-h-11 items-center justify-center gap-1.5 rounded-full bg-[#f6c95a] px-3 py-2 text-xs font-black text-[#06110d] shadow-[0_12px_28px_rgba(246,201,90,0.22)] transition hover:bg-[#ffdc70] focus-ring sm:inline-flex sm:px-4 sm:py-2.5 sm:text-sm"
+              className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full bg-[#f6c95a] px-3 py-2 text-xs font-black text-[#06110d] shadow-[0_12px_28px_rgba(246,201,90,0.22)] transition hover:bg-[#ffdc70] focus-ring sm:px-4 sm:py-2.5 sm:text-sm"
             >
               <span className="sm:hidden">Request</span>
               <span className="hidden sm:inline">Request Assessment</span>
@@ -180,38 +185,41 @@ export function SiteHeader() {
         </div>
 
         <nav aria-label="Mobile quick navigation" className="flex gap-1 overflow-x-auto border-t border-teal-300/15 px-2 py-1.5 text-center text-[10px] font-black text-emerald-50/90 lg:hidden">
-          <Link href="/#start-here" data-track-event="Navigation Click" data-track-label="Start Here" data-track-location="mobile_header" className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring">Start Here</Link>
-          <Link href="/tree-inventories" data-track-event="Navigation Click" data-track-label="Tree Inventories" data-track-location="mobile_header" className="min-w-[7.1rem] rounded-full border border-[#f6c95a]/45 bg-[#f6c95a]/10 px-2 py-2.5 transition hover:bg-[#f6c95a]/20 hover:text-white focus-ring">Tree Inventories</Link>
-          <Link href="/#services" data-track-event="Navigation Click" data-track-label="Services" data-track-location="mobile_header" className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring">Services</Link>
-          <Link href="/real-estate" data-track-event="Navigation Click" data-track-label="Real Estate" data-track-location="mobile_header" className="min-w-[5.8rem] rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring">Real Estate</Link>
-          <Link href="/#google-reviews" data-track-event="Navigation Click" data-track-label="Reviews" data-track-location="mobile_header" className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring">Reviews</Link>
-          <Link href="/historic-trees" data-track-event="Navigation Click" data-track-label="Historic Trees" data-track-location="mobile_header" className="min-w-[6.4rem] rounded-full border border-white/10 px-2 py-2.5 leading-tight transition hover:bg-white/10 hover:text-white focus-ring">Historic Trees</Link>
-          <Link href="/knowledge-center" data-track-event="Navigation Click" data-track-label="Tree Codes" data-track-location="mobile_header" className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 transition hover:bg-white/10 hover:text-white focus-ring">Tree Codes</Link>
-          <Link href="/resources/tree-benefit-calculator" data-track-event="Navigation Click" data-track-label="Tree Benefit Calculator" data-track-location="mobile_header" className="min-w-[7.8rem] rounded-full border border-white/10 px-2 py-2.5 leading-tight transition hover:bg-white/10 hover:text-white focus-ring">Benefit Calculator</Link>
+          <Link href="/#start-here" className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Start Here</Link>
+          <Link href="/#services" className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Services</Link>
+          <Link href="/tree-inventories" className="min-w-[7.1rem] rounded-full border border-[#f6c95a]/45 bg-[#f6c95a]/10 px-2 py-2.5 focus-ring">Inventories</Link>
+          <Link href="/real-estate" className="min-w-[5.8rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Real Estate</Link>
+          <a href="https://mobile-tree-emergency.netlify.app" target="_blank" rel="noreferrer" className="min-w-[7.4rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Emergency Board</a>
         </nav>
       </header>
 
-      <nav aria-label="Mobile contact actions" className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-4 border-t border-teal-300/20 bg-[#050b12]/97 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-14px_34px_rgba(0,0,0,0.4)] backdrop-blur-xl lg:hidden">
-        <a href={inventoryMailto} data-track-event="Email Peter Click" data-track-location="mobile_sticky_bar" className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-black uppercase tracking-[0.04em] text-white focus-ring">
-          <Mail className="size-4 text-[#f6c95a]" aria-hidden="true" />
-          Email
-        </a>
-        <a href="tel:+12512190140" data-track-event="Phone Click" data-track-location="mobile_sticky_bar" className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl border-l border-white/10 text-[10px] font-black uppercase tracking-[0.04em] text-white focus-ring">
+      <nav aria-label="Mobile contact actions" className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-3 border-t border-teal-300/20 bg-[#050b12]/97 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-14px_34px_rgba(0,0,0,0.4)] backdrop-blur-xl lg:hidden">
+        <a
+          href="tel:+12512190140"
+          data-track-event="Phone Click"
+          data-track-location="mobile_sticky_bar"
+          className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-black uppercase tracking-[0.04em] text-white focus-ring"
+        >
           <Phone className="size-4 text-[#f6c95a]" aria-hidden="true" />
           Call
         </a>
         <a
-          href={jotformAgentUrl}
+          href={calendlySchedulingUrl}
           target="_blank"
           rel="noreferrer"
-          data-track-event="AI Agent Click"
+          data-track-event="Schedule Phone Click"
           data-track-location="mobile_sticky_bar"
           className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl border-x border-white/10 text-[10px] font-black uppercase tracking-[0.04em] text-white focus-ring"
         >
-          <MessageCircle className="size-4 text-[#f6c95a]" aria-hidden="true" />
-          Chat
+          <CalendarDays className="size-4 text-[#f6c95a]" aria-hidden="true" />
+          Schedule
         </a>
-        <Link href={consultationAnchor} data-track-event="Request Assessment Click" data-track-location="mobile_sticky_bar" className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl bg-[#f6c95a] text-[10px] font-black uppercase tracking-[0.04em] text-[#06110d] focus-ring">
+        <Link
+          href={consultationAnchor}
+          data-track-event="Request Assessment Click"
+          data-track-location="mobile_sticky_bar"
+          className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl bg-[#f6c95a] text-[10px] font-black uppercase tracking-[0.04em] text-[#06110d] focus-ring"
+        >
           <ArrowRight className="size-4" aria-hidden="true" />
           Request
         </Link>
