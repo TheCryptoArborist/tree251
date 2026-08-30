@@ -22,11 +22,11 @@ export const facebookUrl = "https://www.facebook.com/ptarborist";
 export const instagramUrl = "https://www.instagram.com/ptarborist";
 export const linkedinUrl = "https://www.linkedin.com/in/ptarborist";
 export const substackUrl = "https://substack.com/@ptarborist";
-export const youtubeUrl = "http://www.youtube.com/@TheArboristPT";
+export const youtubeUrl = "https://www.youtube.com/@TheArboristPT";
 export const tiktokUrl = "https://www.tiktok.com/@arborist63";
 export const redditUrl = "https://www.reddit.com/r/GulfCoastArborist/";
 export const googleBusinessProfileUrl = "https://maps.app.goo.gl/cShPmYshpMQvxFTT6?g_st=ic";
-export const googleReviewUrl = "http://g.page/r/CdmRJY0DlABmEAo/review";
+export const googleReviewUrl = "https://g.page/r/CdmRJY0DlABmEAo/review";
 
 export const socialLinks = [
   { label: "Facebook", href: facebookUrl },
@@ -40,11 +40,10 @@ export const socialLinks = [
 ] as const;
 
 export const consultationAnchor = "/#consultation-request";
-export const phoneConsultationAnchor = "/#phone-consultation";
-export const scheduleCallAnchor = phoneConsultationAnchor;
+export const phoneConsultationAnchor = calendlySchedulingUrl;
+export const scheduleCallAnchor = calendlySchedulingUrl;
 export const schedulePagePath = "/schedule";
 export const reportVerificationPath = "/verify";
-export const treeBenefitsAnchor = "/#tree-benefits";
 
 export const professionalServiceLines = [
   "Tree Risk Assessments",
@@ -84,8 +83,6 @@ export function ArboristLogo({
     </div>
   );
 }
-
-export const TreeVerifiedLogo = ArboristLogo;
 
 export function RequestConsultationButton({
   href = consultationAnchor,
@@ -151,10 +148,8 @@ export function VerifyIsaButton({
   );
 }
 
-export const VerifyReportButton = VerifyIsaButton;
-
 export function SchedulePhoneButton({
-  href = scheduleCallAnchor,
+  href = calendlySchedulingUrl,
   className = ""
 }: {
   href?: string;
@@ -196,5 +191,3 @@ export function SubmitPhotosButton({
     </a>
   );
 }
-
-export const TreeBenefitsButton = SubmitPhotosButton;
