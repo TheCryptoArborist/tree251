@@ -176,13 +176,22 @@ export function TheArboristHomePage() {
               Independent Arborist Guidance
             </p>
             <h1 className="text-4xl font-black leading-[0.98] text-white drop-shadow-[0_10px_22px_rgba(0,0,0,0.35)] sm:text-6xl lg:text-7xl">Concerned About a Tree?</h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-emerald-50 sm:mt-6 sm:text-xl sm:leading-8">Get an independent tree assessment before paying for tree work.</p>
+            <p className="mt-5 max-w-2xl text-base font-bold leading-7 text-emerald-50 sm:mt-6 sm:text-xl sm:leading-8">
+              Get an independent assessment from an ISA Certified Consulting Arborist before deciding what tree work to authorize.
+            </p>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-emerald-100/85 sm:mt-5 sm:text-base sm:leading-7">
-              Peter Toler helps Gulf Coast property owners and project teams understand what is needed, what can wait, and what should be prioritized before hiring a tree service.
+              Tree risk, health concerns, storm damage, preservation, development, permit, HOA, municipal, and commercial consulting.
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:flex-wrap">
               <RequestConsultationButton className="min-h-12 w-full sm:w-auto" />
-              <SchedulePhoneButton className="min-h-12 w-full sm:w-auto" />
+              <SchedulePhoneButton href={calendlySchedulingUrl} className="min-h-12 w-full sm:w-auto" />
+            </div>
+            <div className="mt-5 flex max-w-2xl items-start gap-3 rounded-xl border border-teal-300/20 bg-black/25 p-4 text-sm leading-6 text-emerald-50/90 backdrop-blur-sm">
+              <BadgeCheck className="mt-0.5 size-5 shrink-0 text-[#f6c95a]" aria-hidden="true" />
+              <p>
+                <span className="font-black text-white">Peter Toler — ISA Certified Consulting Arborist.</span>{" "}
+                Independent recommendations with no tree-removal sales pressure.
+              </p>
             </div>
           </div>
         </div>
