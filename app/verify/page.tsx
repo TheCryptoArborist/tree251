@@ -10,7 +10,7 @@ import { getSupabaseReadClient } from "@/lib/supabase/server";
 export const metadata: Metadata = {
   title: "Verify Report",
   description:
-    "Verify a Peter Toler arborist assessment report or timestamped consultation record."
+    "Verify a Peter Toler arborist assessment report or consultation record."
 };
 
 type SearchParams = Promise<{ code?: string }>;
@@ -24,10 +24,6 @@ type ConsultationReport = {
   issued_at: string | null;
   report_hash: string | null;
   hash_algorithm: string | null;
-  tree_verified_status: string | null;
-  tree_timestamp: string | null;
-  tree_tx_hash: string | null;
-  tree_explorer_url: string | null;
 };
 
 async function findReport(code: string) {
@@ -39,7 +35,7 @@ async function findReport(code: string) {
   const { data, error } = await supabase
     .from("consultation_reports")
     .select(
-      "verification_code,report_title,consultation_type,public_client_label,public_property_reference,issued_at,report_hash,hash_algorithm,tree_verified_status,tree_timestamp,tree_tx_hash,tree_explorer_url"
+      "verification_code,report_title,consultation_type,public_client_label,public_property_reference,issued_at,report_hash,hash_algorithm"
     )
     .eq("verification_code", code)
     .limit(1);
@@ -76,8 +72,7 @@ export default async function VerifyReportPage({
               Verify an Assessment Report
             </h2>
             <p className="mt-4 max-w-3xl text-base leading-7 text-stone-700">
-              This page is only for checking a report code after a report has been issued. The main
-              website remains focused on independent tree assessment requests.
+              Enter the verification code provided with a report to confirm that a matching record exists in Peter Toler&apos;s report system.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <a
@@ -133,25 +128,15 @@ export default async function VerifyReportPage({
                     </div>
                     <div>
                       <dt className="font-black text-stone-900">Verification status</dt>
-                      <dd>{result.report.tree_verified_status ?? "Pending"}</dd>
+                      <dd>Matching report record confirmed</dd>
                     </div>
                     {result.report.report_hash ? (
                       <div>
-                        <dt className="font-black text-stone-900">Report hash</dt>
+                        <dt className="font-black text-stone-900">Document integrity reference</dt>
                         <dd className="break-all font-mono text-xs">{result.report.report_hash}</dd>
                       </div>
                     ) : null}
                   </dl>
-                  {result.report.tree_explorer_url ? (
-                    <a
-                      href={result.report.tree_explorer_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-4 inline-flex items-center gap-2 rounded-md border border-emerald-900/20 px-3 py-2 font-black text-emerald-950 hover:bg-emerald-50 focus-ring"
-                    >
-                      View verification record
-                    </a>
-                  ) : null}
                 </div>
               ) : null}
               {result.status === "not-found" ? (
@@ -161,7 +146,7 @@ export default async function VerifyReportPage({
               ) : null}
               {result.status === "not-configured" ? (
                 <p className="rounded-md border border-amber-300/60 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
-                  Report lookup is ready, but Supabase environment variables are not configured in this runtime.
+                  Online report lookup is temporarily unavailable. Use manual verification below.
                 </p>
               ) : null}
               {result.status === "error" ? (
@@ -186,11 +171,10 @@ export default async function VerifyReportPage({
           <div className="rounded-md border border-emerald-950/10 bg-white p-6">
             <BadgeCheck className="size-10 text-emerald-800" aria-hidden="true" />
             <h2 className="mt-4 text-2xl font-black text-emerald-950">
-              Verification is optional.
+              Professional report confirmation.
             </h2>
             <p className="mt-3 max-w-3xl text-base leading-7 text-stone-700">
-              Report verification is a secondary utility. It does not replace Peter Toler and the
-              professional arborist assessment.
+              Verification confirms that the submitted code matches a report record maintained for Peter Toler&apos;s arborist consulting work. For questions about a report, use the manual verification option above.
             </p>
           </div>
         </div>
