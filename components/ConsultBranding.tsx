@@ -44,6 +44,7 @@ export const phoneConsultationAnchor = calendlySchedulingUrl;
 export const scheduleCallAnchor = calendlySchedulingUrl;
 export const schedulePagePath = "/schedule";
 export const reportVerificationPath = "/verify";
+export const treeBenefitsAnchor = consultationAnchor;
 
 export const professionalServiceLines = [
   "Tree Risk Assessments",
@@ -83,6 +84,8 @@ export function ArboristLogo({
     </div>
   );
 }
+
+export const TreeVerifiedLogo = ArboristLogo;
 
 export function RequestConsultationButton({
   href = consultationAnchor,
@@ -148,6 +151,8 @@ export function VerifyIsaButton({
   );
 }
 
+export const VerifyReportButton = VerifyIsaButton;
+
 export function SchedulePhoneButton({
   href = calendlySchedulingUrl,
   className = ""
@@ -191,3 +196,5 @@ export function SubmitPhotosButton({
     </a>
   );
 }
+
+export const TreeBenefitsButton = SubmitPhotosButton;
