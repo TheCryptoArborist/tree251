@@ -30,7 +30,7 @@ const desktopNavItems = [
 
 const resourceNavItems = [
   { href: "/historic-trees", label: "Historic Trees", external: false },
-  { href: "https://mobile-tree-emergency.netlify.app", label: "Emergency Tree Board", external: true },
+  { href: "/resources/storm-tree-checklist", label: "Storm Tree Checklist", external: false },
   { href: "/knowledge-center", label: "Tree Codes", external: false },
   { href: "/resources/tree-benefit-calculator", label: "Tree Benefit Calculator", external: false }
 ] as const;
@@ -189,7 +189,7 @@ export function SiteHeader() {
           <Link href="/#services" className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Services</Link>
           <Link href="/tree-inventories" className="min-w-[7.1rem] rounded-full border border-[#f6c95a]/45 bg-[#f6c95a]/10 px-2 py-2.5 focus-ring">Inventories</Link>
           <Link href="/real-estate" className="min-w-[5.8rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Real Estate</Link>
-          <a href="https://mobile-tree-emergency.netlify.app" target="_blank" rel="noreferrer" className="min-w-[7.4rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Emergency Board</a>
+          <Link href="/resources/storm-tree-checklist" className="min-w-[7.4rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Storm Checklist</Link>
         </nav>
       </header>
 
