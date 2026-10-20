@@ -198,6 +198,14 @@ export default function AlabamaAct2015116Page() {
                 <div className="border-t border-teal-300/15 px-5 py-5">
                   <div className="space-y-4 text-sm leading-7 text-emerald-50/84 sm:text-base">
                     {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                    {section.code === "Ala. Code § 11-72-11" ? (
+                      <div className="mt-5 rounded-2xl border border-[#f6c95a]/35 bg-[#f6c95a]/10 p-4">
+                        <h3 className="text-base font-black text-white">What does “Class C misdemeanor” mean?</h3>
+                        <p className="mt-2 text-sm leading-6 text-emerald-50/84">
+                          Under Alabama law, a Class C misdemeanor is punishable by up to three months in jail and a fine of up to $500. A court may impose imprisonment, a fine, or both within those limits. Probation may also be available as authorized by Alabama law.
+                        </p>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </details>
