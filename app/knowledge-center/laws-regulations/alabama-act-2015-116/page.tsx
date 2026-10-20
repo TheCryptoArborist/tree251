@@ -9,7 +9,7 @@ const cityCleanCopyUrl = "https://www.cityofmobile.gov/uploads/220325095218Act20
 export const metadata: Metadata = {
   title: "Alabama Act 2015-116 - Clean Text",
   description:
-    "A clean, readable listing of Alabama Act 2015-116 concerning the Tree Commission in a Class 2 municipality, with struck-through prior language omitted.",
+    "A clean, readable listing of Alabama Act 2015-116 covering Tree Commission governance, public-tree responsibilities, street right-of-way tree work, utility emergency exceptions, appeals, and violations in a Class 2 municipality.",
   alternates: { canonical: "/knowledge-center/laws-regulations/alabama-act-2015-116" }
 };
 
@@ -134,7 +134,7 @@ export default function AlabamaAct2015116Page() {
           <p className="mt-8 text-xs font-black uppercase tracking-[0.18em] text-[#f6c95a]">Alabama state law - Clean enacted text</p>
           <h1 className="mt-4 text-4xl font-black leading-[1.02] sm:text-6xl">Alabama Act 2015-116</h1>
           <p className="mt-6 max-w-3xl text-base leading-7 text-emerald-50/84 sm:text-xl sm:leading-8">
-            Tree Commission in a Class 2 municipality. This readable listing retains the enacted language and omits language shown as struck through in the enrolled act.
+            Act 2015-116 addresses more than Tree Commission composition. It covers commission governance and duties, public-tree responsibilities, street right-of-way tree work, utility emergency exceptions, appeals, and violations within a Class 2 municipality. This readable listing retains the enacted language and omits language shown as struck through in the enrolled act.
           </p>
           <div className="mt-7 flex flex-wrap gap-3 text-xs font-black uppercase tracking-[0.12em] text-emerald-50/65">
             <span className="rounded-full border border-teal-300/25 bg-white/[0.05] px-4 py-2">HB207</span>
@@ -165,9 +165,23 @@ export default function AlabamaAct2015116Page() {
               <h2 className="mt-1 text-3xl font-black sm:text-4xl">Applicability</h2>
             </div>
           </div>
-          <p className="mt-6 rounded-2xl border border-teal-300/20 bg-white/[0.05] p-5 text-base leading-7 text-emerald-50/86">
-            This act shall apply only in a Class 2 municipality.
-          </p>
+          <div className="mt-6 space-y-4">
+            <p className="rounded-2xl border border-teal-300/20 bg-white/[0.05] p-5 text-base leading-7 text-emerald-50/86">
+              This act shall apply only in a Class 2 municipality.
+            </p>
+            <div className="rounded-2xl border border-[#f6c95a]/35 bg-[#f6c95a]/10 p-5">
+              <h3 className="text-lg font-black text-white">Which Alabama municipality is Class 2?</h3>
+              <p className="mt-3 text-sm leading-6 text-emerald-50/84 sm:text-base sm:leading-7">
+                Alabama Code § 11-40-12 establishes eight municipal classes based on population as certified by the 1970 federal decennial census. Class 2 includes cities with a 1970 population of at least 175,000 and not more than 299,999.
+              </p>
+              <p className="mt-3 text-sm leading-6 text-emerald-50/84 sm:text-base sm:leading-7">
+                Under that statutory classification system, Mobile is Alabama&apos;s only Class 2 municipality. For purposes of this act, the Class 2 municipality referenced here is the City of Mobile.
+              </p>
+              <p className="mt-3 text-sm font-bold leading-6 text-[#f6c95a]">
+                Important: this classification is based on the 1970 census used by Alabama law, not a municipality&apos;s current population.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
