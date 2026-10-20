@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 const STORE_NAME = "site-metrics";
 const COUNTER_KEY = "homepage-visits";
+const BASELINE_COUNT = 3842;
 
 function getCounterStore() {
   if (process.env.CONTEXT === "production") {
@@ -16,7 +17,7 @@ async function readCount() {
   const store = getCounterStore();
   const stored = await store.get(COUNTER_KEY, { type: "text" });
   const count = Number.parseInt(stored ?? "0", 10);
-  return Number.isFinite(count) ? count : 0;
+  return Number.isFinite(count) ? Math.max(count, BASELINE_COUNT) : BASELINE_COUNT;
 }
 
 export async function GET() {
@@ -24,7 +25,7 @@ export async function GET() {
     const count = await readCount();
     return NextResponse.json({ count });
   } catch {
-    return NextResponse.json({ count: 0 }, { status: 200 });
+    return NextResponse.json({ count: BASELINE_COUNT }, { status: 200 });
   }
 }
 
