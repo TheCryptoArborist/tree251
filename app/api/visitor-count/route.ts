@@ -38,6 +38,6 @@ export async function POST() {
 
     return NextResponse.json({ count });
   } catch {
-    return NextResponse.json({ count: 0 }, { status: 200 });
+    return NextResponse.json({ count: BASELINE_COUNT }, { status: 200 });
   }
 }
