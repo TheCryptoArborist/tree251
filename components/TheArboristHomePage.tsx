@@ -4,10 +4,13 @@ import {
   ArrowRight,
   BadgeCheck,
   BookOpen,
+  Building2,
   CheckCircle2,
   ClipboardCheck,
   CloudLightning,
+  FileText,
   Hammer,
+  Home,
   ShieldCheck,
   TreePine,
 } from "lucide-react";
@@ -31,22 +34,52 @@ import { WhatYouReceiveSection } from "@/components/WhatYouReceiveSection";
 
 const serviceGroups = [
   {
-    title: "Assess",
-    text: "Tree risk, storm damage, visible defects, targets, and second opinions before removal or major work.",
-    items: ["Tree risk assessments", "Storm damage evaluations", "Second opinions before tree work"],
+    title: "I’m worried about a tree",
+    text: "Visible defects, leaning, cavities, dead limbs, storm damage, declining health, or a tree that simply does not look right.",
+    detail: "Find out what appears urgent, what can wait, and what should be watched.",
+    href: consultationAnchor,
+    label: "Request an assessment",
     icon: ShieldCheck
   },
   {
-    title: "Plan",
-    text: "Clear priorities for properties with one tree or hundreds of trees, including maintenance, surveys, and budgeting.",
-    items: ["Tree inventories and surveys", "Work prioritization", "Municipal, HOA, and commercial planning"],
-    icon: ClipboardCheck
+    title: "I was told a tree needs work or removal",
+    text: "Get an independent second opinion before approving removal, major pruning, cabling, or other expensive tree work.",
+    detail: "Understand whether the recommendation is necessary, appropriately prioritized, or worth questioning.",
+    href: consultationAnchor,
+    label: "Get a second opinion",
+    icon: BadgeCheck
   },
   {
-    title: "Preserve",
-    text: "Arborist input before construction, grading, trenching, access changes, or other work that could affect valuable trees.",
-    items: ["Construction planning", "Root-zone protection", "Mature-tree preservation guidance"],
+    title: "I need to protect trees during construction",
+    text: "Driveways, retaining walls, grading, trenching, utilities, drainage, foundations, access changes, and other work near mature trees.",
+    detail: "Identify root-zone constraints and preservation options before excavation or design decisions cause avoidable damage.",
+    href: consultationAnchor,
+    label: "Request project guidance",
     icon: Hammer
+  },
+  {
+    title: "I manage a property with many trees",
+    text: "Tree inventories, maintenance priorities, budgeting, risk screening, and long-range planning for HOAs, businesses, campuses, and municipalities.",
+    detail: "Turn a large tree population into an organized, prioritized management plan.",
+    href: "/tree-inventories",
+    label: "Explore tree inventories",
+    icon: Building2
+  },
+  {
+    title: "I’m buying or selling property",
+    text: "Tree-related due diligence for buyers, sellers, agents, inspectors, and property owners before a real-estate decision.",
+    detail: "Identify significant tree concerns before they become an expensive surprise.",
+    href: "/real-estate",
+    label: "Explore real estate services",
+    icon: Home
+  },
+  {
+    title: "I need documentation or professional guidance",
+    text: "Written recommendations, reports, permit support, project coordination, and information that can be shared with contractors, boards, engineers, insurers, or attorneys.",
+    detail: "Match the level of documentation to the decision, project, or professional need in front of you.",
+    href: consultationAnchor,
+    label: "Discuss your assignment",
+    icon: FileText
   }
 ] as const;
 
@@ -167,18 +200,26 @@ export function TheArboristHomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             light
-            title="Assess. Plan. Preserve."
-            text="The work starts with the tree, the site, and the decision in front of you. Each service is designed to clarify risk, timing, preservation options, maintenance priorities, and the next practical step."
+            title="What do you need help with?"
+            text="Start with the problem or decision in front of you. You do not need to know the technical name of the arborist service you need."
           />
-          <div className="mt-8 grid gap-4 sm:mt-10 lg:grid-cols-3">
-            {serviceGroups.map(({ title, text, items, icon: Icon }) => (
-              <article key={title} className="rounded-2xl border border-teal-300/20 bg-[#07131b]/80 p-5 shadow-[0_22px_54px_rgba(0,0,0,0.22)] backdrop-blur sm:p-6">
+          <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-2 lg:grid-cols-3">
+            {serviceGroups.map(({ title, text, detail, href, label, icon: Icon }) => (
+              <article key={title} className="flex h-full flex-col rounded-2xl border border-teal-300/20 bg-[#07131b]/80 p-5 shadow-[0_22px_54px_rgba(0,0,0,0.22)] backdrop-blur sm:p-6">
                 <Icon className="size-8 text-[#f6c95a]" aria-hidden="true" />
-                <h3 className="mt-5 text-2xl font-black text-white">{title}</h3>
-                <p className="mt-3 text-sm leading-6 text-emerald-50/78">{text}</p>
-                <div className="mt-5">
-                  <CheckList items={items} />
-                </div>
+                <h3 className="mt-5 text-xl font-black leading-tight text-white sm:text-2xl">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-emerald-50/82">{text}</p>
+                <p className="mt-3 flex-1 text-sm leading-6 text-emerald-100/65">{detail}</p>
+                <Link
+                  href={href}
+                  data-track-event="Service Situation Click"
+                  data-track-label={title}
+                  data-track-location="services_section"
+                  className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a] transition hover:text-[#ffdc70] focus-ring"
+                >
+                  {label}
+                  <ArrowRight className="size-4" aria-hidden="true" />
+                </Link>
               </article>
             ))}
           </div>
