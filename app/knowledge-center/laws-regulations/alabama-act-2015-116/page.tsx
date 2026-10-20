@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, BookOpen, ExternalLink, Info, Landmark, Scale } from "lucide-react";
+import { ArrowLeft, BookOpen, ExternalLink, Landmark, Scale } from "lucide-react";
 
 const officialActUrl = "https://alison.legislature.state.al.us/files/pdf/SearchableInstruments/2015RS/Acts/2015-116.pdf";
 const officialCodeUrl = "https://alison.legislature.state.al.us/code-of-alabama?section=11-72-1";
@@ -140,18 +140,6 @@ export default function AlabamaAct2015116Page() {
             <span className="rounded-full border border-teal-300/25 bg-white/[0.05] px-4 py-2">HB207</span>
             <span className="rounded-full border border-teal-300/25 bg-white/[0.05] px-4 py-2">Approved May 5, 2015</span>
             <span className="rounded-full border border-teal-300/25 bg-white/[0.05] px-4 py-2">Class 2 municipality</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-10 sm:py-14">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-2xl border border-[#f6c95a]/35 bg-[#f6c95a]/10 p-5 sm:p-6">
-            <Info className="size-7 text-[#f6c95a]" aria-hidden="true" />
-            <h2 className="mt-3 text-xl font-black">Reading and legal-use note</h2>
-            <p className="mt-3 text-sm leading-6 text-emerald-50/82">
-              Deleted, struck-through wording from the enrolled amendment is intentionally excluded. Underlined replacement language is retained. This transcription is educational and is not legal advice. The Arborist does not issue permits or citations and does not speak on behalf of the State of Alabama, the City of Mobile, or any municipality. Verify current law through official sources.
-            </p>
           </div>
         </div>
       </section>
