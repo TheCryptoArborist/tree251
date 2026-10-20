@@ -1,6 +1,6 @@
-import { ArrowRight, Building2, Home, Landmark, Mail } from "lucide-react";
+import { ArrowRight, Building2, Home, Landmark } from "lucide-react";
 import Link from "next/link";
-import { consultationAnchor, inventoryMailto } from "@/components/ConsultBranding";
+import { consultationAnchor } from "@/components/ConsultBranding";
 
 const audienceGroups = [
   {
@@ -39,13 +39,13 @@ export function AudienceTrustSection() {
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#f6c95a] sm:text-sm">
-              Choose the path that fits your situation
+              Property and project pathways
             </p>
             <h2 className="mt-2 text-2xl font-black leading-tight text-white sm:text-3xl">
-              Homeowner concern or professional property project?
+              Working on a larger property or project?
             </h2>
             <p className="mt-3 text-sm leading-6 text-emerald-50/78 sm:text-base sm:leading-7">
-              You do not need to know which technical service to request. Start with the type of decision or property you are managing.
+              Choose the type of property or organization you are managing for more focused guidance.
             </p>
           </div>
 
@@ -78,31 +78,6 @@ export function AudienceTrustSection() {
           <p className="mt-5 text-center text-xs font-bold uppercase tracking-[0.12em] text-emerald-50/60 sm:text-sm">
             Based on the Gulf Coast · Serving Mobile and Baldwin Counties and surrounding project areas
           </p>
-        </div>
-      </section>
-
-      <section className="border-b border-emerald-950/10 bg-[#f6c95a] px-4 py-4 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-black text-[#06110d] sm:text-base">
-              Professional clients can send project details directly to Peter.
-            </p>
-            <a
-              href={inventoryMailto}
-              className="mt-1 inline-block break-all text-sm font-bold text-emerald-950 underline decoration-emerald-900/35 underline-offset-4 hover:decoration-emerald-900 focus-ring"
-            >
-              consultingarborist@icloud.com
-            </a>
-          </div>
-          <a
-            href={inventoryMailto}
-            data-track-event="Email Peter Click"
-            data-track-location="homepage_contact_strip"
-            className="inline-flex min-h-12 w-full shrink-0 items-center justify-center gap-2 rounded-full bg-[#07131b] px-6 py-3 text-sm font-black uppercase tracking-[0.04em] text-white transition hover:bg-emerald-950 focus-ring sm:w-auto"
-          >
-            <Mail className="size-4 text-[#f6c95a]" aria-hidden="true" />
-            Email Peter About a Project
-          </a>
         </div>
       </section>
     </>
