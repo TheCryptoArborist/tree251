@@ -4,16 +4,12 @@ import {
   ArrowRight,
   BadgeCheck,
   BookOpen,
-  Building2,
   CheckCircle2,
   ClipboardCheck,
   CloudLightning,
   Hammer,
-  Home,
-  Landmark,
   ShieldCheck,
   TreePine,
-  Users
 } from "lucide-react";
 import {
   ArboristLogo,
@@ -31,39 +27,7 @@ import { FAQSection } from "@/components/FAQSection";
 import { GoogleReviewsSection } from "@/components/GoogleReviewsSection";
 import { PeterHeadshot } from "@/components/PeterHeadshot";
 import { SocialLinksFooter } from "@/components/SocialLinksFooter";
-import { SalutingBranchesFeature } from "@/components/SalutingBranchesFeature";
 import { WhatYouReceiveSection } from "@/components/WhatYouReceiveSection";
-
-const audiencePathways = [
-  {
-    title: "Homeowners",
-    text: "Independent guidance for storm damage, defects, removal decisions, pruning proposals, and second opinions before approving tree work.",
-    href: consultationAnchor,
-    label: "Request an assessment",
-    icon: Home
-  },
-  {
-    title: "Property Managers, HOAs, and Businesses",
-    text: "Tree inventories, maintenance priorities, risk screening, budgeting, and practical plans for properties with multiple trees.",
-    href: "/#services",
-    label: "Explore consulting services",
-    icon: Building2
-  },
-  {
-    title: "Real Estate",
-    text: "Tree-related due diligence for buyers, sellers, agents, inspectors, and property owners before a transaction or major decision.",
-    href: "/real-estate",
-    label: "Explore real estate services",
-    icon: Users
-  },
-  {
-    title: "Municipalities and Project Teams",
-    text: "Support for public trees, surveys, construction planning, preservation decisions, right-of-way concerns, and long-range maintenance.",
-    href: "/#services",
-    label: "Review project support",
-    icon: Landmark
-  }
-] as const;
 
 const serviceGroups = [
   {
@@ -156,8 +120,6 @@ function CheckList({ items }: { items: readonly string[] }) {
 export function TheArboristHomePage() {
   return (
     <div className="bg-[#050b12] text-stone-900">
-      <SalutingBranchesFeature />
-
       <section className="relative isolate overflow-hidden bg-[#050b12] text-white">
         <Image
           src="/consult-request-background.jpeg"
@@ -198,28 +160,6 @@ export function TheArboristHomePage() {
       </section>
 
       <AudienceTrustSection />
-
-      <section id="start-here" className="bg-stone-50 py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            title="Start with the kind of decision you need to make."
-            text="Different properties require different levels of documentation and planning. Choose the pathway that best matches your situation."
-          />
-          <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2">
-            {audiencePathways.map(({ title, text, href, label, icon: Icon }) => (
-              <article key={title} className="rounded-2xl border border-emerald-950/10 bg-white p-5 shadow-[0_18px_44px_rgba(6,17,13,0.08)] sm:p-6">
-                <Icon className="size-8 text-emerald-800" aria-hidden="true" />
-                <h3 className="mt-4 text-xl font-black text-emerald-950">{title}</h3>
-                <p className="mt-3 text-sm leading-6 text-stone-700">{text}</p>
-                <Link href={href} className="mt-5 inline-flex items-center gap-2 text-sm font-black text-emerald-800 hover:text-emerald-950 focus-ring">
-                  {label}
-                  <ArrowRight className="size-4" aria-hidden="true" />
-                </Link>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <section id="services" className="relative isolate overflow-hidden bg-[#050b12] py-12 text-white sm:py-16">
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_10%_0%,rgba(18,192,168,0.18),transparent_28rem),radial-gradient(circle_at_86%_24%,rgba(246,201,90,0.14),transparent_24rem),linear-gradient(145deg,#050b12_0%,#07131b_46%,#0b1f17_100%)]" />
@@ -321,7 +261,7 @@ export function TheArboristHomePage() {
             <SectionHeading
               light
               title="Request a Tree Assessment."
-              text="Start with the form below. Tell Peter what is happening, add photos if you have them, and submit the request when ready."
+              text="Choose Start Assessment Request below when you are ready to tell Peter what is happening, add photos if you have them, and submit your request."
             />
           </div>
           <ConsultationRequestForm />
