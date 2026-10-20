@@ -95,7 +95,7 @@ export default function TreeBenefitCalculatorPage() {
             For decisions involving risk, preservation, construction, real estate, or maintenance planning, request an on-site evaluation from a qualified arborist.
           </p>
           <Link
-            href="/#consultation"
+            href="/#consultation-request"
             data-track-event="Request Assessment Click"
             data-track-location="tree_benefit_calculator_limitations"
             className="mt-7 inline-flex items-center gap-2 font-black text-[#f6c95a] hover:text-[#ffdc70] focus-ring"
