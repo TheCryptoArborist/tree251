@@ -133,7 +133,7 @@ export function SiteHeader() {
                 Resources
                 <ChevronDown className="size-3.5 transition group-hover:rotate-180 group-focus-within:rotate-180" aria-hidden="true" />
               </button>
-              <div className="invisible absolute right-0 top-full z-50 mt-2 w-64 translate-y-1 rounded-2xl border border-teal-300/20 bg-[#07131b] p-2 opacity-0 shadow-[0_18px_44px_rgba(0,0,0,0.45)] transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+              <div className="invisible absolute right-0 top-full z-50 w-64 translate-y-1 rounded-2xl border border-teal-300/20 bg-[#07131b] p-2 opacity-0 shadow-[0_18px_44px_rgba(0,0,0,0.45)] transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
                 {resourceNavItems.map((item) =>
                   item.external ? (
                     <a
