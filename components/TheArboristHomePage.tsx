@@ -194,7 +194,7 @@ export function TheArboristHomePage() {
       <section id="services" className="relative isolate scroll-mt-28 overflow-hidden bg-[#050b12] py-12 text-white sm:py-16">
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_10%_0%,rgba(18,192,168,0.18),transparent_28rem),radial-gradient(circle_at_86%_24%,rgba(246,201,90,0.14),transparent_24rem),linear-gradient(145deg,#050b12_0%,#07131b_46%,#0b1f17_100%)]" />
         <div className="tree-ring-texture absolute inset-y-0 right-0 -z-10 w-1/2 rotate-180 opacity-35" />
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div id="start-here" className="mx-auto max-w-7xl scroll-mt-28 px-4 sm:px-6 lg:px-8">
           <SectionHeading
             light
             title="What do you need help with?"
