@@ -91,11 +91,11 @@ const resources = [
     external: false
   },
   {
-    title: "Emergency Tree Board",
-    text: "Public tree-hazard awareness, weather context, outage resources, and emergency safety information for Mobile and the Gulf Coast.",
-    href: "https://mobile-tree-emergency.netlify.app",
+    title: "Storm Tree Checklist",
+    text: "A practical before-and-after checklist for hurricanes, tornadoes, severe thunderstorms, high winds, and saturated soils.",
+    href: "/resources/storm-tree-checklist",
     icon: CloudLightning,
-    external: true
+    external: false
   },
   {
     title: "Tree Codes & Guidance",
