@@ -6,7 +6,6 @@ import {
   BookOpen,
   Building2,
   CheckCircle2,
-  ClipboardCheck,
   CloudLightning,
   FileText,
   Hammer,
