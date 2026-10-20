@@ -35,7 +35,7 @@ const audienceGroups = [
 export function AudienceTrustSection() {
   return (
     <>
-      <section className="border-y border-teal-300/20 bg-[#07131b] px-4 py-8 text-white sm:px-6 sm:py-10 lg:px-8">
+      <section id="start-here" className="scroll-mt-28 border-y border-teal-300/20 bg-[#07131b] px-4 py-8 text-white sm:px-6 sm:py-10 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#f6c95a] sm:text-sm">
