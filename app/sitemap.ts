@@ -30,6 +30,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8
     },
     {
+      url: `${siteUrl}/resources/storm-tree-checklist`,
+      changeFrequency: "monthly",
+      priority: 0.8
+    },
+    {
       url: `${siteUrl}/resources/tree-benefit-calculator`,
       changeFrequency: "yearly",
       priority: 0.6
