@@ -79,8 +79,8 @@ export default function KnowledgeCenterPage() {
             <Link href="/knowledge-center/laws-regulations/alabama-act-2015-116" className="group rounded-2xl border border-[#f6c95a]/35 bg-white/[0.06] p-6 transition hover:border-[#f6c95a]/70 hover:bg-white/[0.09] focus-ring">
               <BookOpen className="size-9 text-[#f6c95a]" aria-hidden="true" />
               <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Act 2015-116 · HB207</p>
-              <h3 className="mt-2 text-2xl font-black">Tree Commission in a Class 2 Municipality</h3>
-              <p className="mt-3 text-sm leading-6 text-emerald-50/78">Clean, section-by-section enacted text with struck-through prior language omitted.</p>
+              <h3 className="mt-2 text-2xl font-black">Class 2 Municipality Tree Governance, Right-of-Way Work & Appeals</h3>
+              <p className="mt-3 text-sm leading-6 text-emerald-50/78">State law addressing Tree Commission structure and duties, public-tree responsibilities, street right-of-way tree work, utility emergency exceptions, appeals, and violations in a Class 2 municipality.</p>
               <span className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#f6c95a]">Open state reference <ArrowRight className="size-4 transition group-hover:translate-x-1" aria-hidden="true" /></span>
             </Link>
           </div>
