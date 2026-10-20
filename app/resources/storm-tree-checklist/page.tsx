@@ -56,11 +56,7 @@ const stopAndStayAway = [
   "Reaching the tree would require climbing, using a ladder, entering floodwater, or working during dangerous weather."
 ] as const;
 
-function Checklist({
-  items
-}: {
-  items: readonly string[];
-}) {
+function Checklist({ items }: { items: readonly string[] }) {
   return (
     <ul className="space-y-3">
       {items.map((item) => (
@@ -91,7 +87,7 @@ export default function StormTreeChecklistPage() {
           <p className="mt-5 max-w-3xl text-base leading-7 text-emerald-50/85 sm:text-xl sm:leading-8">
             Use this checklist to notice changes around your trees before and after severe weather. It is an observation guide, not a substitute for a professional tree risk assessment.
           </p>
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <div className="mt-7">
             <Link
               href="/#consultation-request"
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#f6c95a] px-6 py-3 text-sm font-black uppercase tracking-[0.04em] text-[#06110d] transition hover:bg-[#ffdc70] focus-ring"
@@ -99,6 +95,133 @@ export default function StormTreeChecklistPage() {
               Request a Tree Assessment
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-8 lg:grid-cols-2">
+            <div>
+              <div className="flex items-center gap-3">
+                <ShieldCheck className="size-8 text-emerald-800" aria-hidden="true" />
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">Before the storm</p>
+                  <h2 className="mt-1 text-2xl font-black text-emerald-950 sm:text-3xl">Know what is already there.</h2>
+                </div>
+              </div>
+              <p className="mt-4 text-sm leading-6 text-stone-700 sm:text-base sm:leading-7">
+                The best time to identify a concern is before the weather deteriorates. Walk the property from the ground and from a safe distance.
+              </p>
+              <div className="mt-6">
+                <Checklist items={beforeStorm} />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center gap-3">
+                <Eye className="size-8 text-emerald-800" aria-hidden="true" />
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">After the storm</p>
+                  <h2 className="mt-1 text-2xl font-black text-emerald-950 sm:text-3xl">Look for what changed.</h2>
+                </div>
+              </div>
+              <p className="mt-4 text-sm leading-6 text-stone-700 sm:text-base sm:leading-7">
+                After conditions are safe, compare the property with what you saw before the storm. Fresh movement or damage is often more important than an old defect that has not changed.
+              </p>
+              <div className="mt-6">
+                <Checklist items={afterStorm} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-emerald-950/10 bg-[#fff5d9] px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="max-w-4xl">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-amber-800 sm:text-sm">
+              Post-storm chainsaw guidance
+            </p>
+            <h2 className="mt-3 text-3xl font-black leading-tight text-emerald-950 sm:text-4xl">
+              Danger levels help identify when to back away — they do not tell you a cut is safe.
+            </h2>
+            <p className="mt-4 text-sm leading-6 text-stone-700 sm:text-base sm:leading-7">
+              Storm-damaged wood can be bent, twisted, compressed, suspended, partially uprooted, or carrying loads that are difficult to see from the ground. A chainsaw can release that stored energy suddenly. The categories below are intended only to help homeowners recognize increasing danger.
+            </p>
+            <div className="mt-5 rounded-2xl border-2 border-amber-500/50 bg-white p-4 text-sm font-bold leading-6 text-stone-800">
+              No category on this page means that a homeowner has been cleared, advised, or authorized to perform chainsaw work. This is general safety information only. It does not evaluate a specific tree, a person&apos;s training, equipment, physical ability, site conditions, electrical hazards, or the forces acting on storm-damaged wood.
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-4 lg:grid-cols-3">
+            <article className="rounded-3xl border border-red-300 bg-white p-5 shadow-sm sm:p-6">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-red-700">Extreme danger</p>
+              <h3 className="mt-2 text-xl font-black text-emerald-950">Do not approach or cut.</h3>
+              <p className="mt-3 text-sm leading-6 text-stone-700">
+                Power lines, suspended limbs, hanging trees, partially uprooted trees, split trunks, active movement, overhead cutting, climbing, or any tree under an obvious heavy load.
+              </p>
+              <p className="mt-4 text-sm font-black leading-6 text-red-800">
+                Keep people out of the area and contact the appropriate utility, emergency service, or qualified tree-care professional.
+              </p>
+            </article>
+
+            <article className="rounded-3xl border border-orange-300 bg-white p-5 shadow-sm sm:p-6">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-orange-700">High danger</p>
+              <h3 className="mt-2 text-xl font-black text-emerald-950">Hidden forces may be present.</h3>
+              <p className="mt-3 text-sm leading-6 text-stone-700">
+                Bent or twisted limbs, wood pinned under other debris, crossed logs, root plates, limbs caught in other trees, or material that may roll, shift, spring, or close a saw kerf when cut.
+              </p>
+              <p className="mt-4 text-sm font-black leading-6 text-orange-800">
+                These conditions can change violently when wood is cut. Professional storm-damage experience is strongly recommended.
+              </p>
+            </article>
+
+            <article className="rounded-3xl border border-amber-300 bg-white p-5 shadow-sm sm:p-6">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-amber-700">Chainsaw hazard remains</p>
+              <h3 className="mt-2 text-xl font-black text-emerald-950">Apparently simple does not mean safe.</h3>
+              <p className="mt-3 text-sm leading-6 text-stone-700">
+                Even a limb or log already on the ground may contain tension or compression, conceal metal or debris, shift while being cut, or create kickback and footing hazards.
+              </p>
+              <p className="mt-4 text-sm font-black leading-6 text-amber-800">
+                If you are not trained and experienced in chainsaw use and storm-damaged wood, do not use this checklist as a reason to begin cutting.
+              </p>
+            </article>
+          </div>
+
+          <div className="mt-6 rounded-3xl border border-emerald-950/10 bg-white p-5 sm:p-6">
+            <h3 className="text-xl font-black text-emerald-950">A practical rule after severe weather</h3>
+            <p className="mt-3 text-sm leading-6 text-stone-700 sm:text-base sm:leading-7">
+              When the tree, limb, or log is not resting naturally and predictably, when something is overhead, when roots or the trunk have shifted, or when you cannot clearly determine where the stored load will move after a cut, stop and get qualified help.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#07131b] px-4 py-12 text-white sm:px-6 sm:py-16 lg:px-8">
+        <div className="mx-auto max-w-5xl">
+          <div className="rounded-3xl border border-[#f6c95a]/35 bg-white/[0.06] p-5 shadow-[0_24px_60px_rgba(0,0,0,0.24)] sm:p-8">
+            <div className="flex items-start gap-4">
+              <AlertTriangle className="mt-1 size-8 shrink-0 text-[#f6c95a]" aria-hidden="true" />
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Stop and stay away</p>
+                <h2 className="mt-2 text-2xl font-black sm:text-3xl">Some situations are not homeowner inspection situations.</h2>
+                <p className="mt-3 text-sm leading-6 text-emerald-50/80 sm:text-base sm:leading-7">
+                  Do not climb, cut, pull, or attempt to free storm-damaged trees or limbs when any of the following is present.
+                </p>
+              </div>
+            </div>
+            <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+              {stopAndStayAway.map((item) => (
+                <li key={item} className="flex gap-3 rounded-2xl border border-teal-300/20 bg-[#050b12]/60 p-4 text-sm leading-6 text-emerald-50/85">
+                  <AlertTriangle className="mt-0.5 size-5 shrink-0 text-[#f6c95a]" aria-hidden="true" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 text-sm leading-6 text-emerald-50/75">
+              If a tree or limb involves electrical lines, keep people away and contact the utility or emergency services as appropriate. Do not approach or attempt to move the tree yourself.
+            </p>
           </div>
         </div>
       </section>
