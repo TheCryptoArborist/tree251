@@ -20,7 +20,13 @@ export async function GET() {
 async function mutate(req: NextRequest) {
   try {
     const origin = req.headers.get("origin");
-    if (origin && new URL(origin).host !== req.nextUrl.host) return reply({ error: "Please submit from the neighborhood page." }, 403);
+    // Netlify may rewrite the internal request host; validate the public origin directly.
+    const allowedOrigins = new Set(["https://www.tree251.xyz", "https://tree251.xyz"]);
+    for (const configured of [process.env.URL, process.env.DEPLOY_PRIME_URL]) {
+      if (configured) { try { allowedOrigins.add(new URL(configured).origin); } catch {} }
+    }
+    if (process.env.NODE_ENV !== "production") allowedOrigins.add(req.nextUrl.origin);
+    if (origin && !allowedOrigins.has(origin)) return reply({ error: "Please reopen tree251.xyz/halloween and try again." }, 403);
     const raw = await req.text();
     if (raw.length > 4096) return reply({ error: "Submission is too large." }, 413);
     const body = JSON.parse(raw);
