@@ -1,0 +1,112 @@
+[
+  {
+    "id":"ogeechee-tupelo","name":"Ogeechee Tupelo","botanical":"Nyssa ogeche","kind":"Native · Deciduous","height":"30–50","width":"20–30","sun":"Full sun to partial shade","soil":"Moist to wet, acidic soil","badge":"For a reliably moist site","space":"A moist, open rooting area","placement":"Use a naturally moist lawn, rain-garden edge, or pond margin with room for spreading branches and roots. A dry, paved pocket is a poor fit.",
+    "intro":"Ogeechee tupelo is the tupelo on the confirmed giveaway list. It is a different species from black gum. Its simple leaves, seasonal fall color, and red fruit on female trees help distinguish it as it matures.",
+    "pot":"Check the root ball every day and water before it dries out. Let the nursery pot drain freely; a tree's tolerance of wet ground is not a reason to leave its container in stagnant water.",
+    "plant":"Choose the permanent location carefully because its taproot makes later moving difficult. Support the root ball, remove the pot, and plant with the first structural roots at or slightly above grade. Follow the wide-hole instructions below.",
+    "water":"Keep the original root ball consistently moist through establishment, including dry spells in a wet-looking yard. Check both it and the surrounding soil; expand the watered area as roots grow.",
+    "season":"Leaves change color and drop in fall. Leaf loss in the dormant season is not by itself a sign of death. Female trees can produce red fruit when pollinated; allow for fruit drop near paths.",
+    "care":"Maintain a broad mulch area and protect the trunk from equipment. Choose a site sheltered from harsh winds. Ask for help with persistent wilt, dieback, or a root ball that dries repeatedly.",
+    "takeaway":"Ogeechee tupelo needs reliable moisture; do not use the old black-gum guide for this tree.",
+    "sources":[["NC State Extension · Ogeechee tupelo","https://plants.ces.ncsu.edu/plants/nyssa-ogeche/"],["US Forest Service · Ogeechee tupelo","https://research.fs.usda.gov/silvics/ogeechee-tupelo"]]
+  },
+  {
+    "id":"live-oak","name":"Live Oak","botanical":"Quercus virginiana","kind":"Native · Broadleaf evergreen","height":"60–80","width":"60–120","sun":"Full sun to partial shade","soil":"Adaptable; favor an open, well-drained site","badge":"Needs substantial room","space":"Broad, connected soil","placement":"Choose a large, open lawn or landscape area. Leave room for a massive trunk, spreading limbs, and roots beyond the crown. Avoid narrow strips between buildings and pavement or beneath overhead utilities.",
+    "intro":"Live oak becomes a broad, long-lived shade tree. Its small, leathery leaves and spreading limbs are useful identification features. The small tree in the nursery pot is not an indication of its eventual space needs.",
+    "pot":"Keep the root ball evenly moist while the tree waits outdoors in a sheltered spot. Check daily, lift by the container, and protect the leaves from strong wind during transport.",
+    "plant":"Expose the root flare before measuring hole depth. Inspect for circling roots and obtain help with substantial defects. Set the root ball on firm soil and keep soil and mulch away from the trunk flare.",
+    "water":"Water the original root ball and surrounding backfill when moisture checks show a need. Established-tree drought tolerance does not protect a newly planted live oak. Continue monitoring through its first summer and later dry spells.",
+    "season":"Live oak replaces older leaves around spring growth and may briefly look thin. Some older-leaf drop is normal; widespread dieback or persistent wilt calls for an inspection rather than extra water by guesswork.",
+    "care":"Keep mowers and string trimmers outside the mulch ring. After establishment, arrange gradual structural pruning while branches are small. Do not top the tree or remove large amounts of healthy foliage to make it fit a restricted site.",
+    "takeaway":"Give live oak its permanent space now; pruning is not a substitute for enough growing room.",
+    "sources":[["UF/IFAS · Southern live oak","https://ask.ifas.ufl.edu/publication/ST564"],["NC State Extension · Live oak","https://plants.ces.ncsu.edu/plants/quercus-virginiana/"]]
+  },
+  {
+    "id":"overcup-oak","name":"Overcup Oak","botanical":"Quercus lyrata","kind":"Native · Deciduous","height":"35–60","width":"35–60","sun":"Full sun to partial shade","soil":"Moist soil; tolerates periodic flooding","badge":"Tolerates periodic flooding","space":"An open shade-tree location","placement":"Provide a broad soil area rather than an isolated hole between hard surfaces. A lower landscape area can suit this tree, but allow for a substantial shade-tree crown and future root spread.",
+    "intro":"Overcup oak is a native shade tree with lobed leaves. The cup covers much of each mature acorn. Older specimens can exceed the typical landscape height shown here.",
+    "pot":"Check the container daily and water when the mix begins to dry. Keep the drainage holes open. Flood tolerance in the landscape does not remove the need to manage a small nursery root ball carefully.",
+    "plant":"Find the root flare and check for circling roots before planting. Use a wide, shallow hole with firm support underneath. Do not bury the trunk to compensate for a low or muddy planting location.",
+    "water":"Keep moisture reasonably even while new roots establish. An overcup oak in a drier yard still needs supplemental water during dry periods. Do not assume wet surrounding ground means the original root ball is moist.",
+    "season":"Fall color ranges from yellow and brown to red, followed by leaf drop. Some young oaks hold dry leaves into winter. Check buds and twigs before assuming a leafless tree has failed.",
+    "care":"Maintain a grass-free mulch ring and protect the bark. Address competing stems and poorly attached branches gradually after establishment. Leave healthy foliage in place during the initial planting period.",
+    "takeaway":"Overcup oak tolerates periodic wet conditions, but it still needs correct planting depth and establishment watering.",
+    "sources":[["NC State Extension · Overcup oak","https://plants.ces.ncsu.edu/plants/quercus-lyrata/"],["US Forest Service · Overcup oak","https://research.fs.usda.gov/feis/species-reviews/quelyr"]]
+  },
+  {
+    "id":"bald-cypress","name":"Bald Cypress","botanical":"Taxodium distichum","kind":"Native · Deciduous conifer","height":"60–80","width":"25–35","sun":"Full sun","soil":"Moist to wet soil; also adapts to drained sites","badge":"Drops its needles in fall","space":"Room for a tall shade tree","placement":"Allow a large, connected rooting area and overhead clearance. In wet or heavily irrigated sites, anticipate knees and an expanding trunk base; keep that growth away from busy paths and confined mowing strips.",
+    "intro":"Bald cypress has soft, feathery foliage but is not evergreen. It can become taller than the typical landscape range shown here and is not limited to growing in standing water.",
+    "pot":"Keep the root ball moist, especially in sun and wind, but let the container drain. Do not deliberately submerge the nursery pot while waiting to plant.",
+    "plant":"Locate the first structural roots and keep them at or slightly above the surrounding grade. Remove the container and correct significant circling roots with appropriate help. Do not plant deeper because this is a wet-site species.",
+    "water":"Check the original root ball frequently and maintain moisture through establishment. A newly planted bald cypress in an ordinary lawn can dry out even though mature trees tolerate varied conditions.",
+    "season":"Bronze or rusty fall foliage followed by needle drop is normal. The bare winter crown should produce fresh growth in spring. Brown foliage during active growth deserves a moisture and health check.",
+    "care":"Keep the mulch broad and shallow. Plan around possible knees rather than cutting them as routine maintenance. Avoid trunk wounds and unnecessary pruning; ask for guidance if the site cannot accommodate its eventual size.",
+    "takeaway":"Fall needle loss is normal; correct depth and reliable moisture are still essential.",
+    "sources":[["UF/IFAS · Bald cypress","https://ask.ifas.ufl.edu/publication/ST620"],["Clemson Extension · Bald cypress","https://hgic.clemson.edu/factsheet/bald-cypress/"]]
+  },
+  {
+    "id":"chaste-tree","name":"Chaste Tree","botanical":"Vitex agnus-castus 'Shoal Creek'","cultivar":"Shoal Creek","kind":"Non-native · Deciduous","height":"10–15","width":"15–20","sun":"Full sun for best flowering","soil":"Well-drained soil; avoid persistent saturation","badge":"‘Shoal Creek’ selection","space":"A broad flowering-tree bed","placement":"Allow room for a wide, multi-stemmed crown, not just its height. Keep it out of soggy depressions and away from windows or paths that would require continual hard pruning.",
+    "intro":"The supplied chaste tree is the ‘Shoal Creek’ selection, with violet-blue flower spikes. It is a large shrub or small tree, not a dwarf variety. Mature size depends on climate, site, and pruning.",
+    "pot":"Check moisture daily and water thoroughly when needed, allowing excess water to drain. Do not leave it in a water-filled saucer; this tree needs drainage even during container storage.",
+    "plant":"Choose a sunny, well-drained location. Plant at the correct root-flare depth and backfill with site soil. Avoid adding fertilizer or heavily cutting back a newly planted tree to force immediate growth.",
+    "water":"Water regularly enough to keep the new root ball from drying, then reduce frequency as roots establish. Drought tolerance applies to established plants, not an unrooted nursery tree. Recheck drainage if the root ball stays soggy.",
+    "season":"Leaves drop in fall. Flowers develop on new growth; pruning for form, if needed after establishment, is best timed before spring growth. Routine severe cutting is not required.",
+    "care":"Retain a natural form or develop a small tree gradually. Watch for unwanted seedlings because chaste tree can spread by seed. Remove seedlings promptly rather than allowing it to spread into natural areas.",
+    "takeaway":"For ‘Shoal Creek,’ prioritize sun, drainage, and room for a broad crown.",
+    "sources":[["Clemson Extension · Chaste tree and ‘Shoal Creek’ dimensions","https://hgic.clemson.edu/factsheet/chastetree/"],["NC State Extension · ‘Shoal Creek’ chaste tree","https://plants.ces.ncsu.edu/plants/vitex-agnus-castus-shoal-creek/"]]
+  },
+  {
+    "id":"longleaf-pine","name":"Longleaf Pine","botanical":"Pinus palustris","kind":"Native · Evergreen conifer","height":"60–120","width":"30–40","sun":"Full sun","soil":"Well-drained, acidic soil","badge":"Protect the central growing tip","space":"An open, sunny pine location","placement":"Choose a sunny area with substantial overhead clearance and connected soil. Avoid a small foundation bed or a chronically waterlogged pocket. Its low grass-like juvenile form does not mean it will stay small.",
+    "intro":"Longleaf pine has long needles, usually in bundles of three. A young tree may remain in a low ‘grass stage’ while developing roots, then begin rapid height growth. This is normal development, not a reason to replace it.",
+    "pot":"Keep the root ball moist but freely draining. Support the container and protect the central bud and needles from crushing. Do not postpone planting just to wait for a taller stem.",
+    "plant":"Keep the central growing bud clear of soil and mulch. For a grass-stage plant, the bud must not be buried. Set the root system at the correct original depth, support the root ball, and ask for help with badly kinked roots rather than tearing them apart.",
+    "water":"Check moisture frequently after planting and water during dry spells without maintaining a soggy root ball. Do not use trunk-diameter watering calculations for a grass-stage plant; wet the actual root ball and check the result.",
+    "season":"Slow height growth in the grass stage is normal. Older needles can shed while the growing tip remains healthy. Keep grass and weeds from overtopping the young pine.",
+    "care":"Never mow a grass-stage pine as though it were lawn grass. Keep mulch off the bud, protect the leader, and avoid topping or shearing. Do not use fire as a homeowner establishment treatment.",
+    "takeaway":"Protect the bud, avoid deep planting, and keep competing grass away without damaging the pine.",
+    "sources":[["NC State Extension · Longleaf pine","https://plants.ces.ncsu.edu/plants/pinus-palustris/"],["Alabama Extension · Longleaf pine in urban landscapes","https://www.aces.edu/blog/topics/forestry/planting-longleaf-pine-in-the-southern-urban-landscape/"],["Alabama Extension · Pine planting depth","https://www.aces.edu/blog/topics/forestry/planting-southern-pine-seedlings/"]]
+  },
+  {
+    "id":"chickasaw-plum","name":"Chickasaw Plum","botanical":"Prunus angustifolia","kind":"Native · Deciduous small tree","height":"10–20","width":"10–20","sun":"Full sun to partial shade","soil":"Average, well-drained soil","badge":"Can form a thicket","space":"Room for a small tree and suckers","placement":"Use a sunny, well-drained bed or naturalized edge with room for root sprouts. Keep it clear of narrow walkways; spreading shoots, occasional thorny twigs, and fallen fruit need consideration.",
+    "intro":"Chickasaw plum is a small native tree or large shrub with white spring flowers, narrow toothed leaves, and yellow-to-red summer fruit. It often produces root suckers and can spread into a colony.",
+    "pot":"Keep the mix moist, not saturated, and check it every day. Protect the container from strong wind and do not lift or drag the tree by its stems.",
+    "plant":"Plant with the flare visible in a broad hole, using the existing soil as backfill. Decide whether this will be one maintained tree or a naturalized thicket so future sprouts will not conflict with nearby uses.",
+    "water":"Water the original root ball as needed through establishment. Once rooted into the site, reduce frequency according to actual soil moisture. Avoid leaving it in persistently wet soil.",
+    "season":"White blooms can appear before the leaves in spring. Yellowing and leaf loss in fall are normal. Fruit production can vary; do not expect a newly planted tree to establish and produce a crop immediately.",
+    "care":"Remove unwanted root suckers while small if you want a single tree. Watch for branch dieback, cankers, or black swellings and seek diagnosis before treatment. Do not eat plum pits, leaves, or stems; keep fallen material away from livestock.",
+    "takeaway":"Plan for root suckers from the beginning; a small crown does not mean a non-spreading root system.",
+    "sources":[["NC State Extension · Chickasaw plum","https://plants.ces.ncsu.edu/plants/prunus-angustifolia/"]]
+  },
+  {
+    "id":"sweetbay-magnolia","name":"Sweetbay Magnolia","botanical":"Magnolia virginiana","kind":"Native · Evergreen to semi-evergreen locally","height":"40–60","width":"15–25","sun":"Full sun to partial shade","soil":"Moist to wet, acidic soil","badge":"Allow for southern growth","space":"A moist bed with room for a tree","placement":"Use a broad, moist planting area away from tight foundation spaces. Southern sweetbay can grow much larger than the small shrubs described for colder climates. Trunk form and eventual spread vary.",
+    "intro":"Sweetbay magnolia has fragrant creamy-white flowers and leaves with pale, silvery undersides. It is not southern magnolia. The dimensions here reflect southern tree-form landscape guidance; larger specimens are possible.",
+    "pot":"Do not allow the root ball to dry completely. Keep it outdoors, sheltered from drying winds, and let excess irrigation drain from the pot.",
+    "plant":"Support the fleshy roots and root ball while removing the pot. Expose the first structural roots gently and plant at the proper depth. Ask for help with major root defects rather than aggressively breaking up the root system.",
+    "water":"Keep the root ball consistently moist through its first growing season. Check it even when surrounding soil feels damp. Maintain a mulch ring to moderate drying, but leave the trunk and flare clear.",
+    "season":"Sweetbay may retain much of its foliage in mild Gulf Coast winters or lose more during cold conditions. Some seasonal leaf drop is normal; persistent wilt or branch death needs closer attention.",
+    "care":"Allow the natural single- or multi-trunked form unless early guidance identifies a need for structural pruning. Avoid root disturbance and soil compaction. Yellow foliage on alkaline soil warrants soil testing, not automatic fertilizer application.",
+    "takeaway":"Treat sweetbay as a moisture-loving southern tree, not automatically as a small foundation shrub.",
+    "sources":[["UF/IFAS · Sweetbay magnolia, southern dimensions","https://ask.ifas.ufl.edu/publication/ST384"],["NC State Extension · Sweetbay magnolia","https://plants.ces.ncsu.edu/plants/magnolia-virginiana/"]]
+  },
+  {
+    "id":"american-beech","name":"American Beech","botanical":"Fagus grandifolia","kind":"Native · Deciduous shade tree","height":"60–80","width":"40–80","sun":"Sun to partial shade; shade tolerant","soil":"Moist, well-drained, acidic soil","badge":"Protect the shallow roots","space":"A large, protected soil area","placement":"Choose a spacious lawn or woodland-edge setting with good drainage. Avoid compacted parking areas, chronically wet depressions, and small paved cutouts. Its broad crown and shallow roots need long-term protection.",
+    "intro":"American beech has smooth gray bark, pointed buds, and toothed leaves. It becomes a large shade tree, not a small ornamental. Some specimens exceed the dimensions shown.",
+    "pot":"Keep the root ball evenly moist and sheltered from harsh afternoon exposure and drying wind. Check daily, but do not leave it standing in water.",
+    "plant":"Plant in its permanent location with the flare visible. Handle the root ball gently and avoid unnecessary root damage. Use site soil for backfill rather than burying the root system beneath added soil or compost.",
+    "water":"Maintain steady moisture without waterlogging. Pay special attention during hot, dry weather and through the first summer. A broad mulch ring helps protect the surface-root area; keep it shallow and away from the bark.",
+    "season":"Leaves turn bronze or copper in fall, and young beeches may hold dry leaves through winter. Retained brown leaves alone do not mean the tree is dead.",
+    "care":"Keep foot traffic, vehicles, trenching, and soil fill away from its roots. Protect its thin bark from mowers and string trimmers. Avoid unnecessary pruning; unusual leaf changes, progressive thinning, or dieback warrant professional assessment.",
+    "takeaway":"Moisture, drainage, and undisturbed soil matter more than pushing fast growth with fertilizer.",
+    "sources":[["NC State Extension · American beech","https://plants.ces.ncsu.edu/plants/fagus-grandifolia/"]]
+  },
+  {
+    "id":"pawpaw","name":"Pawpaw","botanical":"Asimina triloba","kind":"Native · Deciduous understory tree","height":"15–30","width":"15–30","sun":"Partial shade while young; more sun when established","soil":"Moist, fertile, well-drained, slightly acidic soil","badge":"Shelter young foliage","space":"A protected woodland edge or bed","placement":"Choose moisture-retentive but draining soil with protection from harsh afternoon sun while young. Allow for a small tree and possible root suckers. Established trees can grow in sun or shade; sun generally improves fruit production.",
+    "intro":"Pawpaw has large, drooping leaves, dark maroon spring flowers, and custard-like fruit when mature. A recently planted tree should be managed for root establishment, not immediate fruit production.",
+    "pot":"Keep the root ball moist and the young tree in bright, filtered light. Do not move shade-grown foliage straight into all-day sun. Protect it from wind and avoid letting its roots dry.",
+    "plant":"Support the root ball and slide or cut off the pot without pulling on the stem. Handle the taproot carefully. Use the correct root-flare depth and get help with major root defects rather than tearing apart or indiscriminately shaving the roots.",
+    "water":"Maintain even moisture without persistent saturation. Provide temporary shade for small or shade-grown seedlings through their first growing season, then increase exposure gradually. Continue watering checks during hot weather.",
+    "season":"Leaves turn yellow and drop in fall. Dormancy is normal. Root suckers can appear with age, so decide whether to retain a patch or manage it as an individual tree.",
+    "care":"For reliable fruiting, plant a genetically different pawpaw nearby with overlapping bloom; two suckers from one clone are not equivalent. Only ripe fruit flesh is food—do not eat seeds, skin, leaves, or stems.",
+    "takeaway":"Protect young pawpaw from drying and sudden intense sun; preserve its roots during planting.",
+    "sources":[["NC State Extension · Pawpaw","https://plants.ces.ncsu.edu/plants/asimina-triloba/"],["University of Kentucky Extension · Pawpaw establishment","https://horticulture.ca.uky.edu/sites/horticulture.ca.uky.edu/files/Pawpaw%20-%20Asimina%20triloba.pdf"]]
+  }
+]
