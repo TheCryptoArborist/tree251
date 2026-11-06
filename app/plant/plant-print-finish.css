@@ -36,4 +36,8 @@
   .plant-page .plant-guide .onsite-reference-list>li { padding-bottom:6pt!important; margin-bottom:6pt!important; }
   .plant-page .plant-guide .sources>p { margin:5pt 0!important; }
   .plant-page .plant-guide .source-editorial-note { margin-top:6pt!important; }
+  .plant-page .plant-guide .care-section { break-before:page!important; }
+  .plant-page .plant-guide #panel-before { break-before:auto!important; }
+  .plant-page .plant-guide #guide-sources { break-before:auto!important; }
+  .plant-page .plant-guide #guide-sources>summary { display:block!important; color:#111!important; font-size:14pt!important; margin:0 0 8pt!important; min-height:0!important; padding:0!important; break-after:avoid; }
 }
