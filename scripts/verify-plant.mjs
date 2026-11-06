@@ -41,6 +41,7 @@ try {
     assert.ok(pickerBox && heroBox && pickerBox.y < heroBox.y);
     assert.ok(pickerBox.y + pickerBox.height <= page.viewportSize().height - 80);
     assert.equal(await page.locator('.quick-species').isVisible(), false);
+    await page.screenshot({ path: `${output}/plant-tree-picker-${width}.png`, fullPage: false });
     for (const id of ids) {
       const link = picker.locator(`a[href="#${id}"]`);
       const box = await link.boundingBox();
@@ -76,6 +77,9 @@ try {
     assert.equal(await page.locator('#tab-before').getAttribute('aria-selected'), 'true');
     await page.locator('#live-oak a[href="#ref-live-oak"]').first().click();
     await page.waitForFunction(() => document.getElementById('guide-sources').open);
+    // Test printing in a settled document: the previous link schedules a hashchange
+    // reveal, which must not reopen a source panel during this independent test.
+    await page.goto(`${origin}/plant`, { waitUntil: 'networkidle' });
     await page.evaluate(() => {
       document.querySelectorAll('details').forEach(detail => detail.open = false);
       window.dispatchEvent(new Event('beforeprint'));
