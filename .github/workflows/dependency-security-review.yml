@@ -29,46 +29,52 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - name: Audit and resolve compatible fixes without force or scripts
+      - name: Resolve compatible fixes with narrowly scoped same-major overrides
         run: |
           mkdir -p security-review
           git rev-parse HEAD > security-review/base-commit.txt
           cp package-lock.json security-review/package-lock-before.json
           cp package.json security-review/package-before.json
           python3 - <<'PY'
-          import json, subprocess, pathlib
+          import json, subprocess, pathlib, copy
           out=pathlib.Path('security-review')
-          def run(name, args):
-              p=subprocess.run(args, text=True, capture_output=True)
-              (out/name).write_text(p.stdout)
-              (out/(name+'.stderr')).write_text(p.stderr)
-              if p.returncode not in [0,1]: raise RuntimeError(f'{name} failed: {p.returncode}: {p.stderr}')
+          def audit(name, args):
+              p=subprocess.run(args,text=True,capture_output=True)
+              (out/name).write_text(p.stdout);(out/(name+'.stderr')).write_text(p.stderr)
+              if p.returncode not in [0,1]: raise RuntimeError(f'{name}: {p.returncode}: {p.stderr}')
               data=json.loads(p.stdout)
               if 'error' in data: raise RuntimeError(f'{name}: {data["error"]}')
               return data
-          before=run('audit-before.json',['npm','audit','--package-lock-only','--json'])
-          before_prod=run('audit-production-before.json',['npm','audit','--package-lock-only','--omit=dev','--json'])
-          run('audit-fix.json',['npm','audit','fix','--package-lock-only','--ignore-scripts','--json'])
-          after=run('audit-after.json',['npm','audit','--package-lock-only','--json'])
-          after_prod=run('audit-production-after.json',['npm','audit','--package-lock-only','--omit=dev','--json'])
-          assert pathlib.Path('package.json').read_bytes()==(out/'package-before.json').read_bytes(), 'Dependency declarations changed; stop for review'
-          old=json.loads((out/'package-lock-before.json').read_text())['packages']
-          new=json.loads(pathlib.Path('package-lock.json').read_text())['packages']
+          before=audit('audit-before.json',['npm','audit','--package-lock-only','--json'])
+          before_prod=audit('audit-production-before.json',['npm','audit','--package-lock-only','--omit=dev','--json'])
+          original=json.loads(pathlib.Path('package.json').read_text())
+          expected=copy.deepcopy(original)
+          overrides=expected.setdefault('overrides',{})
+          for key,value in {'next':{'postcss':'8.5.32'},'brace-expansion@^1.0.0':'1.1.21'}.items():
+              assert key not in overrides or overrides[key]==value, 'Existing override differs; stop for review'
+              overrides[key]=value
+          pathlib.Path('package.json').write_text(json.dumps(expected,indent=2)+'\n')
+          p=subprocess.run(['npm','update','next','eslint-config-next','postcss','brace-expansion','--package-lock-only','--ignore-scripts','--no-audit'],text=True,capture_output=True)
+          (out/'targeted-update.log').write_text(p.stdout+'\n'+p.stderr)
+          assert p.returncode==0, p.stderr
+          audit('audit-fix.json',['npm','audit','fix','--package-lock-only','--ignore-scripts','--json'])
+          after=audit('audit-after.json',['npm','audit','--package-lock-only','--json'])
+          after_prod=audit('audit-production-after.json',['npm','audit','--package-lock-only','--omit=dev','--json'])
+          assert json.loads(pathlib.Path('package.json').read_text())==expected, 'Unexpected manifest change'
+          old=json.loads((out/'package-lock-before.json').read_text())['packages'];new=json.loads(pathlib.Path('package-lock.json').read_text())['packages']
           assert old['']==new[''], 'Root dependency specification changed'
-          direct={**old[''].get('dependencies',{}), **old[''].get('devDependencies',{})}
           versions={}
-          for name in direct:
+          for name in {**original.get('dependencies',{}),**original.get('devDependencies',{})}:
               a=old['node_modules/'+name]['version'];b=new['node_modules/'+name]['version']
-              assert a.split('.')[0]==b.split('.')[0], f'Major upgrade rejected for {name}: {a} -> {b}'
+              assert a.split('.')[0]==b.split('.')[0], f'Major upgrade rejected: {name}'
               versions[name]={'before':a,'after':b}
           changes=[{'path':k,'before':old.get(k,{}).get('version'),'after':new.get(k,{}).get('version')} for k in sorted(set(old)|set(new)) if old.get(k,{}).get('version')!=new.get(k,{}).get('version')]
-          summary={'before':before['metadata']['vulnerabilities'],'after':after['metadata']['vulnerabilities'],'productionBefore':before_prod['metadata']['vulnerabilities'],'productionAfter':after_prod['metadata']['vulnerabilities'],'directVersions':versions,'changedPackages':changes,'manifestUnchanged':True,'forceUsed':False}
-          (out/'audit-summary.json').write_text(json.dumps(summary,indent=2))
-          print(json.dumps(summary,indent=2))
-          assert after['metadata']['vulnerabilities']['critical']==0, 'Critical advisories remain'
-          assert after_prod['metadata']['vulnerabilities']['high']==0, 'High production advisories remain'
+          summary={'before':before['metadata']['vulnerabilities'],'after':after['metadata']['vulnerabilities'],'productionBefore':before_prod['metadata']['vulnerabilities'],'productionAfter':after_prod['metadata']['vulnerabilities'],'directVersions':versions,'changedPackages':changes,'overrides':overrides,'dependencyRangesUnchanged':True,'forceUsed':False}
+          (out/'audit-summary.json').write_text(json.dumps(summary,indent=2));print(json.dumps(summary,indent=2))
+          assert after['metadata']['vulnerabilities']['critical']==0 and after['metadata']['vulnerabilities']['high']==0, 'High or critical findings remain'
+          assert after_prod['metadata']['vulnerabilities']['total']==0, 'Production dependency findings remain'
           PY
-          git diff -- package-lock.json > security-review/dependency.patch
+          git diff -- package.json package-lock.json > security-review/dependency.patch
       - name: Install the exact updated lockfile
         run: npm ci --no-audit 2>&1 | tee security-review/install.log
       - name: Type check and production build
@@ -94,15 +100,14 @@ jobs:
           cp review-output/browser-checks.json security-review/local-browser-checks.json
           cat > security-browser-review.mjs <<'JS'
           import {chromium} from 'playwright';
-          import {writeFile,mkdir} from 'node:fs/promises';
+          import {writeFile} from 'node:fs/promises';
           import assert from 'node:assert/strict';
           const browser=await chromium.launch({headless:true});
-          const results=[];
-          const out='security-review';
+          const results=[];const out='security-review';
           const ids=['live-oak','overcup-oak','black-gum','chaste-tree','bald-cypress'];
           try {
             for (const origin of ['http://127.0.0.1:3000','https://www.tree251.xyz']) {
-              const record={origin,passed:false,checks:[],errors:[]}; results.push(record);
+              const record={origin,passed:false,checks:[],errors:[]};results.push(record);
               try {
                 for (const width of [390,1440]) {
                   const context=await browser.newContext({viewport:{width,height:950},reducedMotion:'reduce'});
@@ -111,51 +116,36 @@ jobs:
                     if (!['GET','HEAD'].includes(req.method()) || u.origin!==origin || u.pathname.startsWith('/api/') || u.pathname.includes('analytics')) return route.abort();
                     return route.continue();
                   });
-                  const page=await context.newPage();
-                  const errors=[]; page.on('pageerror',e=>errors.push(e.message));
-                  const response=await page.goto(origin+'/plant',{waitUntil:'networkidle',timeout:45000});
-                  assert.equal(response.status(),200);
+                  const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
+                  const response=await page.goto(origin+'/plant',{waitUntil:'networkidle',timeout:45000});assert.equal(response.status(),200);
                   await page.waitForFunction(()=>{const img=document.querySelector('header img');return img?.complete&&img.naturalWidth>0;});
                   assert.equal(await page.locator('#choose-tree .tree-picker-buttons a').count(),5);
                   const phones=await page.locator('a[href^="tel:"]').evaluateAll(ns=>ns.map(n=>n.getAttribute('href')));
                   assert(phones.length>=3 && phones.every(h=>h==='tel:+12516223200'));
-                  for(const id of ids){
-                    await page.locator('#choose-tree a[href="#'+id+'"]').click();
-                    await page.waitForFunction(id=>document.getElementById(id).open,id);
-                    assert.equal(new URL(page.url()).pathname,'/plant');
-                    assert.equal(new URL(page.url()).hash,'#'+id);
-                  }
+                  for(const id of ids){await page.locator('#choose-tree a[href="#'+id+'"]').click();await page.waitForFunction(id=>document.getElementById(id).open,id);assert.equal(new URL(page.url()).pathname,'/plant');assert.equal(new URL(page.url()).hash,'#'+id);}
                   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
-                  await page.goto(origin+'/plant',{waitUntil:'networkidle'});
-                  await page.screenshot({path:out+'/'+(origin.startsWith('https')?'live':'updated')+'-'+width+'.png'});
-                  for(const path of ['/','/tree-inventories','/real-estate','/knowledge-center','/resources/storm-tree-checklist']){
-                    const r=await context.request.get(origin+path);assert.equal(r.status(),200,path);record.checks.push({width,path,status:r.status()});
-                  }
-                  assert((await (await context.request.get(origin+'/sitemap.xml')).text()).includes('/plant'));
-                  assert.deepEqual(errors,[]);
-                  record.checks.push({width,treeButtons:5,phoneLinks:phones.length,logo:true,horizontalOverflow:false,javascriptErrors:0});
-                  await context.close();
+                  await page.goto(origin+'/plant',{waitUntil:'networkidle'});await page.screenshot({path:out+'/'+(origin.startsWith('https')?'live':'updated')+'-'+width+'.png'});
+                  for(const path of ['/','/tree-inventories','/real-estate','/knowledge-center','/resources/storm-tree-checklist']){const r=await context.request.get(origin+path);assert.equal(r.status(),200,path);record.checks.push({width,path,status:r.status()});}
+                  assert((await (await context.request.get(origin+'/sitemap.xml')).text()).includes('/plant'));assert.deepEqual(errors,[]);
+                  record.checks.push({width,treeButtons:5,phoneLinks:phones.length,logo:true,horizontalOverflow:false,javascriptErrors:0});await context.close();
                 }
                 record.passed=true;
-              } catch(e){record.errors.push(String(e)); if(origin.startsWith('http://')) throw e;}
+              }catch(e){record.errors.push(String(e));if(origin.startsWith('http://')) throw e;}
             }
-          } finally {
-            await writeFile(out+'/site-checks.json',JSON.stringify(results,null,2));await browser.close();
-          }
+          }finally{await writeFile(out+'/site-checks.json',JSON.stringify(results,null,2));await browser.close();}
           JS
           node security-browser-review.mjs
-      - name: Save tested lockfile on maintenance branch only
+      - name: Save tested package files on maintenance branch only
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           test "${GITHUB_REF}" = refs/heads/maintenance/dependency-security-2026-11-06
-          git diff --exit-code -- package.json
-          test "$(git diff --name-only | grep -v '^package-lock.json$' | wc -l)" -eq 0
+          test "$(git diff --name-only | grep -Ev '^package(-lock)?\.json$' | wc -l)" -eq 0
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          if ! git diff --quiet -- package-lock.json; then
-            git add package-lock.json
-            git commit -m 'Apply compatible dependency security updates after build and browser verification'
+          if ! git diff --quiet -- package.json package-lock.json; then
+            git add package.json package-lock.json
+            git commit -m 'Apply tested same-major dependency security fixes without changing site content'
             auth="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
             git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" push origin HEAD:refs/heads/maintenance/dependency-security-2026-11-06
           fi
@@ -165,6 +155,7 @@ jobs:
         if: always()
         run: |
           mkdir -p security-review
+          cp package.json security-review/package-candidate.json
           cp package-lock.json security-review/package-lock-candidate.json
           git diff --stat > security-review/final-diff-stat.txt
       - uses: actions/upload-artifact@v4
