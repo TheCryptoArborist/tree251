@@ -3,30 +3,29 @@
 import type { MouseEvent } from "react";
 
 const trees = [
-  { id: "live-oak", name: "Live oak" },
-  { id: "overcup-oak", name: "Overcup oak" },
-  { id: "black-gum", name: "Black gum" },
-  { id: "chaste-tree", name: "Chaste tree / vitex" },
-  { id: "bald-cypress", name: "Bald cypress" }
+  { id: "live-oak", name: "Live Oak" },
+  { id: "overcup-oak", name: "Overcup Oak" },
+  { id: "black-gum", name: "Black Gum" },
+  { id: "chaste-tree", name: "Chaste Tree" },
+  { id: "bald-cypress", name: "Bald Cypress" }
 ] as const;
 
 export default function TreePicker() {
   function openGuide(event: MouseEvent<HTMLAnchorElement>, id: string) {
-    // Keep the native fragment link, browser history, and modified clicks intact.
+    // Preserve native fragment navigation, browser history, and modified clicks.
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     const guide = document.getElementById(id);
     if (!(guide instanceof HTMLDetailsElement)) return;
     guide.open = true;
-    // Put keyboard and screen-reader focus at the newly opened guide.
     requestAnimationFrame(() => guide.querySelector("summary")?.focus({ preventScroll: true }));
   }
 
   return (
-    <nav id="choose-tree" className="tree-picker" aria-labelledby="tree-picker-title">
+    <nav id="choose-tree" className="tree-picker" aria-labelledby="tree-picker-title" aria-describedby="tree-picker-help">
       <div className="tree-picker-inner">
         <p className="tree-picker-kicker">START WITH YOUR TREE</p>
-        <h2 id="tree-picker-title">Which tree did you pick up?</h2>
-        <p className="tree-picker-intro">Tap your tree to go straight to its size, planting location, and care guide.</p>
+        <h2 id="tree-picker-title">Which tree did you bring home?</h2>
+        <p id="tree-picker-help" className="tree-picker-intro">Tap your tree to jump straight to its guide.</p>
         <div className="tree-picker-buttons">
           {trees.map((tree) => (
             <a
