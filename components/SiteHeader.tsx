@@ -29,6 +29,7 @@ const desktopNavItems = [
 ];
 
 const resourceNavItems = [
+  { href: "/plant", label: "Tree Planting & Care", external: false },
   { href: "/historic-trees", label: "Historic Trees", external: false },
   { href: "/resources/storm-tree-checklist", label: "Storm Tree Checklist", external: false },
   { href: "/knowledge-center", label: "Tree Codes", external: false },
@@ -189,6 +190,7 @@ export function SiteHeader() {
           <Link href="/#services" className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Services</Link>
           <Link href="/tree-inventories" className="min-w-[7.1rem] rounded-full border border-[#f6c95a]/45 bg-[#f6c95a]/10 px-2 py-2.5 focus-ring">Inventories</Link>
           <Link href="/real-estate" className="min-w-[5.8rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Real Estate</Link>
+          <Link href="/plant" className="min-w-[6.4rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Planting Guide</Link>
           <Link href="/resources/storm-tree-checklist" className="min-w-[7.4rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Storm Checklist</Link>
         </nav>
       </header>
