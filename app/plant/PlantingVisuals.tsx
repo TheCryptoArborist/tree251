@@ -24,9 +24,11 @@ export function TreeFinder() {
 }
 
 export function SpeciesPhotos({ species }: { species: string }) {
+  // These local WebP assets are already resized to at most 960px. Serve them
+  // directly so opening a guide does not depend on an image-conversion request.
   return <div className="species-photos">
     {photographs.filter(photo => photo.species === species).map(photo => <figure key={photo.src} className="species-photo">
-      <div className="photo-frame"><Image src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} sizes="(max-width: 640px) 85vw, (max-width: 1000px) 40vw, 520px" loading="lazy" /></div>
+      <div className="photo-frame"><Image src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} unoptimized loading="lazy" /></div>
       <figcaption><strong>{photo.title}</strong><span>{photo.author} · <a href="#photo-credits">Photo credit &amp; license</a></span></figcaption>
     </figure>)}
     {species === "chaste-tree" && <p className="cultivar-photo-note">These photos show named selections. Your tree may have a different form or flower color; use its tag to confirm the cultivar.</p>}
