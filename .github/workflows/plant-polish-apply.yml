@@ -28,15 +28,16 @@ jobs:
           run-id: 42223276294
           github-token: ${{ github.token }}
       - run: python -m pip install --target "$RUNNER_TEMP/photo-libs" Pillow
-      - name: Apply guarded changes and remove temporary write workflows
+      - name: Apply reconciled changes and remove temporary write workflows
         env:
           PYTHONPATH: ${{ runner.temp }}/photo-libs
         run: |
+          python scripts/reconcile-plant-polish.py
           python scripts/apply-plant-polish.py
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add app/plant public/plant components/SiteHeader.tsx components/TheArboristHomePage.tsx app/sitemap.ts
-          git rm .github/workflows/plant-polish-apply.yml .github/workflows/plant-polish-media.yml scripts/apply-plant-polish.py
+          git rm .github/workflows/plant-polish-apply.yml .github/workflows/plant-polish-media.yml scripts/apply-plant-polish.py scripts/reconcile-plant-polish.py
           git commit -m 'Polish /plant with a fast species selector, licensed on-site photos, planting diagram, readable controls, print layout, navigation and sharing card'
           git push origin HEAD:refs/heads/review/plant-education-2026-11-05
       - name: Record exact tested source
