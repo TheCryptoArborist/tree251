@@ -10,6 +10,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1
     },
     {
+      url: `${siteUrl}/plant`,
+      changeFrequency: "monthly",
+      priority: 0.9
+    },
+    {
       url: `${siteUrl}/tree-inventories`,
       changeFrequency: "monthly",
       priority: 0.9
