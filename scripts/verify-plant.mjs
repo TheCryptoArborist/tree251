@@ -32,6 +32,35 @@ try {
     assert.equal(await page.locator('details.species-profile').count(), 5);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     assert.equal(await page.locator('.species-profile a[href^="http"]').count(), 0);
+
+    // The tree buttons must appear before the introduction, within the first screen.
+    const picker = page.locator('#choose-tree');
+    assert.equal(await picker.locator('.tree-picker-buttons a').count(), 5);
+    const pickerBox = await picker.boundingBox();
+    const heroBox = await page.locator('#hero-title').boundingBox();
+    assert.ok(pickerBox && heroBox && pickerBox.y < heroBox.y);
+    assert.ok(pickerBox.y + pickerBox.height <= page.viewportSize().height - 80);
+    assert.equal(await page.locator('.quick-species').isVisible(), false);
+    for (const id of ids) {
+      const link = picker.locator(`a[href="#${id}"]`);
+      const box = await link.boundingBox();
+      assert.ok(box && box.height >= 48 && box.width >= 100);
+      await page.evaluate(() => {
+        document.querySelectorAll('details.species-profile').forEach(detail => detail.open = false);
+        window.scrollTo(0, 0);
+      });
+      await link.click();
+      await page.waitForFunction(id => document.getElementById(id).open, id);
+      assert.equal(new URL(page.url()).pathname, '/plant');
+      assert.equal(new URL(page.url()).hash, `#${id}`);
+      await page.waitForFunction(id => document.activeElement === document.querySelector(`#${id} > summary`), id);
+    }
+    await page.goto(`${origin}/plant`, { waitUntil: 'networkidle' });
+    const keyboardLink = page.locator('#choose-tree a[href="#black-gum"]');
+    await keyboardLink.focus();
+    await keyboardLink.press('Enter');
+    await page.waitForFunction(() => document.getElementById('black-gum').open);
+
     for (const id of ids) {
       await page.locator(`.tree-card a[href="#${id}"]`).click();
       await page.waitForFunction(id => document.getElementById(id).open, id);
@@ -64,7 +93,7 @@ try {
       await page.screenshot({ path: `${output}/plant-native-species.png`, fullPage: false });
     }
     assert.deepEqual(errors, []);
-    results.push({ width, logoLoaded: true, speciesGuides: 5, outboundSpeciesLinks: 0, careTabs: 'passed', printRestore: 'passed', directSpeciesLink: 'passed', horizontalOverflow: false, javascriptErrors: errors });
+    results.push({ width, logoLoaded: true, treePicker: 'passed: first-screen, five links, automatic expansion, focus and keyboard', speciesGuides: 5, outboundSpeciesLinks: 0, careTabs: 'passed', printRestore: 'passed', directSpeciesLink: 'passed', horizontalOverflow: false, javascriptErrors: errors });
     await context.close();
   }
   await writeFile(`${output}/browser-checks.json`, JSON.stringify({ passed: true, results }, null, 2));
