@@ -1,0 +1,82 @@
+name: Apply plant polish once
+on:
+  push:
+    branches: [review/plant-education-2026-11-05]
+    paths: [.github/workflows/plant-polish-apply.yml]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: plant-polish-apply
+  cancel-in-progress: false
+defaults:
+  run:
+    shell: bash
+jobs:
+  apply-and-verify:
+    if: github.ref == 'refs/heads/review/plant-education-2026-11-05'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: plant-polish-media
+          path: media-import
+          run-id: 42223276294
+          github-token: ${{ github.token }}
+      - run: python -m pip install --target "$RUNNER_TEMP/photo-libs" Pillow
+      - name: Apply guarded changes and remove temporary write workflows
+        env:
+          PYTHONPATH: ${{ runner.temp }}/photo-libs
+        run: |
+          python scripts/apply-plant-polish.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app/plant public/plant components/SiteHeader.tsx components/TheArboristHomePage.tsx app/sitemap.ts
+          git rm .github/workflows/plant-polish-apply.yml .github/workflows/plant-polish-media.yml scripts/apply-plant-polish.py
+          git commit -m 'Polish /plant with a fast species selector, licensed on-site photos, planting diagram, readable controls, print layout, navigation and sharing card'
+          git push origin HEAD:refs/heads/review/plant-education-2026-11-05
+      - name: Record exact tested source
+        if: always()
+        run: |
+          mkdir -p review-output
+          git rev-parse HEAD > review-output/tested-commit.txt
+          git archive --format=zip HEAD -o review-output/site-source.zip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Record dependency audit without changing versions
+        run: npm audit --json > review-output/dependency-audit.json || true
+      - name: Type check
+        run: npm run typecheck 2>&1 | tee review-output/typecheck.log
+      - name: Production build
+        run: |
+          npm run build 2>&1 | tee review-output/build.log
+          test -s .next/BUILD_ID
+      - name: Browser, accessibility and print verification
+        run: |
+          npm install --prefix "$RUNNER_TEMP/plant-tools" --no-save --package-lock=false playwright axe-core
+          ln -s "$RUNNER_TEMP/plant-tools/node_modules/playwright" node_modules/playwright
+          "$RUNNER_TEMP/plant-tools/node_modules/.bin/playwright" install --with-deps chromium
+          npm run start > review-output/server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            kill -0 "$server_pid" || { cat review-output/server.log; exit 1; }
+            curl --fail --silent http://127.0.0.1:3000/plant >/dev/null && break
+            sleep 2
+          done
+          curl --fail --silent http://127.0.0.1:3000/plant >/dev/null
+          node scripts/verify-plant.mjs
+          AXE_SCRIPT="$RUNNER_TEMP/plant-tools/node_modules/axe-core/axe.min.js" node scripts/verify-plant-polish.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: plant-polish-review
+          path: review-output/
+          retention-days: 7
