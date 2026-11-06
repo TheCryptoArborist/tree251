@@ -28,18 +28,19 @@ jobs:
           s=s.replace('import "./tree-shortcuts.css";\n','')
           s,n=re.subn(r'<nav id="tree-selector" className="quick-species tree-shortcuts".*?</nav>','',s,count=1,flags=re.S)
           assert n==1, 'Duplicate shortcut markup changed; stop without overwriting.'
-          start='      if (anchor) {\n                  const hash = anchor.getAttribute("href") || "";'
-          end='                }'
-          i=s.find(start)
-          assert i>=0
-          j=s.index(end,i)+len(end)
-          # The first closing line belongs to the inner if; include the outer closing line.
-          if s[j:].startswith('\n                }'):
-            j+=len('\n                }')
-          block=s[i:j]
-          assert 'anchor.closest(".tree-shortcuts")' in block and 'requestAnimationFrame' in block
-          s=s[:i]+'      if (anchor) reveal(anchor.getAttribute("href") || "", false);'+s[j:]
-          assert 'tree-shortcuts' not in s
+          a=s.index('    function onClick(event: MouseEvent) {')
+          b=s.index('    const onHashChange',a)
+          assert 'anchor.closest(".tree-shortcuts")' in s[a:b]
+          replacement='\n'.join([
+            '    function onClick(event: MouseEvent) {',
+            '      const element = event.target instanceof Element ? event.target : null;',
+            '      const anchor = element?.closest<HTMLAnchorElement>(\'a[href^="#"]\');',
+            '      if (anchor) reveal(anchor.getAttribute("href") || "", false);',
+            '    }',
+            ''
+          ])
+          s=s[:a]+replacement+s[b:]
+          assert 'tree-shortcuts' not in s and 'tree-selector' not in s
           p.write_text(s)
           css=Path('app/plant/tree-shortcuts.css')
           assert css.read_text().startswith('/* Five visible, on-page tree shortcuts.')
