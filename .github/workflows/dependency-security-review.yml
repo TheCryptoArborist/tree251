@@ -1,0 +1,106 @@
+name: Dependency security and page checks
+on:
+  push:
+    branches: [main, maintenance/dependency-security-2026-11-06]
+    paths: [package.json, package-lock.json, .github/workflows/dependency-security-review.yml]
+  pull_request:
+    branches: [main]
+    paths: [package.json, package-lock.json, .github/workflows/dependency-security-review.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: dependency-security-${{ github.event_name }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Record source and install exact locked versions
+        run: |
+          mkdir -p security-review
+          git rev-parse HEAD > security-review/tested-commit.txt
+          npm ci --no-audit 2>&1 | tee security-review/install.log
+      - name: Check production dependencies and high-severity development findings
+        run: |
+          npm audit --omit=dev --json > security-review/production-audit.json
+          npm audit --audit-level=high --json > security-review/full-audit.json
+      - name: Type check and production build
+        run: |
+          npm run typecheck 2>&1 | tee security-review/typecheck.log
+          npm run build 2>&1 | tee security-review/build.log
+          test -s .next/BUILD_ID
+      - name: Page regression tests and read-only production smoke test
+        run: |
+          npm install --prefix "$RUNNER_TEMP/browser-tools" --no-save --package-lock=false playwright
+          ln -s "$RUNNER_TEMP/browser-tools/node_modules/playwright" node_modules/playwright
+          "$RUNNER_TEMP/browser-tools/node_modules/.bin/playwright" install --with-deps chromium
+          npm run start > security-review/server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            kill -0 "$server_pid" || { cat security-review/server.log; exit 1; }
+            curl --fail --silent http://127.0.0.1:3000/plant >/dev/null && break
+            sleep 2
+          done
+          curl --fail --silent http://127.0.0.1:3000/plant >/dev/null
+          node scripts/verify-plant.mjs
+          cp review-output/browser-checks.json security-review/local-browser-checks.json
+          cat > security-smoke.mjs <<'JS'
+          import {chromium} from 'playwright';
+          import {writeFile} from 'node:fs/promises';
+          import assert from 'node:assert/strict';
+          const browser=await chromium.launch({headless:true});
+          const origin='https://www.tree251.xyz';
+          const results=[];
+          try {
+            for (const width of [390,1440]) {
+              const context=await browser.newContext({viewport:{width,height:950},reducedMotion:'reduce'});
+              await context.route('**/*',route=>{
+                const r=route.request(),u=new URL(r.url());
+                if(!['GET','HEAD'].includes(r.method())||u.origin!==origin||u.pathname.startsWith('/api/')||u.pathname.includes('analytics'))return route.abort();
+                return route.continue();
+              });
+              const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
+              const r=await page.goto(origin+'/plant',{waitUntil:'networkidle'});assert.equal(r.status(),200);
+              await page.waitForFunction(()=>{const i=document.querySelector('header img');return i?.complete&&i.naturalWidth>0;});
+              const phones=await page.locator('a[href^="tel:"]').evaluateAll(ns=>ns.map(n=>n.getAttribute('href')));
+              assert(phones.length>=3&&phones.every(p=>p==='tel:+12516223200'));
+              for(const id of ['live-oak','overcup-oak','black-gum','chaste-tree','bald-cypress']){
+                await page.locator('#choose-tree a[href="#'+id+'"]').click();
+                await page.waitForFunction(id=>document.getElementById(id).open,id);
+                assert.equal(new URL(page.url()).pathname,'/plant');
+                assert.equal(new URL(page.url()).hash,'#'+id);
+              }
+              assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+              assert.deepEqual(errors,[]);
+              await page.goto(origin+'/plant',{waitUntil:'networkidle'});
+              await page.screenshot({path:'security-review/live-'+width+'.png'});
+              results.push({width,treeButtons:5,logoLoaded:true,phoneLinks:phones.length,horizontalOverflow:false,javascriptErrors:errors});
+              await context.close();
+            }
+            await writeFile('security-review/live-checks.json',JSON.stringify({passed:true,origin,results},null,2));
+          }catch(error){await writeFile('security-review/live-checks.json',JSON.stringify({passed:false,origin,results,error:String(error)},null,2));throw error;}
+          finally{await browser.close();}
+          JS
+          node security-smoke.mjs
+          git diff --exit-code -- package.json package-lock.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dependency-security-checks
+          path: security-review/
+          retention-days: 7
