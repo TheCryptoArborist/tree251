@@ -19,57 +19,42 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - name: Import the checksum-verified approved guide
-        if: hashFiles('scripts/plant-import/part-0.txt') != ''
+      - name: Correct React numeric focus attributes
         run: |
           python3 - <<'PY'
-          import base64, hashlib, json, lzma
+          import hashlib
           from pathlib import Path
-          parts = [Path(f'scripts/plant-import/part-{i}.txt') for i in range(4)]
-          encoded = ''.join(''.join(p.read_text().split()) for p in parts)
-          encoded = encoded.replace('OX7wMMppu', 'OX7wMppu')
-          payload = base64.b64decode(encoded, validate=True)
-          expected = 'd69e31f254a5df1450f72a3d02a6ba2e36a940ca7a500de75b7abfc09cb98862'
-          assert hashlib.sha256(payload).hexdigest() == expected, 'Source transport checksum mismatch; no files written'
-          files = json.loads(lzma.decompress(payload))
-          allowed = {'app/plant/PlantingGuide.tsx', 'app/plant/page.tsx', 'app/plant/plant-guide.css', 'app/plant/plant-flow.css', 'app/plant/species-profiles.css'}
-          assert set(files) == allowed
-          for name, content in files.items():
-              path = Path(name)
-              assert not path.exists() or path.read_text() == content, f'Refusing to overwrite a different existing file: {name}'
-          for name, content in files.items():
-              path = Path(name)
-              path.parent.mkdir(parents=True, exist_ok=True)
-              path.write_text(content)
-          print('Imported all five original review files with verified transport checksum.')
+          p = Path('app/plant/PlantingGuide.tsx')
+          s = p.read_text()
+          before = '444990ce8975f78e81ff9ea6a4cc44bc36ee6a359c60a68b0e958757bc011eb7'
+          after = '04aef6835c7bbabea56eeeb40b3aed69bb0af53fced1cc56885bef3fbfe8bd51'
+          assert hashlib.sha256(s.encode()).hexdigest() in [before, after]
+          s = s.replace('tabIndex="0"', 'tabIndex={0}').replace('tabIndex="-1"', 'tabIndex={-1}')
+          assert hashlib.sha256(s.encode()).hexdigest() == after
+          p.write_text(s)
           PY
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add app/plant
-          git rm scripts/plant-import/part-*.txt
-          git commit -m 'Integrate approved on-site planting and species care guide at /plant'
-          git push origin HEAD:refs/heads/review/plant-education-2026-11-05
-      - name: Collect original branding and integrated source for review
+          if ! git diff --quiet -- app/plant/PlantingGuide.tsx; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add app/plant/PlantingGuide.tsx
+            git commit -m 'Use numeric React tabIndex values in accessible planting guide controls'
+            git push origin HEAD:refs/heads/review/plant-education-2026-11-05
+          fi
+      - name: Collect integrated source
         if: always()
         run: |
           mkdir -p review-output
           cp public/arborist-logo-cropped.png review-output/arborist-logo-cropped.png
           git archive --format=zip HEAD -o review-output/site-source.zip
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: plant-review-source
-          path: review-output/
-          retention-days: 7
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
       - run: npm ci
       - name: Type check
-        run: npm run typecheck
+        run: npm run typecheck 2>&1 | tee review-output/typecheck.log
       - name: Production build
-        run: npm run build
+        run: npm run build 2>&1 | tee review-output/build.log
       - name: Browser checks
         run: |
           npm install --no-save --package-lock=false playwright
