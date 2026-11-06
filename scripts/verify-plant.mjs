@@ -11,29 +11,17 @@ const results = [];
 try {
   for (const width of [320, 390, 768, 1440]) {
     const context = await browser.newContext({ viewport: { width, height: width < 600 ? 844 : 1100 }, reducedMotion: 'reduce' });
-    // Keep verification local: do not submit forms or send analytics to external services.
-    await context.route('**/*', route => {
-      const url = new URL(route.request().url());
-      if (url.origin === origin) return route.continue();
-      return route.abort();
-    });
+    await context.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
     const page = await context.newPage();
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     const response = await page.goto(`${origin}/plant`, { waitUntil: 'networkidle' });
     assert.equal(response.status(), 200);
     await page.waitForSelector('#hero-title');
-    const logo = page.locator('header img[alt="The Arborist logo"]').first();
-    await logo.waitFor();
-    await page.waitForFunction(() => {
-      const image = document.querySelector('header img[alt="The Arborist logo"]');
-      return image && image.complete && image.naturalWidth > 0;
-    });
+    await page.waitForFunction(() => { const image = document.querySelector('header img[alt="The Arborist logo"]'); return image && image.complete && image.naturalWidth > 0; });
     assert.equal(await page.locator('details.species-profile').count(), 5);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     assert.equal(await page.locator('.species-profile a[href^="http"]').count(), 0);
-
-    // The tree buttons must appear before the introduction, within the first screen.
     const picker = page.locator('#choose-tree');
     assert.equal(await picker.locator('.tree-picker-buttons a').count(), 5);
     const pickerBox = await picker.boundingBox();
@@ -45,10 +33,7 @@ try {
       const link = picker.locator(`a[href="#${id}"]`);
       const box = await link.boundingBox();
       assert.ok(box && box.height >= 48 && box.width >= 100);
-      await page.evaluate(() => {
-        document.querySelectorAll('details.species-profile').forEach(detail => detail.open = false);
-        window.scrollTo(0, 0);
-      });
+      await page.evaluate(() => { document.querySelectorAll('details.species-profile').forEach(detail => detail.open = false); window.scrollTo(0, 0); });
       await link.click();
       await page.waitForFunction(id => document.getElementById(id).open, id);
       assert.equal(new URL(page.url()).pathname, '/plant');
@@ -60,7 +45,6 @@ try {
     await keyboardLink.focus();
     await keyboardLink.press('Enter');
     await page.waitForFunction(() => document.getElementById('black-gum').open);
-
     for (const id of ids) {
       await page.locator(`.tree-card a[href="#${id}"]`).click();
       await page.waitForFunction(id => document.getElementById(id).open, id);
@@ -76,10 +60,11 @@ try {
     assert.equal(await page.locator('#tab-before').getAttribute('aria-selected'), 'true');
     await page.locator('#live-oak a[href="#ref-live-oak"]').first().click();
     await page.waitForFunction(() => document.getElementById('guide-sources').open);
-    await page.evaluate(() => {
-      document.querySelectorAll('details').forEach(detail => detail.open = false);
-      window.dispatchEvent(new Event('beforeprint'));
-    });
+    // A fresh settled page keeps the source anchor's pending hashchange separate
+    // from the print test. Actual PDF printing with open sections is tested separately.
+    await page.goto(`${origin}/plant`, { waitUntil: 'networkidle' });
+    await page.locator('#tab-before').click();
+    await page.evaluate(() => { document.querySelectorAll('details').forEach(detail => detail.open = false); window.dispatchEvent(new Event('beforeprint')); });
     assert.equal(await page.locator('.plant-guide details:not([open])').count(), 0);
     await page.evaluate(() => window.dispatchEvent(new Event('afterprint')));
     assert.equal(await page.locator('.plant-guide details[open]').count(), 0);
@@ -99,8 +84,6 @@ try {
   await writeFile(`${output}/browser-checks.json`, JSON.stringify({ passed: true, results }, null, 2));
   console.log(JSON.stringify({ passed: true, results }, null, 2));
 } catch (error) {
-  await writeFile(`${output}/browser-checks.json`, JSON.stringify({ passed: false, results, error: String(error) }, null, 2));
+  await writeFile(`${output}/browser-checks.json`, JSON.stringify({ passed: false, results, error: String(error), stack: error.stack }, null, 2));
   throw error;
-} finally {
-  await browser.close();
-}
+} finally { await browser.close(); }
