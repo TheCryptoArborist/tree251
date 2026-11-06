@@ -15,7 +15,6 @@ export default function GiveawayAcknowledgment() {
   const [enhanced, setEnhanced] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("Silent video · 11 seconds");
 
   useEffect(() => {
     const video = videoRef.current;
@@ -54,14 +53,13 @@ export default function GiveawayAcknowledgment() {
       pending = true;
       const request = ++generation;
       setLoading(true);
-      // play() is called synchronously from the button handler when explicitly requested.
+      // Explicit activation calls play() synchronously to retain the user gesture.
       const attempt = video!.play();
       attempt.then(() => {
         if (!active) { video!.pause(); return; }
         if (request !== generation || !mayPlay()) { if (!mayPlay()) video!.pause(); return; }
         pending = false;
         setLoading(false);
-        setMessage(motion.matches ? "Playing once · No audio" : "Loops while visible · No audio");
       }).catch((error: unknown) => {
         if (!active || request !== generation) return;
         pending = false;
@@ -69,20 +67,18 @@ export default function GiveawayAcknowledgment() {
         if (error instanceof DOMException && error.name === "AbortError") return;
         blocked = true;
         setPlaying(false);
-        setMessage("Tap Play to watch the silent clip.");
       });
     }
     function updatePreferences() {
       if (motion.matches || connection?.saveData) {
-        // A preference changed while playing: require a new explicit Play action.
+        // A preference changed while playing: require a new explicit play action.
         if (!video!.paused) intent.current = "pause";
-        setMessage(motion.matches ? "Reduced motion is on. Press Play to watch once." : "Data saving is on. Press Play to watch.");
-      } else if (intent.current !== "pause") setMessage("Loops while visible · No audio");
+      }
       sync();
     }
     const onPlay = () => { if (active) setPlaying(true); };
     const onPause = () => { if (active) setPlaying(false); };
-    const onEnded = () => { intent.current = "pause"; if (active) { setPlaying(false); setMessage("Video finished · No audio"); } };
+    const onEnded = () => { intent.current = "pause"; if (active) setPlaying(false); };
     const beforePrint = () => { printing = true; sync(); };
     const afterPrint = () => { printing = false; sync(); };
     video.addEventListener("play", onPlay);
@@ -131,7 +127,6 @@ export default function GiveawayAcknowledgment() {
     if (!video) return;
     if (!video.paused || loading) {
       intent.current = "pause";
-      setMessage("Paused. Press Play to resume.");
     } else {
       intent.current = "play";
       allowRetry.current();
@@ -146,17 +141,22 @@ export default function GiveawayAcknowledgment() {
           <div className="giveaway-video-frame" ref={frameRef}>
             <video id="giveaway-banner-video" ref={videoRef} controls={!enhanced} muted playsInline preload="none" width={512} height={910}
               poster="/plant/event/arbor-day-banner-poster.jpg"
-              aria-label="Arbor Day Foundation flag at the Mobile Tree Giveaway, silent video"
-              aria-describedby="giveaway-video-caption">
+              role={enhanced ? "button" : undefined}
+              tabIndex={enhanced ? 0 : undefined}
+              aria-label={enhanced
+                ? `${playing || loading ? "Pause" : "Play"} silent video of the Arbor Day Foundation flag at the Mobile Tree Giveaway`
+                : "Arbor Day Foundation flag at the Mobile Tree Giveaway, silent video"}
+              onClick={enhanced ? toggleVideo : undefined}
+              onKeyDown={enhanced ? (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  if (!event.repeat) toggleVideo();
+                }
+              } : undefined}>
               <source src="/plant/event/arbor-day-banner-silent.mp4" type="video/mp4" />
               The clip shows the Arbor Day Foundation flag moving in the breeze at the Mobile Tree Giveaway.
             </video>
           </div>
-          {enhanced && <button className="giveaway-video-toggle" type="button" aria-controls="giveaway-banner-video" onClick={toggleVideo}>
-            <span aria-hidden="true">{playing || loading ? "Ⅱ" : "▶"}</span> {playing || loading ? "Pause video" : "Play video"}
-          </button>}
-          <p className="giveaway-video-status" role="status" aria-live="polite">{message}</p>
-          <figcaption id="giveaway-video-caption">The Arbor Day Foundation flag moving in the breeze at the November 6 Mobile Tree Giveaway. This clip has no audio.</figcaption>
         </figure>
         <div>
           <p className="eyebrow">From the Mobile Tree Giveaway</p>
