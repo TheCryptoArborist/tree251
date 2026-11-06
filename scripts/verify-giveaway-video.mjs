@@ -29,7 +29,10 @@ try {
     page.on('pageerror',e=>errors.push(e.message));
     page.on('request',r=>{if(r.url().endsWith('.mp4'))videoRequests.push(r.url());});
     assert.equal((await page.goto(origin+'/plant',{waitUntil:'networkidle'})).status(),200);
-    await page.locator('.giveaway-video-toggle').waitFor({state:'attached'});
+    await page.locator(`${id}[role="button"]`).waitFor({state:'attached'});
+    assert.equal(await page.locator('#giveaway-thanks button, .giveaway-video-toggle, .giveaway-video-status, #giveaway-thanks figcaption').count(),0,'No separate video button, status line, or caption should remain.');
+    assert.equal(await page.locator(id).evaluate(v=>v.controls),false);
+    assert.equal(await page.locator(id).getAttribute('tabindex'),'0');
     assert.equal(await page.locator('#choose-tree .tree-picker-buttons a').count(),10);
     assert.equal(await page.locator(id).evaluate(v=>v.paused),true);
     assert.equal(videoRequests.length,0,'Video must not download before entering view.');
@@ -43,11 +46,14 @@ try {
     assert.equal(await page.locator(id).evaluate(v=>v.muted&&v.loop&&v.playsInline),true);
     assert.equal(await page.locator('.giveaway-logo-panel img').count(),3);
     await page.waitForFunction(()=>[...document.querySelectorAll('.giveaway-logo-panel img')].every(i=>i.complete&&i.naturalWidth>0));
-    await page.locator('.giveaway-video-toggle').click();await waitPaused(page);
+    await page.locator(id).click();await waitPaused(page);
+    await page.waitForFunction(()=>document.getElementById('giveaway-banner-video').getAttribute('aria-label').startsWith('Play '));
     await page.evaluate(()=>window.scrollTo(0,0));await page.waitForTimeout(200);
     await visible(page);await page.waitForTimeout(300);
     assert.equal(await page.locator(id).evaluate(v=>v.paused),true,'Manual Pause must persist across scroll.');
-    await page.locator('.giveaway-video-toggle').focus();await page.locator('.giveaway-video-toggle').press('Enter');await waitPlaying(page);
+    await page.locator(id).focus();await page.locator(id).press('Enter');await waitPlaying(page);
+    await page.locator(id).press('Space');await waitPaused(page);
+    await page.locator(id).press('Space');await waitPlaying(page);
     await page.evaluate(()=>window.scrollTo(0,0));await waitPaused(page);
     await visible(page);await waitPlaying(page);
     await page.locator(id).evaluate(v=>v.currentTime=v.duration-0.25);
@@ -57,7 +63,8 @@ try {
     await waitPaused(page);
     await page.evaluate(()=>{delete document.hidden;document.dispatchEvent(new Event('visibilitychange'));});await waitPlaying(page);
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
-    await page.locator('.giveaway-video-toggle').click();await waitPaused(page);
+    await page.locator(id).click();await waitPaused(page);
+    await page.locator(id).evaluate(v=>v.blur());
     await page.locator('#giveaway-thanks').screenshot({path:`${out}/giveaway-loop-${width}.png`});
     if(width===1440){
       await page.emulateMedia({media:'print'});assert.equal(await page.locator('#giveaway-thanks').isVisible(),false);await page.emulateMedia({media:'screen'});
@@ -68,14 +75,14 @@ try {
         assert.deepEqual(audit.violations.map(v=>({id:v.id,impact:v.impact,targets:v.nodes.map(n=>n.target)})),[]);
       }
     }
-    assert.deepEqual(errors,[]);results.push({width,autoplayInView:true,lazyVideo:true,loop:true,pauseRemembered:true,offscreenPause:true,hiddenTabPause:'simulated: passed',keyboard:true,logos:3,overflow:false});
+    assert.deepEqual(errors,[]);results.push({width,autoplayInView:true,lazyVideo:true,loop:true,pauseRemembered:true,offscreenPause:true,hiddenTabPause:'simulated: passed',directVideoTap:true,keyboard:'Enter and Space',separateControls:0,visibleCaptions:0,logos:3,overflow:false});
     await context.close();
   }
   {
     const {context,page}=await newPage({reducedMotion:'reduce'});
     await page.goto(origin+'/plant',{waitUntil:'networkidle'});await visible(page);await page.waitForTimeout(300);
     assert.equal(await page.locator(id).evaluate(v=>v.paused&&v.currentTime===0),true);
-    await page.locator('.giveaway-video-toggle').click();await waitPlaying(page);
+    await page.locator(id).click();await waitPlaying(page);
     assert.equal(await page.locator(id).evaluate(v=>v.loop),false);
     await page.locator(id).evaluate(v=>v.currentTime=v.duration-0.15);await waitPaused(page);
     await page.evaluate(()=>window.scrollTo(0,0));await page.waitForTimeout(200);await visible(page);await page.waitForTimeout(300);
@@ -84,19 +91,19 @@ try {
   }
   {
     const {context,page}=await newPage();
-    await page.addInitScript(()=>{const play=HTMLMediaElement.prototype.play;let deny=true;HTMLMediaElement.prototype.play=function(){if(this.id==='giveaway-banner-video'&&deny){deny=false;return Promise.reject(new DOMException('Blocked for test','NotAllowedError'));}return play.call(this);};});
+    await page.addInitScript(()=>{const play=HTMLMediaElement.prototype.play;let deny=true;HTMLMediaElement.prototype.play=function(){if(this.id==='giveaway-banner-video'&&deny){deny=false;window.__giveawayAutoplayDenied=true;return Promise.reject(new DOMException('Blocked for test','NotAllowedError'));}return play.call(this);};});
     await page.goto(origin+'/plant',{waitUntil:'networkidle'});await visible(page);
-    await page.waitForFunction(()=>document.querySelector('.giveaway-video-status').textContent.includes('Tap Play'));
-    await page.locator('.giveaway-video-toggle').click();await waitPlaying(page);
-    results.push({autoplayBlocked:'simulated: manual fallback works'});await context.close();
+    await page.waitForFunction(()=>window.__giveawayAutoplayDenied&&document.getElementById('giveaway-banner-video').getAttribute('aria-label').startsWith('Play '));
+    await page.locator(id).click();await waitPlaying(page);
+    results.push({autoplayBlocked:'simulated: direct-video manual fallback works'});await context.close();
   }
   {
     const {context,page}=await newPage();
     await page.addInitScript(()=>Object.defineProperty(navigator,'connection',{configurable:true,value:{saveData:true}}));
     await page.goto(origin+'/plant',{waitUntil:'networkidle'});await visible(page);await page.waitForTimeout(300);
     assert.equal(await page.locator(id).evaluate(v=>v.paused&&v.currentTime===0),true);
-    await page.locator('.giveaway-video-toggle').click();await waitPlaying(page);
-    results.push({saveData:'simulated: no autoplay, explicit Play works'});await context.close();
+    await page.locator(id).click();await waitPlaying(page);
+    results.push({saveData:'simulated: no autoplay, direct-video activation works'});await context.close();
   }
   await writeFile(`${out}/giveaway-checks.json`,JSON.stringify({passed:true,origin,results},null,2));
   console.log(JSON.stringify({passed:true,results},null,2));
