@@ -671,15 +671,3 @@
 @media(max-width:540px){.plant-guide .hero h1{font-size:45px}.plant-guide .owner-start{padding:23px}.plant-guide .owner-start h2{font-size:24px}.plant-guide .owner-checklist h3{font-size:13px}.plant-guide .owner-checklist p{font-size:12px}}
 @media(max-width:370px){.plant-guide .hero h1{font-size:38px}.plant-guide .owner-start{padding:20px}.plant-guide .owner-start h2{font-size:22px}.plant-guide .owner-checklist li{gap:10px}}
 @media print{.plant-guide .owner-start{background:#fff;box-shadow:none;border:1px solid #aaa;padding:18px;margin:20px 0;break-inside:avoid}.plant-guide .owner-start h2,.plant-guide .owner-checklist h3,.plant-guide .owner-checklist p,.plant-guide .owner-start .owner-kicker,.plant-guide .owner-number{color:#142116}.plant-guide .owner-care-link{display:none}.plant-guide .hero h1{font-size:32pt}}
-
-/* Final guide polish */
-.plant-guide .quick-species{margin:20px 0 12px;padding:15px 16px;border:1px solid rgba(246,201,90,.35);border-radius:16px;background:rgba(5,25,27,.4)}
-.plant-guide .quick-species strong{display:block;color:#f6c95a;font-size:14px;margin-bottom:9px}
-.plant-guide .quick-species div{display:flex;flex-wrap:wrap;gap:8px}
-.plant-guide .quick-species a{display:inline-flex;align-items:center;min-height:42px;padding:8px 12px;border-radius:999px;background:#173d37;color:#fff;border:1px solid #5e8979;text-decoration:none;font-size:14px;font-weight:700}
-.plant-guide .quick-species a:hover,.plant-guide .quick-species a:focus-visible{background:#24574a;border-color:#f6c95a}
-.plant-guide .planting-figure{max-width:850px;margin:16px auto 25px;padding:14px;background:#102b2a;border:1px solid #557467;border-radius:18px}
-.plant-guide .planting-figure svg{width:100%;height:auto;display:block}
-.plant-guide .planting-figure figcaption{font-size:14px;line-height:1.55;color:#e2e8df;margin:5px 10px}
-@media(max-width:560px){.plant-guide .care-tab,.plant-guide .hero-actions .button,.plant-guide .hero .eyebrow{font-size:12px!important}.plant-guide .quick-species a{font-size:13px}.plant-guide .planting-figure{padding:7px}.plant-guide .planting-figure figcaption{font-size:12px}}
-@media print{header.sticky,nav[aria-label="Mobile contact actions"],.plant-guide .quick-species,.plant-guide .section-nav,.plant-guide .hero-actions,.plant-guide .planting-figure{display:none!important}.plant-guide .species-profile{break-inside:avoid-page}.plant-guide .care-panel{color:#111!important}}
