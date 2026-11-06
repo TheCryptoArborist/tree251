@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     description: "From a three-gallon container to a healthy landscape tree: planting guidance from Peter Toler, ISA Certified Arborist.",
     url: "/plant",
     type: "article",
-    images: [{ url: "/arborist-logo-cropped.png", alt: "The Arborist logo" }]
+    images: [{ url: "/plant/opengraph-image", alt: "The Arborist tree planting and care guide" }]
   }
 };
 
