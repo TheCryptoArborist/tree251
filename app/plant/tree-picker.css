@@ -1,0 +1,101 @@
+/* The tree selector is the first page content after the shared site header. */
+.plant-page .tree-picker {
+  background: linear-gradient(120deg, #07131b 0%, #10312f 100%);
+  color: #f4f5ec;
+  border-bottom: 1px solid rgba(246, 201, 90, .22);
+  scroll-margin-top: 10rem;
+}
+.plant-page .tree-picker-inner {
+  width: min(1200px, calc(100% - 64px));
+  margin: 0 auto;
+  padding: 26px 0 20px;
+}
+.plant-page .tree-picker-kicker {
+  margin: 0 0 5px;
+  color: #f6c95a;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+.plant-page .tree-picker h2 {
+  margin: 0;
+  color: #f4f5ec;
+  font-size: clamp(23px, 2.5vw, 30px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+.plant-page .tree-picker-intro {
+  margin: 8px 0 17px;
+  color: #cadbd2;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.plant-page .tree-picker-buttons {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+.plant-page .tree-picker-buttons a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  min-height: 58px;
+  padding: 14px 16px;
+  border: 1px solid #b49d59;
+  border-radius: 12px;
+  background: #183c35;
+  color: #fff9e8;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 750;
+  line-height: 1.3;
+  transition: background-color .15s ease, border-color .15s ease;
+}
+.plant-page .tree-picker-buttons a:hover {
+  background: #275447;
+  border-color: #f6c95a;
+}
+.plant-page .tree-picker a:focus-visible {
+  outline: 3px solid #f6c95a;
+  outline-offset: 4px;
+}
+.plant-page .tree-picker-arrow {
+  flex-shrink: 0;
+  color: #f6c95a;
+  font-size: 21px;
+  line-height: 1;
+}
+.plant-page .tree-picker-compare {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  margin-top: 5px;
+  color: #dfd2a7;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+/* Retire the smaller duplicate inside the introduction. */
+.plant-page .plant-guide .quick-species { display: none; }
+.plant-page .plant-guide .species-profile { scroll-margin-top: 10rem; }
+@media (max-width: 800px) {
+  .plant-page .tree-picker-inner { width: calc(100% - 40px); }
+  .plant-page .tree-picker-buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .plant-page .tree-picker-buttons a:last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 480px) {
+  .plant-page .tree-picker-inner { width: calc(100% - 32px); padding: 20px 0 12px; }
+  .plant-page .tree-picker-intro { font-size: 14px; margin-bottom: 14px; }
+  .plant-page .tree-picker-buttons { gap: 8px; }
+  .plant-page .tree-picker-buttons a { min-height: 56px; padding: 12px; font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .plant-page .tree-picker-buttons a { transition: none; }
+}
+@media print {
+  .plant-page .tree-picker { display: none !important; }
+}
