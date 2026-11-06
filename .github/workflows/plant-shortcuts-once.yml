@@ -1,0 +1,232 @@
+name: Apply and verify tree shortcuts
+on:
+  push:
+    branches: [review/plant-education-2026-11-05]
+    paths: [.github/workflows/plant-shortcuts-once.yml]
+permissions:
+  contents: write
+concurrency:
+  group: plant-shortcuts-once
+  cancel-in-progress: false
+defaults:
+  run:
+    shell: bash
+jobs:
+  shortcuts:
+    if: github.ref == 'refs/heads/review/plant-education-2026-11-05'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update only the planting-guide shortcuts
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          p = Path('app/plant/PlantingGuide.tsx')
+          original = p.read_text()
+          blob = hashlib.sha1(b'blob ' + str(len(original.encode())).encode() + b'\0' + original.encode()).hexdigest()
+          assert blob == 'da4eda50e695032d9cc54898015ad93b77f9de33', 'Guide changed since review; refusing to overwrite it.'
+          old = '<nav className="quick-species" aria-label="Choose your tree"><strong>Which tree did you bring home?</strong><div><a href="#live-oak">Live oak</a><a href="#overcup-oak">Overcup oak</a><a href="#black-gum">Black gum</a><a href="#chaste-tree">Chaste tree</a><a href="#bald-cypress">Bald cypress</a></div></nav>'
+          new = '''<nav id="tree-selector" className="quick-species tree-shortcuts" aria-labelledby="tree-selector-title" aria-describedby="tree-selector-help">
+          <h2 id="tree-selector-title">Which tree did you bring home?</h2>
+          <p id="tree-selector-help">Tap your tree to jump straight to its guide.</p>
+          <div className="tree-picker">
+          <a href="#live-oak" aria-controls="live-oak" data-species-link>Live Oak <span aria-hidden="true">↓</span></a>
+          <a href="#overcup-oak" aria-controls="overcup-oak" data-species-link>Overcup Oak <span aria-hidden="true">↓</span></a>
+          <a href="#black-gum" aria-controls="black-gum" data-species-link>Black Gum <span aria-hidden="true">↓</span></a>
+          <a href="#chaste-tree" aria-controls="chaste-tree" data-species-link>Chaste Tree <span aria-hidden="true">↓</span></a>
+          <a href="#bald-cypress" aria-controls="bald-cypress" data-species-link>Bald Cypress <span aria-hidden="true">↓</span></a>
+          </div></nav>'''
+          assert original.count(old) == 1, 'Expected exactly one original shortcut panel.'
+          s = original.replace(old, new)
+          import_line = 'import "./species-profiles.css";'
+          assert s.count(import_line) == 1
+          s = s.replace(import_line, import_line + '\nimport "./tree-shortcuts.css";')
+          old_click = '      if (anchor) reveal(anchor.getAttribute("href") || "", false);'
+          new_click = '''      if (anchor) {
+                  const hash = anchor.getAttribute("href") || "";
+                  reveal(hash, false);
+                  if (anchor.closest(".tree-shortcuts") && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                    const target = document.getElementById(hash.slice(1));
+                    const summary = target?.querySelector<HTMLElement>("summary");
+                    requestAnimationFrame(() => summary?.focus({ preventScroll: true }));
+                  }
+                }'''
+          assert s.count(old_click) == 1
+          s = s.replace(old_click, new_click)
+          css = Path('app/plant/tree-shortcuts.css')
+          assert not css.exists(), 'Refusing to replace an existing shortcut stylesheet.'
+          css.write_text('''/* Five visible, on-page tree shortcuts. Scoped to the planting guide. */
+          .plant-guide .hero .quick-species.tree-shortcuts {
+            margin: 22px 0 20px;
+            padding: 20px;
+            border: 1px solid rgba(246, 201, 90, .48);
+            border-radius: 20px;
+            background: linear-gradient(135deg, #122a32, #12352f);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, .12);
+          }
+          .plant-guide .tree-shortcuts h2 {
+            margin: 0 0 7px;
+            font-family: inherit;
+            font-size: 21px;
+            line-height: 1.3;
+            letter-spacing: -.02em;
+            font-weight: 800;
+            color: #f6c95a;
+          }
+          .plant-guide .tree-shortcuts #tree-selector-help {
+            margin: 0 0 16px;
+            color: #d3e0db;
+            font-size: 14px;
+            line-height: 1.5;
+          }
+          .plant-guide .quick-species.tree-shortcuts .tree-picker {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+          }
+          .plant-guide .quick-species.tree-shortcuts .tree-picker a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            min-width: 0;
+            min-height: 50px;
+            padding: 12px 16px;
+            border: 1px solid #7d9d90;
+            border-radius: 999px;
+            background: #1d403a;
+            color: #f7faf5;
+            font-size: 16px;
+            line-height: 1.35;
+            font-weight: 750;
+            text-decoration: none;
+            transition: background-color .15s, border-color .15s;
+          }
+          .plant-guide .tree-shortcuts .tree-picker a:last-child { grid-column: 1 / -1; }
+          .plant-guide .tree-shortcuts .tree-picker a span { color: #f6c95a; font-size: 20px; flex: none; }
+          .plant-guide .quick-species.tree-shortcuts .tree-picker a:hover {
+            background: #2c5548;
+            border-color: #f6c95a;
+          }
+          .plant-guide .quick-species.tree-shortcuts .tree-picker a:focus-visible {
+            outline: 3px solid #f6c95a;
+            outline-offset: 3px;
+            background: #2c5548;
+          }
+          .plant-guide .species-profile:target { border-color: #f6c95a; }
+          @media (max-width: 640px) {
+            .plant-guide .hero { padding-top: 28px; }
+            .plant-guide .hero h1 { font-size: clamp(40px, 11vw, 52px); line-height: 1.06; }
+            .plant-guide .hero .intro { font-size: 16px; line-height: 1.6; }
+            .plant-guide .hero .quick-species.tree-shortcuts { padding: 17px; margin-top: 20px; }
+            .plant-guide .tree-shortcuts h2 { font-size: 20px; }
+            .plant-guide .quick-species.tree-shortcuts .tree-picker a { font-size: 15px; padding: 12px; }
+          }
+          @media (max-width: 359px) {
+            .plant-guide .hero .quick-species.tree-shortcuts { padding: 14px; }
+            .plant-guide .quick-species.tree-shortcuts .tree-picker { gap: 8px; }
+            .plant-guide .quick-species.tree-shortcuts .tree-picker a { font-size: 14px; padding: 12px 10px; }
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .plant-guide .quick-species.tree-shortcuts .tree-picker a { transition: none; }
+          }
+          @media print { .plant-guide .quick-species.tree-shortcuts { display: none !important; } }
+          ''')
+          p.write_text(s)
+          print('Updated exactly one shortcut panel; retained all five guides and native hash links.')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app/plant/PlantingGuide.tsx app/plant/tree-shortcuts.css
+          git rm .github/workflows/plant-shortcuts-once.yml
+          git commit -m 'Make five tree shortcuts prominent, touch-friendly and keyboard accessible'
+          git push origin HEAD:refs/heads/review/plant-education-2026-11-05
+      - name: Record exact source
+        if: always()
+        run: |
+          mkdir -p review-output
+          git rev-parse HEAD > review-output/tested-commit.txt
+          git archive --format=zip HEAD -o review-output/site-source.zip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Type check and production build
+        run: |
+          set -o pipefail
+          npm run typecheck 2>&1 | tee review-output/typecheck.log
+          npm run build 2>&1 | tee review-output/build.log
+          test -s .next/BUILD_ID
+      - name: Test every shortcut at mobile and desktop widths
+        run: |
+          npm install --prefix "$RUNNER_TEMP/shortcut-tools" --no-save --package-lock=false playwright
+          ln -s "$RUNNER_TEMP/shortcut-tools/node_modules/playwright" node_modules/playwright
+          "$RUNNER_TEMP/shortcut-tools/node_modules/.bin/playwright" install --with-deps chromium
+          npm run start > review-output/server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            kill -0 "$server_pid" || { cat review-output/server.log; exit 1; }
+            curl --fail --silent http://127.0.0.1:3000/plant >/dev/null && break
+            sleep 2
+          done
+          node scripts/verify-plant.mjs
+          node --input-type=module <<'JS'
+          import { chromium } from 'playwright';
+          import assert from 'node:assert/strict';
+          import { writeFile } from 'node:fs/promises';
+          const browser = await chromium.launch();
+          const species = ['live-oak','overcup-oak','black-gum','chaste-tree','bald-cypress'];
+          const results = [];
+          try {
+            for (const width of [320,390,768,1440]) {
+              const context = await browser.newContext({ viewport: {width,height:900}, reducedMotion:'reduce' });
+              await context.route('**/*', route => new URL(route.request().url()).origin === 'http://localhost:3000' ? route.continue() : route.abort());
+              const page = await context.newPage();
+              const errors=[];
+              page.on('pageerror', e=>errors.push(e.message));
+              await page.goto('http://localhost:3000/plant',{waitUntil:'networkidle'});
+              await page.waitForFunction(()=>{const i=document.querySelector('header img');return i?.complete&&i.naturalWidth>0;});
+              assert.equal(await page.locator('#tree-selector .tree-picker a').count(),5);
+              const selectorBox=await page.locator('#tree-selector').boundingBox();
+              assert(selectorBox.y<600,`Selector starts too low: ${selectorBox.y} at ${width}px`);
+              await page.screenshot({path:`review-output/plant-shortcuts-${width}.png`});
+              const targets = await page.locator('#tree-selector .tree-picker a').evaluateAll(nodes=>nodes.map(a=>({href:a.getAttribute('href'),height:a.getBoundingClientRect().height,font:parseFloat(getComputedStyle(a).fontSize)})));
+              assert(targets.every(t=>t.height>=48 && t.font>=14));
+              for (const id of species) {
+                await page.evaluate(id=>{document.getElementById(id).open=false;window.scrollTo(0,0);},id);
+                await page.locator(`#tree-selector a[href="#${id}"]`).click();
+                await page.waitForFunction(id=>document.getElementById(id).open,id);
+                await page.waitForFunction(id=>location.hash==='#'+id,id);
+                await page.waitForFunction(id=>document.activeElement===document.querySelector('#'+id+'>summary'),id);
+                const landing=await page.evaluate(id=>({top:document.getElementById(id).getBoundingClientRect().top,header:document.querySelector('header').getBoundingClientRect().bottom}),id);
+                assert(landing.top>=landing.header-2,`${id} hidden by header at ${width}: ${JSON.stringify(landing)}`);
+                assert(landing.top<450,`${id} is not near top after tap`);
+              }
+              await page.evaluate(()=>window.scrollTo(0,0));
+              await page.locator('#tree-selector a[href="#black-gum"]').focus();
+              await page.keyboard.press('Enter');
+              await page.waitForFunction(()=>document.getElementById('black-gum').open&&document.activeElement===document.querySelector('#black-gum>summary'));
+              assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+              assert.deepEqual(errors,[]);
+              await page.screenshot({path:`review-output/plant-shortcut-destination-${width}.png`});
+              results.push({width,selectorTop:selectorBox.y,selectorBottom:selectorBox.y+selectorBox.height,links:5,allGuidesOpen:true,keyboardPassed:true,clearOfHeader:true,horizontalOverflow:false,javascriptErrors:0});
+              await context.close();
+            }
+            await writeFile('review-output/shortcut-checks.json',JSON.stringify({passed:true,results},null,2));
+          } catch (error) {
+            await writeFile('review-output/shortcut-checks.json',JSON.stringify({passed:false,results,error:String(error)},null,2));
+            throw error;
+          } finally { await browser.close(); }
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: plant-tree-shortcuts-review
+          path: review-output/
+          retention-days: 7
