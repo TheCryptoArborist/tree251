@@ -5,60 +5,43 @@ on:
     paths:
       - app/plant/**
       - scripts/verify-plant.mjs
+  pull_request:
+    branches: [main]
+    paths:
+      - app/plant/**
+      - scripts/verify-plant.mjs
       - .github/workflows/plant-review.yml
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 concurrency:
-  group: plant-guide-review
+  group: plant-guide-review-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 defaults:
   run:
     shell: bash
 jobs:
   verify:
-    if: github.ref == 'refs/heads/review/plant-education-2026-11-05'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
       NEXT_TELEMETRY_DISABLED: '1'
     steps:
       - uses: actions/checkout@v4
-      - name: Correct native footer navigation
-        run: |
-          python3 - <<'PY'
-          import hashlib, re
-          from pathlib import Path
-          p = Path('app/plant/PlantingGuide.tsx')
-          s = p.read_text()
-          before = '04aef6835c7bbabea56eeeb40b3aed69bb0af53fced1cc56885bef3fbfe8bd51'
-          after = '9d3f7553fc788b4bce2c7e04ddd7ee966bef2e97985d8ff3541d4bcd229c6e3b'
-          assert hashlib.sha256(s.encode()).hexdigest() in [before, after]
-          if hashlib.sha256(s.encode()).hexdigest() == before:
-              s = s.replace('import type { KeyboardEvent } from "react";', 'import type { KeyboardEvent } from "react";\nimport Link from "next/link";')
-              s, n = re.subn(r'<a href="(/[^"]*)">([^<]+)</a>', r'<Link href="\1">\2</Link>', s)
-              assert n == 3
-          assert hashlib.sha256(s.encode()).hexdigest() == after
-          p.write_text(s)
-          PY
-          if ! git diff --quiet -- app/plant/PlantingGuide.tsx; then
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add app/plant/PlantingGuide.tsx
-            git commit -m 'Use Next Link for the planting guide footer navigation'
-            git push origin HEAD:refs/heads/review/plant-education-2026-11-05
-          fi
-      - name: Collect integrated source
-        if: always()
+        with:
+          persist-credentials: false
+      - name: Record tested source
         run: |
           mkdir -p review-output
-          cp public/arborist-logo-cropped.png review-output/arborist-logo-cropped.png
+          git rev-parse HEAD > review-output/tested-commit.txt
           git archive --format=zip HEAD -o review-output/site-source.zip
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
       - run: npm ci
+      - name: Record existing dependency audit
+        run: npm audit --json > review-output/dependency-audit.json || true
       - name: Type check
         run: npm run typecheck 2>&1 | tee review-output/typecheck.log
       - name: Production build
