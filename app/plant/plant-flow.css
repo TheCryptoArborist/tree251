@@ -1,0 +1,251 @@
+/* Continuous navy / blue-green reading surface. Scoped to the /plant route. */
+.plant-guide {
+  --ink: #f1eee5;
+  --muted: #b8c6c3;
+  --green: #9bcbbc;
+  --soft: #162d32;
+  --cream: #0e1b24;
+  --paper: #162832;
+  --line: rgba(163, 198, 190, .18);
+  --amber: #f6c95a;
+  --flow-secondary: #9fb4b0;
+  --flow-gold: #ecd39b;
+  color-scheme: dark;
+  color: var(--ink);
+  background: var(--cream);
+}
+/* End the hero on the exact body tone, rather than on a hard color seam. */
+.plant-guide .hero-shell {
+  color: var(--ink);
+  background:
+    linear-gradient(0deg, #0e1b24 0, rgba(14, 27, 36, 0) 180px),
+    radial-gradient(circle at 12% 8%, rgba(18, 192, 168, .11), transparent 28rem),
+    radial-gradient(circle at 88% 20%, rgba(246, 201, 90, .10), transparent 24rem),
+    linear-gradient(145deg, #050b12 0%, #091820 52%, #112622 100%);
+}
+.plant-guide .hero h1,
+.plant-guide .owner-start h2,
+.plant-guide .owner-checklist h3 { color: var(--ink); }
+.plant-guide .hero h1 em { color: var(--amber); }
+.plant-guide .hero .intro,
+.plant-guide .hero-note,
+.plant-guide .owner-checklist p { color: var(--muted); }
+.plant-guide .owner-start {
+  background: rgba(234, 241, 232, .035);
+  border-color: rgba(155, 203, 188, .22);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, .12);
+}
+.plant-guide h2,
+.plant-guide .start-note h2,
+.plant-guide .section-heading h2,
+.plant-guide .tree-card h3,
+.plant-guide .care-panel-header h3,
+.plant-guide .care-step h4,
+.plant-guide .watering-highlight h4,
+.plant-guide .timeline h4,
+.plant-guide .faq-intro h2,
+.plant-guide .faqs summary { color: var(--ink); }
+.plant-guide .start-note { border-color: var(--line); }
+.plant-guide .start-icon {
+  color: var(--green);
+  background: rgba(155, 203, 188, .08);
+  border: 1px solid rgba(155, 203, 188, .18);
+}
+.plant-guide .start-note .check-ready {
+  background: rgba(246, 201, 90, .07);
+  border-color: rgba(246, 201, 90, .25) !important;
+  color: var(--flow-gold);
+}
+.plant-guide .start-note p,
+.plant-guide .section-heading .description,
+.plant-guide .space-explainer p,
+.plant-guide .care-panel-header > p,
+.plant-guide .care-step p,
+.plant-guide .watering-highlight p,
+.plant-guide .timeline p,
+.plant-guide .faq-intro p:not(.eyebrow),
+.plant-guide .faqs .answer,
+.plant-guide .detail-copy,
+.plant-guide .sources > p,
+.plant-guide .sources li { color: var(--muted); }
+.plant-guide .section-nav { border-color: var(--line); }
+.plant-guide .section-nav a,
+.plant-guide .section-nav button { color: var(--muted); }
+.plant-guide .section-nav b,
+.plant-guide .section-heading .eyebrow,
+.plant-guide .faq-intro .eyebrow,
+.plant-guide .timeline .eyebrow { color: var(--flow-gold); }
+.plant-guide .section-nav a:hover,
+.plant-guide .section-nav button:hover { color: var(--amber); }
+.plant-guide .space-notice {
+  background: #152b31;
+  border-color: rgba(155, 203, 188, .18);
+  color: var(--muted);
+}
+.plant-guide .space-notice svg { color: var(--green); }
+.plant-guide .space-notice strong,
+.plant-guide .space-explainer strong { color: var(--ink); }
+.plant-guide .tree-card {
+  background: linear-gradient(155deg, #172b35, #14242e);
+  border-color: rgba(163, 198, 190, .20);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, .10);
+}
+.plant-guide .tree-index {
+  color: var(--flow-gold);
+  background: rgba(246, 201, 90, .07);
+  border-color: rgba(246, 201, 90, .20);
+}
+.plant-guide .tree-badge {
+  color: #b7d9cd;
+  background: rgba(155, 203, 188, .09);
+}
+.plant-guide .gum .tree-badge {
+  color: #e8c6a0;
+  background: rgba(209, 157, 99, .10);
+}
+.plant-guide .vitex .tree-badge {
+  color: #d2c9e9;
+  background: rgba(174, 156, 210, .10);
+}
+.plant-guide .tree-label { color: var(--green); }
+.plant-guide .latin,
+.plant-guide .dimensions { color: var(--flow-secondary); }
+.plant-guide .metric-label,
+.plant-guide .tree-metrics small,
+.plant-guide .footprint strong small { color: var(--muted); }
+.plant-guide .tree-metrics strong { color: var(--ink); }
+.plant-guide .footprint strong { color: var(--flow-gold); }
+.plant-guide .tree-card details {
+  background: rgba(4, 14, 21, .22);
+  border-color: var(--line);
+}
+.plant-guide .tree-card summary { color: var(--ink); }
+.plant-guide .tree-card summary:hover { background: rgba(155, 203, 188, .07); }
+.plant-guide .tree-card .plus,
+.plant-guide .faqs .plus { color: var(--green); }
+.plant-guide .detail-copy a,
+.plant-guide .sources ul a { color: var(--green); }
+.plant-guide .detail-copy a:hover,
+.plant-guide .sources ul a:hover { color: var(--amber); }
+/* Slightly lighter care area, blended at both ends into the reading surface. */
+.plant-guide .care-section {
+  background: linear-gradient(180deg, #0e1b24, #11242c 100px, #11242c calc(100% - 100px), #0e1b24);
+  border-color: transparent;
+}
+.plant-guide .care-tabs {
+  background: #0b1922;
+  border-color: rgba(163, 198, 190, .23);
+}
+.plant-guide .care-tab { color: var(--muted); }
+.plant-guide .care-tab:hover { color: var(--ink); background: rgba(155, 203, 188, .09); }
+.plant-guide .care-tab[aria-selected="true"],
+.plant-guide .care-tab[aria-selected="true"]:hover {
+  background: var(--amber);
+  color: #102027;
+}
+.plant-guide .care-step,
+.plant-guide .timeline > div {
+  background: #172b35;
+  border-color: rgba(163, 198, 190, .18);
+}
+.plant-guide .step-no,
+.plant-guide .step-number {
+  background: rgba(246, 201, 90, .09);
+  color: var(--flow-gold);
+  border: 1px solid rgba(246, 201, 90, .20);
+}
+.plant-guide .care-note {
+  background: #292a24;
+  border-color: rgba(246, 201, 90, .27);
+  color: #d8d9cd;
+}
+.plant-guide .care-note svg { color: var(--amber); }
+.plant-guide .care-note strong { color: #f1dfb5; }
+.plant-guide .care-next button {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: #102027;
+}
+.plant-guide .care-next button:hover { background: #ffdc70; }
+.plant-guide .watering-highlight {
+  background: #172f34;
+  border-color: rgba(155, 203, 188, .23);
+}
+.plant-guide .watering-highlight strong { color: var(--ink); }
+.plant-guide .faqs details,
+.plant-guide .faqs details:first-child { border-color: var(--line); }
+.plant-guide .faqs summary:hover { color: var(--flow-gold); }
+.plant-guide .contact {
+  background:
+    radial-gradient(circle at 95% 5%, rgba(246, 201, 90, .055), transparent 25rem),
+    linear-gradient(130deg, #152b35, #162c2e);
+  border-color: rgba(155, 203, 188, .23);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, .10);
+}
+.plant-guide .contact h2,
+.plant-guide .contact-right > a:not(.button) { color: var(--ink); }
+.plant-guide .contact p,
+.plant-guide .contact-right small { color: var(--muted); }
+.plant-guide .sources summary { color: var(--muted); min-height:44px; }
+.plant-guide .sources summary:hover { color: var(--flow-gold); }
+.plant-guide .theme-footer {
+  background: linear-gradient(180deg, #0e1b24, #08131b);
+  border-color: var(--line);
+  margin-top: 0;
+}
+.plant-guide .theme-footer p { color: var(--muted); }
+.plant-guide .theme-footer-brand { color: var(--ink); }
+.plant-guide ::selection { color: #102027; background: #f6c95a; }
+.plant-guide :is(a, button, summary):focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 4px;
+}
+/* The dark palette is for screens, not ink-heavy printouts. */
+@media print {
+  .plant-guide {
+    --ink: #1c1c1c;
+    --muted: #333;
+    --green: #333;
+    --flow-secondary: #333;
+    --flow-gold: #1c1c1c;
+    --line: #bbb;
+    color-scheme: light;
+    background: #fff !important;
+  }
+  .plant-guide * {
+    color: #1c1c1c !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  .plant-guide :is(.tree-card, .care-step, .timeline > div, .space-notice, .care-note, .watering-highlight, .contact) {
+    border-color: #bbb !important;
+  }
+}
+
+/* Green-space guidance replaces canopy-area arithmetic. */
+.plant-guide .space-guidance {
+  border-top: 1px solid var(--line);
+  padding: 17px 0 20px;
+}
+.plant-guide .space-guidance-title {
+  display: block;
+  margin-top: 7px;
+  color: var(--flow-gold, #f6c95a);
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: -.02em;
+}
+.plant-guide .space-guidance p {
+  margin: 8px 0 0;
+  color: var(--flow-secondary, #b9c9c7);
+  font-size: 14px;
+  line-height: 1.65;
+}
+@media print {
+  .plant-guide .space-guidance { padding: 10px 0; }
+  .plant-guide .space-guidance-title { color: #142116 !important; font-size: 11pt; }
+  .plant-guide .space-guidance p { color: #242424 !important; font-size: 9pt; }
+}

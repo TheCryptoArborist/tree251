@@ -1,0 +1,673 @@
+/* Page-scoped styles; shared site theme, layout, and components remain unchanged. */
+.plant-guide{--ink:#153b2c;--muted:#59685e;--green:#254f39;--soft:#eef2e8;--cream:#f8f8f2;--paper:#fff;--line:#dde3d8;--amber:#d9ab51;--sans:Arial,Helvetica,sans-serif;--serif:Georgia,"Times New Roman",serif;--radius:17px}
+.plant-guide, .plant-guide *{box-sizing:border-box}
+.plant-guide{margin:0;color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;background:var(--cream)}
+.plant-guide button,.plant-guide a{-webkit-tap-highlight-color:transparent}
+.plant-guide button{font:inherit;cursor:pointer}
+.plant-guide a{color:inherit;text-underline-offset:4px}
+.plant-guide button:focus-visible,.plant-guide a:focus-visible,.plant-guide summary:focus-visible{outline:3px solid var(--amber);outline-offset:5px}
+.plant-guide svg{flex-shrink:0;vertical-align:middle}
+.plant-guide h1,.plant-guide h2,.plant-guide h3,.plant-guide p{margin-top:0}
+.plant-guide h1,.plant-guide h2{font-family:var(--serif);font-weight:400;letter-spacing:-1.8px;line-height:1.12}
+.plant-guide h2{font-size:43px;margin-bottom:18px}
+.plant-guide h3{font-size:23px;line-height:1.25}
+.plant-guide p{margin-bottom:16px}
+.plant-guide .container{max-width:1200px;width:calc(100% - 96px);margin:auto}
+.plant-guide .eyebrow{font-size:11px;font-weight:700;letter-spacing:2.05px;line-height:1.4;text-transform:uppercase}
+.plant-guide .muted{color:var(--muted)}
+.plant-guide .skip-link{position:absolute;top:-100px;left:20px;z-index:50;background:white;padding:12px}
+.plant-guide .skip-link:focus{top:10px}
+.plant-guide .announcement{background:var(--ink);color:#fff;padding:9px 0;font-size:11px;letter-spacing:1.2px;font-weight:700;line-height:1.5}
+.plant-guide .announcement .container{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.plant-guide .announcement a{text-decoration:none;display:flex;align-items:center;gap:8px}
+.plant-guide .ann-location{font-weight:400;color:#dbe6d5;letter-spacing:.6px}
+.plant-guide .site-header{height:104px;display:flex;align-items:center;justify-content:space-between;gap:30px}
+.plant-guide .brand{text-decoration:none;display:flex;align-items:center;gap:12px}
+.plant-guide .brand-mark{width:42px;height:46px;display:grid;place-items:center;border:1px solid #a3b49f;border-radius:50% 50% 44% 44%}
+.plant-guide .brand-word{font-family:var(--serif);font-size:29px;letter-spacing:-.9px;line-height:1.1}
+.plant-guide .brand small{display:block;font-family:var(--sans);font-size:8px;font-weight:bold;letter-spacing:2px;margin-top:7px}
+.plant-guide .desktop-nav{display:flex;gap:30px;align-items:center;font-size:13px;font-weight:600}
+.plant-guide .desktop-nav>a{text-decoration:none}
+.plant-guide .desktop-nav .nav-phone{border:1px solid #c5d0c0;padding:11px 17px;border-radius:7px;display:flex;gap:8px;align-items:center}
+.plant-guide .menu-toggle{display:none;background:none;border:0;color:var(--ink);padding:8px}
+.plant-guide .mobile-nav{display:none}
+.plant-guide .hero{display:grid;grid-template-columns:1.28fr 1fr;gap:68px;align-items:center;padding-top:34px;padding-bottom:62px}
+.plant-guide .hero-copy{padding-bottom:6px}
+.plant-guide .hero .eyebrow{margin-bottom:23px;color:#577052}
+.plant-guide .hero h1{font-size:81px;letter-spacing:-3.5px;line-height:1.01;margin-bottom:24px}
+.plant-guide .hero h1 em{font-weight:400;color:#487047}
+.plant-guide .hero .intro{font-size:18px;line-height:1.65;max-width:480px;color:var(--muted);margin-bottom:28px}
+.plant-guide .hero-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.plant-guide .button{border:1px solid var(--ink);display:inline-flex;align-items:center;justify-content:center;gap:13px;text-decoration:none;background:var(--ink);color:white;border-radius:7px;padding:13px 19px;font-size:13px;font-weight:700;line-height:1.6;transition:background .18s,transform .18s}
+.plant-guide .button:hover{background:#31553e;transform:translateY(-1px)}
+.plant-guide .button.secondary{color:var(--ink);background:transparent;border-color:#c8d2c2}
+.plant-guide .button.secondary:hover{background:#e7ede0}
+.plant-guide .hero-note{display:flex;align-items:center;gap:8px;font-size:11px;color:#657260;margin-top:22px;letter-spacing:.15px}
+.plant-guide .hero-note svg{color:#708b58}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.plant-guide .text-button{border:0;background:none;padding:0;color:var(--ink);font-size:12px;text-decoration:underline;text-underline-offset:4px;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.plant-guide .start-note{border-top:1px solid #d7e0d0;border-bottom:1px solid #d7e0d0;padding:23px 0;display:flex;gap:20px;align-items:center;margin-bottom:0}
+.plant-guide .start-icon{width:50px;height:50px;background:#e7eedc;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+.plant-guide .start-note h2{font-family:var(--sans);font-size:17px;font-weight:700;letter-spacing:-.3px;margin:0 0 5px}
+.plant-guide .start-note p{font-size:13px;color:var(--muted);margin:0;line-height:1.55;max-width:830px}
+.plant-guide .start-note .check-ready{margin-left:auto;border:1px solid #cad5c0;border-radius:5px;padding:7px 10px;font-size:10px;font-weight:bold;letter-spacing:.8px;white-space:nowrap}
+.plant-guide .section-nav{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:23px 0;font-size:12px;border-bottom:1px solid var(--line)}
+.plant-guide .section-nav a{text-decoration:none;color:var(--muted);display:flex;align-items:center;gap:10px}
+.plant-guide .section-nav b{font-size:10px;color:#7f9471;font-weight:600}
+.plant-guide .section-nav a:hover{color:var(--ink)}
+.plant-guide .section-nav button{background:none;border:0;color:var(--muted);font-size:12px;display:flex;align-items:center;gap:8px;padding:0}
+.plant-guide .section{padding:65px 0}
+.plant-guide .section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin-bottom:27px}
+.plant-guide .section-heading .eyebrow{color:#69815c;margin-bottom:12px}
+.plant-guide .section-heading h2{margin:0}
+.plant-guide .section-heading .description{font-size:14px;line-height:1.7;color:var(--muted);max-width:440px;margin:0 0 4px}
+.plant-guide .space-notice{background:#ebf0e4;border-radius:9px;padding:15px 19px;display:flex;align-items:flex-start;gap:12px;margin-bottom:24px;font-size:12px;line-height:1.6;color:#4b5d47}
+.plant-guide .space-notice svg{margin-top:1px}
+.plant-guide .space-notice strong{color:var(--ink)}
+.plant-guide .tree-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:20px}
+.plant-guide .tree-card{grid-column:span 2;border:1px solid #dce3d5;border-radius:13px;background:white;padding:23px 24px 0;overflow:hidden;align-self:start}
+.plant-guide .tree-card:nth-child(n/**/+4){grid-column:span 3}
+.plant-guide .tree-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:25px}
+.plant-guide .tree-index{width:31px;height:31px;border:1px solid #d7dfcc;border-radius:50%;display:grid;place-items:center;color:#7f946e;font-family:var(--serif);font-size:15px}
+.plant-guide .tree-badge{font-size:9px;letter-spacing:.15px;background:#f0f3e9;color:#60734f;border-radius:20px;padding:4px 9px}
+.plant-guide .gum .tree-badge{background:#f8eee4;color:#966743}
+.plant-guide .vitex .tree-badge{background:#efedf5;color:#706680}
+.plant-guide .tree-label{font-size:10px;letter-spacing:.7px;text-transform:uppercase;color:#7c8d70;margin-bottom:7px}
+.plant-guide .tree-card h3{font-family:var(--serif);font-size:28px;font-weight:400;letter-spacing:-.8px;line-height:1.2;margin-bottom:2px}
+.plant-guide .latin{font-size:12px;font-style:italic;color:#7d8875;margin-bottom:23px}
+.plant-guide .tree-metrics{display:grid;grid-template-columns:1fr 1fr;margin-bottom:21px}
+.plant-guide .tree-metrics>div+div{border-left:1px solid var(--line);padding-left:22px}
+.plant-guide .metric-label{font-size:9px;letter-spacing:1px;color:#7a8770;display:block;font-weight:600;line-height:1.5}
+.plant-guide .tree-metrics strong{display:block;font-size:24px;font-weight:500;line-height:1.4;letter-spacing:-.7px}
+.plant-guide .tree-metrics small{font-size:13px;letter-spacing:0;color:var(--muted)}
+.plant-guide .footprint{border-top:1px solid var(--line);padding-top:17px;padding-bottom:20px}
+.plant-guide .footprint strong{font-family:var(--serif);font-size:25px;font-weight:400;display:block;letter-spacing:-.5px;line-height:1.6}
+.plant-guide .footprint strong small{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--muted)}
+.plant-guide .dimensions{font-size:10px;color:#7b8774}
+.plant-guide .tree-card details{margin:0 -24px;background:#f7f9f3;border-top:1px solid var(--line)}
+.plant-guide summary{cursor:pointer;list-style:none}
+.plant-guide summary::-webkit-details-marker{display:none}
+.plant-guide .tree-card summary{padding:13px 24px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:600}
+.plant-guide .plus{font-size:19px;font-weight:400;line-height:1;transition:transform .2s}
+.plant-guide details[open] .plus{transform:rotate(45deg)}
+.plant-guide .detail-copy{padding:2px 24px 19px;font-size:13px;color:var(--muted)}
+.plant-guide .detail-copy p{margin-bottom:12px}
+.plant-guide .detail-copy a{font-size:11px;color:var(--ink)}
+.plant-guide .space-explainer{display:grid;grid-template-columns:1fr 1fr;gap:30px;padding-top:25px}
+.plant-guide .space-explainer p{font-size:12px;line-height:1.75;color:var(--muted);margin:0}
+.plant-guide .space-explainer strong{color:var(--ink)}
+.plant-guide .care-section{background:#edf1e7;border-top:1px solid #e0e6d8;border-bottom:1px solid #e0e6d8}
+.plant-guide .care-section .section-heading{align-items:center}
+.plant-guide .care-tabs{display:flex;gap:8px;border-bottom:1px solid #ccd7c3;margin-bottom:29px}
+.plant-guide .care-tab{padding:14px 20px;background:transparent;border:0;border-bottom:3px solid transparent;color:#6c7b60;font-size:13px;display:flex;align-items:center;gap:9px;position:relative;top:1px}
+.plant-guide .care-tab[aria-selected=true]{border-bottom-color:var(--green);color:var(--ink);font-weight:700}
+.plant-guide .care-panel[hidden]{display:none}
+.plant-guide .care-panel-header{display:flex;justify-content:space-between;align-items:center;gap:36px;margin-bottom:28px}
+.plant-guide .care-panel-header h3{font-family:var(--serif);font-size:29px;letter-spacing:-.6px;font-weight:400;max-width:400px;margin:0}
+.plant-guide .care-panel-header>p{max-width:540px;font-size:13px;color:var(--muted);margin:0}
+.plant-guide .care-steps{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.plant-guide .care-step{background:#fdfef9;border:1px solid #dae2d2;border-radius:10px;padding:22px 24px;display:flex;gap:15px;align-items:flex-start}
+.plant-guide .step-no{width:29px;height:29px;border-radius:50%;background:#eaf0df;font-size:11px;font-weight:bold;display:grid;place-items:center;flex-shrink:0}
+.plant-guide .care-step h4{font-size:15px;line-height:1.35;margin:2px 0 8px;font-weight:700}
+.plant-guide .care-step p{font-size:13px;line-height:1.75;color:var(--muted);margin:0}
+.plant-guide .care-note{display:flex;gap:13px;padding:19px 22px;background:#e0e9d5;border-radius:9px;margin-top:20px;font-size:12px;line-height:1.7}
+.plant-guide .care-note p{margin:0}
+.plant-guide .care-next{display:flex;justify-content:flex-end;margin-top:22px}
+.plant-guide .care-next button{background:none;border:0;color:var(--ink);font-size:12px;font-weight:700;display:flex;align-items:center;gap:9px;padding:0}
+.plant-guide .watering-highlight{display:grid;grid-template-columns:1fr 1.4fr;gap:25px;padding:24px;background:white;border:1px solid #dbe3d2;border-radius:10px;margin-bottom:20px}
+.plant-guide .watering-highlight h4{font-family:var(--serif);font-size:27px;font-weight:400;line-height:1.15;letter-spacing:-.5px;margin:0 0 10px}
+.plant-guide .watering-highlight p{font-size:13px;color:var(--muted);margin:0}
+.plant-guide .watering-highlight strong{color:var(--ink)}
+.plant-guide .timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+.plant-guide .timeline>div{background:#fdfef9;border-radius:10px;border:1px solid #dae2d2;padding:23px}
+.plant-guide .timeline .eyebrow{color:#70885c;font-size:10px;margin-bottom:10px}
+.plant-guide .timeline h4{font-size:16px;margin:0 0 8px}
+.plant-guide .timeline p{font-size:13px;color:var(--muted);margin:0}
+.plant-guide .faq-layout{display:grid;grid-template-columns:1fr 1.6fr;gap:75px}
+.plant-guide .faq-intro p:not(.eyebrow){font-size:14px;color:var(--muted);max-width:270px}
+.plant-guide .faq-intro h2{font-size:40px}
+.plant-guide .faqs details{border-bottom:1px solid #d8e0d0;padding:0}
+.plant-guide .faqs details:first-child{border-top:1px solid #d8e0d0}
+.plant-guide .faqs summary{padding:19px 0;display:flex;justify-content:space-between;align-items:center;gap:15px;font-size:14px;font-weight:600}
+.plant-guide .faqs .answer{font-size:13px;color:var(--muted);padding:0 26px 20px 0}
+.plant-guide .faqs .answer p{margin:0}
+.plant-guide .contact{border-radius:18px;background:var(--ink);color:white;padding:45px 49px;display:grid;grid-template-columns:1.25fr 1fr;align-items:center;gap:60px;position:relative;overflow:hidden}
+.plant-guide .contact .eyebrow{color:#bdd39c;margin-bottom:12px}
+.plant-guide .contact h2{font-size:40px;margin-bottom:15px;letter-spacing:-1.2px;max-width:570px}
+.plant-guide .contact p{font-size:14px;line-height:1.7;color:#d4dfcc;margin-bottom:0;max-width:550px}
+.plant-guide .contact-right{display:flex;flex-direction:column;align-items:flex-start;justify-self:end}
+.plant-guide .contact-right>a{font-size:31px;font-family:var(--serif);color:#fff;text-decoration:none;letter-spacing:-.5px;margin-bottom:14px}
+.plant-guide .contact-right .button{background:#e4eccf;color:var(--ink);font-family:var(--sans);font-size:13px;letter-spacing:0;margin-bottom:15px;border-color:#e4eccf;padding:13px 21px}
+.plant-guide .contact-right small{color:#d4dfcc;font-size:11px}
+.plant-guide .source-section{padding:35px 0 29px}
+.plant-guide .sources summary{font-size:11px;color:#6d7a63;display:flex;gap:8px;align-items:center}
+.plant-guide .sources ul{list-style:none;padding:10px 0 0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:8px 35px}
+.plant-guide .sources li{font-size:11px;color:var(--muted)}
+.plant-guide .sources>p{font-size:11px;margin-top:10px;color:var(--muted)}
+.plant-guide .site-footer{border-top:1px solid var(--line);padding:25px 0 32px;display:flex;justify-content:space-between;gap:25px;font-size:11px;color:#708065;align-items:center}
+.plant-guide .footer-brand{font-family:var(--serif);font-size:22px;color:var(--ink)}
+.plant-guide .site-footer p{margin:0}
+.plant-guide .site-footer .footer-right{text-align:right;font-size:10px;line-height:1.7;max-width:480px}
+.plant-guide .mobile-call{display:none}
+
+
+
+
+
+.plant-guide .print-only{display:none}
+@media(min-width:1500px){.plant-guide .container{max-width:1240px}
+.plant-guide .hero{gap:90px}
+.plant-guide .hero h1{font-size:88px}}
+@media(max-width:1100px){.plant-guide .container{width:calc(100% - 56px)}
+.plant-guide .hero{gap:34px}
+.plant-guide .hero h1{font-size:69px}
+.plant-guide .desktop-nav{gap:19px}
+
+
+
+.plant-guide .hero .intro{font-size:17px}
+.plant-guide .hero .eyebrow{font-size:10px}
+.plant-guide .tree-card{padding:21px 18px 0}
+.plant-guide .tree-card h3{font-size:25px}
+.plant-guide .tree-card details{margin:0 -18px}
+.plant-guide .tree-card summary{padding:13px 18px}
+.plant-guide .tree-badge{font-size:8px}
+.plant-guide .tree-metrics>div+div{padding-left:15px}
+.plant-guide .footprint strong{font-size:23px}
+.plant-guide .section-heading h2{font-size:39px}
+.plant-guide .section-heading .description{max-width:375px}
+.plant-guide .contact{gap:30px;padding:38px}
+.plant-guide .contact h2{font-size:35px}
+.plant-guide .contact-right>a{font-size:28px}}
+@media(max-width:800px){.plant-guide .container{width:calc(100% - 40px)}
+.plant-guide .announcement{font-size:9px;letter-spacing:.65px}
+.plant-guide .announcement .ann-location{display:none}
+.plant-guide .announcement .container{justify-content:center}
+.plant-guide .site-header{height:84px}
+.plant-guide .brand-word{font-size:26px}
+.plant-guide .brand small{font-size:7px;letter-spacing:1.8px}
+.plant-guide .brand-mark{width:37px;height:41px}
+.plant-guide .desktop-nav{display:none}
+.plant-guide .menu-toggle{display:block}
+.plant-guide .mobile-nav:not([hidden]){display:flex;flex-direction:column;gap:0;padding:0 20px 12px;border-bottom:1px solid var(--line)}
+.plant-guide .mobile-nav a{font-size:14px;text-decoration:none;padding:10px 0}
+.plant-guide .hero{grid-template-columns:1fr;gap:30px;padding-top:23px;padding-bottom:34px}
+.plant-guide .hero-copy{padding-bottom:0}
+.plant-guide .hero .eyebrow{font-size:9px;letter-spacing:1.8px;margin-bottom:18px}
+.plant-guide .hero h1{font-size:62px;letter-spacing:-2.6px;margin-bottom:20px}
+.plant-guide .hero .intro{max-width:560px;font-size:16px;line-height:1.7;margin-bottom:22px}
+.plant-guide .hero-actions{gap:9px}
+.plant-guide .button{font-size:12px;padding:12px 15px;gap:9px}
+.plant-guide .hero-note{font-size:10px;margin-top:18px}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.plant-guide .start-note{align-items:flex-start;gap:14px;padding:21px 0}
+.plant-guide .start-icon{width:41px;height:41px}
+.plant-guide .start-note h2{font-size:15px;line-height:1.4}
+.plant-guide .start-note p{font-size:12px;line-height:1.7}
+.plant-guide .check-ready{display:none}
+.plant-guide .section-nav{gap:21px;overflow:auto;justify-content:flex-start;white-space:nowrap;padding:19px 0;margin-bottom:0;scrollbar-width:none}
+.plant-guide .section-nav a{font-size:11px;gap:7px}
+.plant-guide .section-nav button{display:none}
+.plant-guide .section{padding:39px 0}
+.plant-guide .section-heading{display:block;margin-bottom:21px}
+.plant-guide .section-heading .eyebrow{font-size:10px;margin-bottom:11px}
+.plant-guide .section-heading h2{font-size:37px;line-height:1.12;letter-spacing:-1.4px;margin-bottom:14px}
+.plant-guide .section-heading .description{font-size:13px;max-width:none}
+.plant-guide .space-notice{padding:14px;font-size:11px;gap:9px;margin-bottom:18px}
+.plant-guide .tree-grid{grid-template-columns:1fr 1fr;gap:15px}
+.plant-guide .tree-card,.plant-guide .tree-card:nth-child(n/**/+4){grid-column:span 1}
+.plant-guide .tree-card:last-child{grid-column:span 2}
+.plant-guide .tree-card h3{font-size:26px}
+.plant-guide .tree-card{padding:21px 21px 0}
+.plant-guide .tree-card details{margin:0 -21px}
+.plant-guide .tree-card summary{padding:13px 21px}
+.plant-guide .tree-top{margin-bottom:19px}
+.plant-guide .tree-badge{font-size:8px}
+.plant-guide .space-explainer{grid-template-columns:1fr;gap:12px;padding-top:19px}
+.plant-guide .space-explainer p{font-size:11px}
+.plant-guide .care-tabs{gap:0;margin-bottom:22px}
+.plant-guide .care-tab{font-size:11px;padding:12px 10px;flex:1;justify-content:center;gap:7px;line-height:1.3}
+.plant-guide .care-tab svg{width:17px;height:17px}
+.plant-guide .care-panel-header{display:block;margin-bottom:22px}
+.plant-guide .care-panel-header h3{font-size:27px;margin-bottom:12px}
+.plant-guide .care-panel-header>p{font-size:12px;max-width:none}
+.plant-guide .care-steps{gap:12px}
+.plant-guide .care-step{padding:18px 17px;gap:12px}
+.plant-guide .care-step h4{font-size:14px}
+.plant-guide .care-step p{font-size:12px}
+.plant-guide .care-note{padding:17px 16px;font-size:11px;gap:10px}
+.plant-guide .watering-highlight{grid-template-columns:1fr;gap:15px;padding:20px}
+.plant-guide .timeline{grid-template-columns:1fr;gap:12px}
+.plant-guide .timeline>div{padding:19px}
+.plant-guide .faq-layout{grid-template-columns:1fr;gap:12px}
+.plant-guide .faq-intro p:not(.eyebrow){max-width:none;font-size:13px;margin-bottom:15px}
+.plant-guide .faq-intro h2{font-size:35px;margin-bottom:13px}
+.plant-guide .faqs summary{font-size:13px;padding:17px 0}
+.plant-guide .faqs .answer{font-size:12px}
+.plant-guide .contact{grid-template-columns:1fr;gap:25px;padding:31px 27px;border-radius:13px}
+.plant-guide .contact h2{font-size:34px;line-height:1.13}
+.plant-guide .contact p{font-size:13px}
+.plant-guide .contact-right{justify-self:start}
+.plant-guide .contact-right>a{font-size:31px;margin-bottom:11px}
+.plant-guide .contact-right small{font-size:10px}
+.plant-guide .source-section{padding:28px 0}
+.plant-guide .sources ul{grid-template-columns:1fr}
+.plant-guide .site-footer{display:block;padding:23px 0 95px}
+.plant-guide .site-footer .footer-right{text-align:left;max-width:none;margin-top:13px}
+.plant-guide .footer-brand{font-size:22px}
+.plant-guide .mobile-call{position:fixed;z-index:10;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:11px 20px calc(11px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;gap:15px;box-shadow:0 -3px 18px rgba(0,0,0,.04)}
+.plant-guide .mobile-call span{font-size:10px;color:#62715c;line-height:1.5}
+.plant-guide .mobile-call span strong{font-size:12px;display:block;color:var(--ink)}
+.plant-guide .mobile-call a{font-size:12px;padding:10px 14px;border-radius:6px;text-decoration:none;background:var(--ink);color:white;display:flex;align-items:center;gap:8px}
+
+}
+@media(max-width:540px){.plant-guide .tree-grid{grid-template-columns:1fr}
+.plant-guide .tree-card,.plant-guide .tree-card:nth-child(n/**/+4),.plant-guide .tree-card:last-child{grid-column:span 1}
+.plant-guide .tree-card{padding:22px 23px 0}
+.plant-guide .tree-card details{margin:0 -23px}
+.plant-guide .tree-card summary{padding:13px 23px}
+.plant-guide .tree-top{margin-bottom:18px}
+.plant-guide .tree-badge{font-size:9px}
+.plant-guide .tree-card h3{font-size:28px}
+.plant-guide .tree-label{font-size:9px}
+.plant-guide .tree-metrics strong{font-size:25px}
+.plant-guide .tree-metrics>div+div{padding-left:23px}
+.plant-guide .latin{margin-bottom:21px}
+.plant-guide .footprint strong{font-size:26px}
+.plant-guide .care-steps{grid-template-columns:1fr}
+.plant-guide .care-tab{font-size:10px;padding:13px 7px;gap:5px}
+.plant-guide .care-tab svg{width:16px;height:16px}
+.plant-guide .care-next{justify-content:flex-start}
+.plant-guide .hero-actions .button{padding:12px 13px;gap:8px}
+.plant-guide .hero-actions .button svg{width:15px}
+.plant-guide .hero-actions{gap:8px}
+}
+@media(max-width:370px){.plant-guide .container{width:calc(100% - 32px)}
+.plant-guide .hero h1{font-size:56px}
+.plant-guide .button{font-size:11px}
+.plant-guide .hero-actions .button{padding:11px}
+.plant-guide .hero .eyebrow{font-size:8px}
+
+
+
+.plant-guide .text-button{font-size:11px}
+
+.plant-guide .contact{padding:28px 23px}
+.plant-guide .contact h2{font-size:32px}}
+@media(prefers-reduced-motion:reduce){.plant-guide, .plant-guide *{transition:none!important}}
+@media print{.plant-guide{background:white;color:#152d22;font-size:10pt}
+.plant-guide .container{max-width:none;width:100%}
+.plant-guide .announcement,.plant-guide .site-header,.plant-guide .hero-actions,.plant-guide .hero-note,.plant-guide .section-nav,.plant-guide .mobile-call,.plant-guide .care-tabs,.plant-guide .care-next,.plant-guide .menu-toggle,.plant-guide .mobile-nav,.plant-guide .text-button,.plant-guide .sources summary,.plant-guide .skip-link{display:none!important}
+.plant-guide .hero{display:block;padding:0}
+.plant-guide .hero h1{font-size:34pt}
+.plant-guide .hero .intro{max-width:none;font-size:11pt}
+
+
+
+
+
+
+.plant-guide .hero .eyebrow{font-size:8pt}
+.plant-guide .start-note{padding:15px 0}
+.plant-guide .start-note p{font-size:10pt}
+.plant-guide .section{padding:25px 0}
+.plant-guide .section-heading{display:block}
+.plant-guide .section-heading h2,.plant-guide h2{font-size:24pt}
+.plant-guide .section-heading .description{max-width:none;font-size:10pt}
+.plant-guide .tree-grid{grid-template-columns:1fr 1fr}
+.plant-guide .tree-card,.plant-guide .tree-card:nth-child(n/**/+4),.plant-guide .tree-card:last-child{grid-column:span 1;break-inside:avoid;page-break-inside:avoid;align-self:start}
+.plant-guide .tree-card{padding:14px 16px 0}
+.plant-guide .tree-top{margin-bottom:12px}
+.plant-guide .tree-card h3{font-size:19pt}
+.plant-guide .tree-label,.plant-guide .metric-label{font-size:7pt}
+.plant-guide .tree-card details{margin:0 -16px}
+.plant-guide .tree-card summary{padding:10px 16px}
+.plant-guide .detail-copy{font-size:9pt;padding:0 16px 12px}
+.plant-guide .footprint{padding:10px 0}
+.plant-guide .tree-metrics{margin-bottom:12px}
+.plant-guide .tree-metrics strong,.plant-guide .footprint strong{font-size:18pt}
+.plant-guide .space-explainer{gap:20px}
+.plant-guide .space-explainer p,.plant-guide .space-notice{font-size:9pt}
+.plant-guide .care-section{background:white;border:0}
+.plant-guide .care-panel[hidden],.plant-guide .care-panel{display:block!important;margin-top:25px}
+.plant-guide .care-panel-header{display:block}
+.plant-guide .care-panel-header>p{max-width:none;font-size:10pt}
+.plant-guide .care-panel-header h3{font-size:20pt;margin-bottom:10px}
+.plant-guide .care-steps{gap:10px}
+.plant-guide .care-step{break-inside:avoid;page-break-inside:avoid;padding:12px}
+.plant-guide .care-step h4{font-size:10pt}
+.plant-guide .care-step p,.plant-guide .care-note{font-size:9pt}
+.plant-guide .watering-highlight p,.plant-guide .timeline p{font-size:9pt}
+.plant-guide .timeline{grid-template-columns:repeat(3,1fr)}
+.plant-guide .faq-layout{gap:25px;grid-template-columns:1fr 2fr}
+.plant-guide .faqs summary{font-size:10pt;padding:12px 0}
+.plant-guide .faqs .answer{font-size:9pt;padding-bottom:12px}
+.plant-guide .contact{color:var(--ink);background:#f0f3e8;padding:25px;gap:20px;break-inside:avoid}
+.plant-guide .contact h2{font-size:23pt}
+.plant-guide .contact p,.plant-guide .contact-right small,.plant-guide .contact .eyebrow{color:var(--ink);font-size:9pt}
+.plant-guide .contact-right>a{color:var(--ink);font-size:20pt}
+.plant-guide .contact-right .button{display:none}
+.plant-guide .site-footer{padding-bottom:0}
+.plant-guide .sources ul{display:grid;font-size:8pt}
+.plant-guide .sources a{color:#333}
+.plant-guide .print-only{display:block}
+.plant-guide .plus{display:none}}
+.plant-guide{--ink:#064e3b;--muted:#57534e;--green:#047857;--soft:#ecfdf5;--cream:#fafaf9;--paper:#fff;--line:rgba(6,78,59,.16);--amber:#f6c95a;--sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--serif:var(--sans);--radius:24px;--navy:#050b12;--panel:#07131b;--forest:#0b1f17}
+.plant-guide{font-family:var(--sans);background:var(--cream);color:#1c1917;text-rendering:optimizeLegibility}
+.plant-guide h1,.plant-guide h2,.plant-guide h3{font-family:var(--sans);font-weight:900;letter-spacing:-.045em}
+.plant-guide h2{font-size:40px;color:var(--ink);line-height:1.12}
+.plant-guide .container{max-width:1216px;width:calc(100% - 64px)}
+.plant-guide .eyebrow{font-weight:900;letter-spacing:.16em;font-size:11px}
+.plant-guide .skip-link:focus{position:fixed;z-index:100}
+.plant-guide .button{min-height:48px;padding:13px 24px;border:1px solid transparent;border-radius:999px;background:#f6c95a;color:#06110d;font-weight:900;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 12px 28px rgba(246,201,90,.14)}
+.plant-guide .button:hover{background:#ffdc70;transform:none}
+.plant-guide .button.secondary{background:#07131b;color:white;border-color:rgba(94,234,212,.35);box-shadow:none}
+.plant-guide .button.secondary:hover{background:#0b1f17;border-color:#f6c95a}
+.plant-guide .text-button{font-weight:750}
+.plant-guide .theme-header{position:sticky;top:0;z-index:40;background:rgba(5,11,18,.97);color:white;border-bottom:1px solid rgba(94,234,212,.2);box-shadow:0 14px 34px rgba(0,0,0,.18);backdrop-filter:blur(20px)}
+.plant-guide .theme-social{background:#07131b;border-bottom:1px solid rgba(246,201,90,.3)}
+.plant-guide .theme-social-inner{max-width:1416px;width:calc(100% - 64px);margin:auto;display:flex;align-items:center;justify-content:space-between;min-height:39px;gap:20px}
+.plant-guide .theme-social-label{font-size:10px;font-weight:900;letter-spacing:.18em;color:#f6c95a;text-transform:uppercase}
+.plant-guide .theme-social-links{display:flex;align-items:center;gap:7px}
+.plant-guide .theme-social-links a{text-decoration:none;color:rgba(236,253,245,.9);font-size:10px;font-weight:700;border:1px solid rgba(94,234,212,.2);border-radius:99px;padding:3px 10px;background:rgba(255,255,255,.04)}
+.plant-guide .theme-social-links a:hover{border-color:#f6c95a;color:white}
+.plant-guide .theme-header-inner{max-width:1216px;width:calc(100% - 64px);min-height:86px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin:auto}
+.plant-guide .theme-brand{display:flex;gap:12px;align-items:center;text-decoration:none;flex-shrink:0;color:white}
+.plant-guide .theme-logo-frame{display:grid;place-items:center;width:48px;height:48px;overflow:hidden;border:1px solid rgba(190,255,78,.25);border-radius:6px;background:#022c22;flex-shrink:0}
+.plant-guide .theme-logo-frame img{width:100%;height:100%;object-fit:contain}
+.plant-guide .theme-brand strong{display:block;font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.07em;line-height:1}
+.plant-guide .theme-brand b{display:block;margin-top:5px;color:#f6c95a;font-size:14px;line-height:1.2;font-weight:900}
+.plant-guide .theme-brand small{display:block;font-size:10px;color:rgba(209,250,229,.8);font-weight:700;line-height:1.5;margin-top:2px}
+.plant-guide .theme-nav{display:flex;align-items:center;gap:1px;white-space:nowrap;font-size:12px;font-weight:700}
+.plant-guide .theme-nav>a,.plant-guide .theme-resource summary{padding:9px 10px;border-radius:999px;text-decoration:none;cursor:pointer}
+.plant-guide .theme-nav>a:hover,.plant-guide .theme-resource summary:hover{background:rgba(255,255,255,.1)}
+.plant-guide .theme-resource{position:relative}
+.plant-guide .theme-resource summary{list-style:none}
+.plant-guide .theme-resource summary::-webkit-details-marker{display:none}
+.plant-guide .theme-resource summary:after{content:"⌄";padding-left:5px;color:#f6c95a}
+.plant-guide .theme-resource-menu{position:absolute;right:0;top:calc(100% + 4px);width:245px;border:1px solid rgba(94,234,212,.2);border-radius:16px;background:#07131b;padding:8px;box-shadow:0 18px 44px rgba(0,0,0,.45)}
+.plant-guide .theme-resource-menu a{display:block;font-size:13px;padding:9px 11px;border-radius:10px;text-decoration:none;color:#ecfdf5}
+.plant-guide .theme-resource-menu a:hover{background:rgba(255,255,255,.1)}
+.plant-guide .theme-header-cta{white-space:nowrap;border-radius:999px;background:#f6c95a;color:#06110d;padding:11px 17px;font-size:12px;font-weight:900;text-decoration:none;min-height:44px;display:flex;align-items:center;gap:8px;box-shadow:0 12px 28px rgba(246,201,90,.14)}
+.plant-guide .theme-header-cta:hover{background:#ffdc70}
+.plant-guide .theme-request-short{display:none}
+.plant-guide .theme-quick-nav{display:none}
+.plant-guide .theme-mobile-actions{display:none}
+.plant-guide .hero-shell{position:relative;isolation:isolate;background:radial-gradient(circle at 12% 8%,rgba(18,192,168,.16),transparent 28rem),radial-gradient(circle at 88% 20%,rgba(246,201,90,.16),transparent 24rem),linear-gradient(145deg,#050b12 0%,#07131b 52%,#0b1f17 100%);color:white}
+.plant-guide .hero{position:relative;padding-top:48px;padding-bottom:54px;grid-template-columns:1.25fr 1fr;gap:72px}
+.plant-guide .hero .eyebrow{color:#f6c95a;font-size:11px;margin-bottom:20px}
+.plant-guide .hero h1{font-size:72px;line-height:.99;letter-spacing:-.045em;font-weight:900;color:white;margin-bottom:24px}
+.plant-guide .hero h1 em{font-style:normal;font-weight:900;color:#f6c95a}
+.plant-guide .hero .intro{color:rgba(236,253,245,.85);font-size:17px;line-height:1.75;max-width:530px}
+.plant-guide .hero-note{color:rgba(236,253,245,.75);font-size:11px}
+.plant-guide .hero-note svg{color:#f6c95a}
+.plant-guide .hero-note a{color:#f6c95a}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.plant-guide .start-note{border-top:0;border-bottom:1px solid var(--line);padding:25px 0}
+.plant-guide .start-icon{background:#ecfdf5;color:#047857}
+.plant-guide .start-note h2{font-weight:900;font-size:18px;letter-spacing:-.02em}
+.plant-guide .start-note p{font-size:13px}
+.plant-guide .check-ready{color:#047857;background:#ecfdf5;border-color:rgba(6,78,59,.16)!important;border-radius:999px!important;padding:8px 12px!important}
+.plant-guide .section-nav{padding:21px 0;font-weight:750}
+.plant-guide .section-nav a{color:#57534e}
+.plant-guide .section-nav b{color:#047857}
+.plant-guide .section-nav a:hover{color:#047857}
+.plant-guide .section{padding:52px 0}
+.plant-guide .section-heading .eyebrow{color:#047857}
+.plant-guide .section-heading h2{font-size:38px;font-weight:900;letter-spacing:-.04em}
+.plant-guide .section-heading .description{font-size:14px;color:#57534e;max-width:445px}
+.plant-guide .space-notice{background:#ecfdf5;border:1px solid rgba(6,78,59,.1);border-radius:16px;color:#44403c;padding:17px 19px}
+.plant-guide .space-notice strong{color:#064e3b}
+.plant-guide .tree-grid{gap:20px}
+.plant-guide .tree-card{border:1px solid rgba(6,78,59,.12);border-radius:24px;box-shadow:0 8px 22px rgba(6,17,13,.035);padding:23px 24px 0}
+.plant-guide .tree-card h3{font-family:var(--sans);font-size:25px;font-weight:900;letter-spacing:-.035em;color:#064e3b}
+.plant-guide .tree-index{color:#047857;font-family:var(--sans);font-size:13px;font-weight:900;background:#ecfdf5;border-color:rgba(6,78,59,.12)}
+.plant-guide .tree-badge{color:#047857;background:#ecfdf5;font-weight:750;padding:5px 9px}
+.plant-guide .tree-label{font-weight:800;color:#047857;letter-spacing:.1em}
+.plant-guide .latin{color:#78716c}
+.plant-guide .metric-label{color:#57534e;font-weight:800;font-size:10px}
+.plant-guide .tree-metrics strong{font-weight:900;font-size:25px;color:#064e3b}
+.plant-guide .tree-metrics small{font-size:12px;color:#57534e;font-weight:600}
+.plant-guide .footprint strong{font-weight:900;color:#064e3b}
+.plant-guide .tree-card details{background:#fafaf9}
+.plant-guide .tree-card summary{font-weight:800;color:#064e3b;padding-top:15px;padding-bottom:15px}
+.plant-guide .tree-card summary:hover{background:#ecfdf5}
+.plant-guide .detail-copy{font-size:13px;color:#57534e}
+.plant-guide .tree-card .plus{color:#047857}
+.plant-guide .space-explainer p{font-size:12px;color:#57534e}
+.plant-guide .care-section{background:#f5f5f4;border-color:rgba(6,78,59,.1)}
+.plant-guide .care-tabs{background:#fff;border:1px solid rgba(6,78,59,.12);border-radius:999px;padding:5px;display:flex;gap:5px;max-width:630px;overflow:hidden}
+.plant-guide .care-tab{color:#57534e;border:0;border-radius:999px;padding:12px 17px;font-weight:850;font-size:13px;justify-content:center;flex:1}
+.plant-guide .care-tab[aria-selected="true"]{background:#064e3b;color:white;border:0}
+.plant-guide .care-tab:hover{background:#ecfdf5;color:#064e3b}
+.plant-guide .care-tab[aria-selected="true"]:hover{background:#064e3b;color:white}
+.plant-guide .care-panel-header h3{font-family:var(--sans);color:#064e3b;font-weight:900;letter-spacing:-.035em;font-size:29px}
+.plant-guide .care-panel-header>p{font-size:13px;color:#57534e}
+.plant-guide .care-step{border-radius:16px;border-color:rgba(6,78,59,.12);padding:23px}
+.plant-guide .care-step h4{color:#064e3b;font-weight:900;font-size:15px}
+.plant-guide .care-step p{font-size:13px;color:#57534e}
+.plant-guide .step-number{background:#ecfdf5;color:#047857;font-family:var(--sans);font-weight:900}
+.plant-guide .care-note{background:#fff5d9;border:1px solid rgba(217,164,65,.4);border-radius:16px;color:#44403c;font-size:13px}
+.plant-guide .care-note svg{color:#92400e}
+.plant-guide .care-note strong{color:#064e3b}
+.plant-guide .care-next button{background:#064e3b;border-color:#064e3b;border-radius:999px;color:white;padding:13px 20px;font-weight:850}
+.plant-guide .care-next button:hover{background:#047857}
+.plant-guide .watering-highlight{background:#ecfdf5;border-radius:20px;border:1px solid rgba(6,78,59,.12)}
+.plant-guide .watering-highlight strong{font-family:var(--sans);font-weight:900}
+.plant-guide .timeline>div{border-radius:16px}
+.plant-guide .faq-intro h2{font-size:36px;font-weight:900;letter-spacing:-.04em}
+.plant-guide .faq-intro .eyebrow{color:#047857}
+.plant-guide .faqs summary{font-size:15px;font-weight:800;color:#064e3b;line-height:1.5}
+.plant-guide .faqs .answer{font-size:13px;color:#57534e}
+.plant-guide .contact{max-width:1216px;background:radial-gradient(circle at 90% 0%,rgba(18,192,168,.15),transparent 27rem),linear-gradient(145deg,#050b12,#07131b 60%,#0b1f17);border-radius:24px;border:1px solid rgba(94,234,212,.25);padding:43px 48px;gap:48px;box-shadow:0 24px 60px rgba(0,0,0,.12);color:white}
+.plant-guide .contact h2{color:white;font-weight:900;font-size:37px;line-height:1.1;letter-spacing:-.04em}
+.plant-guide .contact .eyebrow{color:#f6c95a;font-weight:900}
+.plant-guide .contact p{color:rgba(236,253,245,.8)}
+.plant-guide .contact-right>a{color:white;font-size:30px;font-weight:900;letter-spacing:-.03em}
+.plant-guide .contact-right .button{background:#f6c95a;color:#06110d;font-size:12px;letter-spacing:.03em;font-weight:900;border:0;border-radius:999px;padding:14px 20px}
+.plant-guide .contact-right .button:hover{background:#ffdc70}
+.plant-guide .contact-right small{color:rgba(236,253,245,.7);font-size:11px}
+.plant-guide .sources{font-size:13px}
+.plant-guide .sources summary{font-weight:750;color:#064e3b}
+.plant-guide .sources ul a{color:#047857}
+.plant-guide .theme-footer{background:#050b12;color:#ecfdf5;border-top:1px solid rgba(94,234,212,.2);margin-top:5px;padding:35px 0 38px}
+.plant-guide .theme-footer-inner{display:flex;justify-content:space-between;align-items:flex-start;gap:40px}
+.plant-guide .theme-footer-brand{font-size:18px;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:white;margin-bottom:7px}
+.plant-guide .theme-footer p{font-size:12px;color:rgba(236,253,245,.7);max-width:450px;line-height:1.7;margin-bottom:0}
+.plant-guide .theme-footer a{color:#f6c95a;text-decoration:none;font-weight:800}
+.plant-guide .theme-footer-links{display:flex;flex-wrap:wrap;gap:8px 20px;max-width:380px;justify-content:flex-end;font-size:12px}
+.plant-guide .theme-footer-note{margin-top:12px!important;text-align:right;font-size:10px!important;max-width:420px!important}
+
+
+
+@media(min-width:1500px){.plant-guide .container{max-width:1216px}
+.plant-guide .hero{gap:80px}
+.plant-guide .hero h1{font-size:76px}}
+@media(max-width:1230px){.plant-guide .theme-nav{font-size:11px}
+.plant-guide .theme-nav>a,.plant-guide .theme-resource summary{padding:9px 7px}
+.plant-guide .theme-brand small{max-width:205px;font-size:9px}
+.plant-guide .theme-brand strong{font-size:18px}
+.plant-guide .theme-header-inner{gap:12px}
+.plant-guide .theme-header-cta{font-size:11px;padding:11px 13px}
+.plant-guide .hero{gap:42px}
+.plant-guide .hero h1{font-size:65px}}
+@media(max-width:1023px){.plant-guide .theme-social,.plant-guide .theme-nav{display:none}
+.plant-guide .theme-header-inner{width:calc(100% - 32px);min-height:80px}
+.plant-guide .theme-quick-nav{display:flex;gap:6px;overflow-x:auto;border-top:1px solid rgba(94,234,212,.15);padding:6px 12px;scrollbar-width:none}
+.plant-guide .theme-quick-nav a{flex-shrink:0;min-height:38px;display:flex;align-items:center;border:1px solid rgba(255,255,255,.1);border-radius:999px;font-size:10px;font-weight:900;padding:8px 13px;text-decoration:none;color:#ecfdf5}
+.plant-guide .theme-quick-nav a.current{border-color:rgba(246,201,90,.45);background:rgba(246,201,90,.1);color:#f6c95a}
+.plant-guide .theme-mobile-actions{display:grid;grid-template-columns:repeat(3,1fr);position:fixed;z-index:45;inset:auto 0 0;background:rgba(5,11,18,.97);padding:8px 8px max(8px,env(safe-area-inset-bottom));border-top:1px solid rgba(94,234,212,.2);box-shadow:0 -14px 34px rgba(0,0,0,.25);backdrop-filter:blur(16px)}
+.plant-guide .theme-mobile-actions a{min-height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-weight:900;font-size:10px;text-transform:uppercase;letter-spacing:.04em;text-decoration:none;color:white;border-radius:12px;line-height:1.2}
+.plant-guide .theme-mobile-actions a:nth-child(2){border-left:1px solid rgba(255,255,255,.1);border-right:1px solid rgba(255,255,255,.1)}
+.plant-guide .theme-mobile-actions svg{color:#f6c95a}
+.plant-guide .theme-mobile-actions a:last-child{background:#f6c95a;color:#06110d}
+.plant-guide .theme-mobile-actions a:last-child svg{color:#06110d}
+.plant-guide .theme-footer{padding-bottom:96px}
+.plant-guide .hero{gap:30px}
+.plant-guide .hero h1{font-size:60px}
+}
+@media(max-width:800px){.plant-guide .container{width:calc(100% - 40px)}
+.plant-guide .hero{grid-template-columns:1fr;padding:35px 0 34px;gap:28px}
+.plant-guide .hero h1{font-size:59px;letter-spacing:-.045em;margin-bottom:21px}
+.plant-guide .hero .eyebrow{font-size:10px;letter-spacing:.13em;margin-bottom:16px}
+.plant-guide .hero .intro{font-size:16px;line-height:1.75;margin-bottom:22px}
+.plant-guide .hero-note{font-size:10px}
+.plant-guide .hero-actions .button{padding:13px 19px;font-size:11px}
+
+
+
+
+
+
+
+
+
+
+.plant-guide .start-note{padding:23px 0}
+.plant-guide .start-note h2{font-size:16px}
+.plant-guide .start-note p{font-size:12px}
+.plant-guide .section{padding:39px 0}
+.plant-guide .section-heading h2{font-size:33px;letter-spacing:-.04em;line-height:1.1}
+.plant-guide .section-heading .description{max-width:none;font-size:13px}
+.plant-guide .space-notice{font-size:12px;padding:15px}
+.plant-guide .tree-card h3{font-size:25px}
+.plant-guide .care-panel-header h3{font-size:27px}
+.plant-guide .care-panel-header>p{font-size:13px}
+.plant-guide .care-tab{font-size:11px;padding:12px 9px}
+.plant-guide .care-step{padding:20px}
+.plant-guide .care-note{font-size:12px}
+.plant-guide .faqs summary{font-size:14px}
+.plant-guide .faq-intro h2{font-size:33px}
+.plant-guide .contact{padding:30px 27px;gap:24px}
+.plant-guide .contact h2{font-size:32px}
+.plant-guide .contact-right>a{font-size:28px}
+.plant-guide .contact-right .button{font-size:11px;padding:14px 19px}
+.plant-guide .theme-footer-inner{display:block}
+.plant-guide .theme-footer-links{justify-content:flex-start;margin-top:22px}
+.plant-guide .theme-footer-note{text-align:left}
+.plant-guide .source-section{padding:28px 0}}
+@media(max-width:540px){.plant-guide .theme-header-inner{width:calc(100% - 24px);min-height:75px;gap:10px}
+.plant-guide .theme-logo-frame{width:40px;height:40px}
+.plant-guide .theme-brand{gap:10px}
+.plant-guide .theme-brand strong{font-size:16px;letter-spacing:.07em}
+.plant-guide .theme-brand b{font-size:12px;margin-top:4px}
+.plant-guide .theme-brand small{font-size:8px;max-width:195px}
+.plant-guide .theme-header-cta{font-size:11px;padding:10px 13px;gap:6px}
+.plant-guide .theme-request-long{display:none}
+.plant-guide .theme-request-short{display:inline}
+.plant-guide .tree-card{padding:22px 23px 0}
+.plant-guide .tree-card details{margin:0 -23px}
+.plant-guide .tree-card summary{padding:14px 23px}
+.plant-guide .care-tabs{padding:4px;gap:2px;border-radius:24px}
+.plant-guide .care-tab{font-size:10px;padding:12px 6px;gap:5px;min-height:47px}
+.plant-guide .care-tab svg{width:15px;height:15px}
+.plant-guide .hero-actions .button{padding:12px 15px;font-size:10px}
+.plant-guide .hero h1{font-size:56px}
+.plant-guide .section-nav{gap:22px}
+.plant-guide .hero .intro br{display:none}}
+@media(max-width:429px){.plant-guide .theme-brand small{display:none}}
+@media(max-width:370px){.plant-guide .container{width:calc(100% - 32px)}
+.plant-guide .hero h1{font-size:49px}
+
+
+
+
+
+
+.plant-guide .hero .eyebrow{font-size:9px}
+.plant-guide .care-tab{font-size:9px}
+.plant-guide .theme-brand strong{font-size:15px}
+.plant-guide .theme-header-cta{font-size:10px;padding:10px 11px}}
+@media print{.plant-guide{background:white!important;color:#111!important}
+.plant-guide .theme-header,.plant-guide .theme-mobile-actions,.plant-guide .theme-social,.plant-guide .theme-quick-nav{display:none!important}
+.plant-guide .hero-shell{background:white!important;color:#111!important}
+.plant-guide .hero h1,.plant-guide .hero h1 em,.plant-guide .hero .intro,.plant-guide .hero .eyebrow{color:#111!important}
+.plant-guide .hero{padding:0}
+.plant-guide .hero h1{font-size:32pt}
+
+
+
+.plant-guide .contact{background:#f5f5f4!important;color:#111!important;box-shadow:none}
+.plant-guide .contact h2,.plant-guide .contact .eyebrow,.plant-guide .contact p,.plant-guide .contact-right>a,.plant-guide .contact-right small{color:#111!important}
+.plant-guide .theme-footer{background:white;color:#111;padding:20px 0}
+.plant-guide .theme-footer-brand,.plant-guide .theme-footer p,.plant-guide .theme-footer a{color:#111!important}
+.plant-guide .care-tabs{display:none!important}
+.plant-guide .tree-card{box-shadow:none}
+.plant-guide .section{padding:25px 0}
+.plant-guide .section-heading h2{font-size:24pt}
+.plant-guide .theme-footer-links{display:none}
+.plant-guide .theme-footer-note{text-align:left}}
+.plant-guide [id],.plant-guide .care-tabs{scroll-margin-top:156px}
+.plant-guide .shared-logo-slot{margin-bottom:15px}
+@media(max-width:1023px){.plant-guide .theme-footer{padding-bottom:110px}}
+
+
+/* Recipient-first educational introduction; no event promotion. */
+.plant-guide .hero{grid-template-columns:1.2fr 1fr;gap:64px}
+.plant-guide .hero h1{font-size:64px;line-height:1.03;letter-spacing:-.045em}
+.plant-guide .hero .intro{max-width:545px}
+.plant-guide .owner-start{background:rgba(255,255,255,.045);border:1px solid rgba(94,234,212,.25);border-radius:24px;padding:28px 30px;box-shadow:0 24px 50px rgba(0,0,0,.16);color:#fff}
+.plant-guide .owner-start .owner-kicker{font-family:var(--sans);font-size:10px;letter-spacing:.16em;font-weight:900;color:#f6c95a;margin:0 0 10px}
+.plant-guide .owner-start h2{font-family:var(--sans);font-weight:900;font-size:27px;letter-spacing:-.035em;line-height:1.15;color:#fff;margin:0 0 22px}
+.plant-guide .owner-checklist{list-style:none;margin:0;padding:0;display:grid;gap:19px}
+.plant-guide .owner-checklist li{display:flex;align-items:flex-start;gap:13px;margin:0;padding:0}
+.plant-guide .owner-number{display:grid;place-items:center;flex:0 0 32px;height:32px;border-radius:50%;background:rgba(246,201,90,.12);border:1px solid rgba(246,201,90,.22);font-size:11px;font-weight:900;color:#f6c95a}
+.plant-guide .owner-checklist h3{font-family:var(--sans);font-size:14px;line-height:1.4;font-weight:850;letter-spacing:0;color:#fff;margin:0 0 4px}
+.plant-guide .owner-checklist p{font-size:12px;line-height:1.65;color:rgba(236,253,245,.8);margin:0}
+.plant-guide .owner-care-link{display:flex;align-items:center;justify-content:space-between;min-height:44px;gap:12px;border-top:1px solid rgba(94,234,212,.22);padding-top:18px;margin-top:22px;font-size:12px;font-weight:850;color:#f6c95a;text-decoration:none}
+.plant-guide .owner-care-link:hover{color:#ffdc70;text-decoration:underline;text-underline-offset:4px}
+@media(min-width:1500px){.plant-guide .hero h1{font-size:68px}}
+@media(max-width:1230px){.plant-guide .hero{gap:34px}.plant-guide .hero h1{font-size:57px}.plant-guide .owner-start{padding:26px}}
+@media(max-width:1023px){.plant-guide .hero h1{font-size:51px}}
+@media(max-width:800px){.plant-guide .hero{grid-template-columns:1fr;gap:26px}.plant-guide .hero h1{font-size:56px}.plant-guide .owner-start{padding:25px}.plant-guide .owner-start h2{font-size:25px}.plant-guide .owner-checklist{gap:18px}}
+@media(max-width:540px){.plant-guide .hero h1{font-size:45px}.plant-guide .owner-start{padding:23px}.plant-guide .owner-start h2{font-size:24px}.plant-guide .owner-checklist h3{font-size:13px}.plant-guide .owner-checklist p{font-size:12px}}
+@media(max-width:370px){.plant-guide .hero h1{font-size:38px}.plant-guide .owner-start{padding:20px}.plant-guide .owner-start h2{font-size:22px}.plant-guide .owner-checklist li{gap:10px}}
+@media print{.plant-guide .owner-start{background:#fff;box-shadow:none;border:1px solid #aaa;padding:18px;margin:20px 0;break-inside:avoid}.plant-guide .owner-start h2,.plant-guide .owner-checklist h3,.plant-guide .owner-checklist p,.plant-guide .owner-start .owner-kicker,.plant-guide .owner-number{color:#142116}.plant-guide .owner-care-link{display:none}.plant-guide .hero h1{font-size:32pt}}
