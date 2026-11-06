@@ -195,7 +195,7 @@ export function SiteHeader() {
 
       <nav aria-label="Mobile contact actions" className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-3 border-t border-teal-300/20 bg-[#050b12]/97 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-14px_34px_rgba(0,0,0,0.4)] backdrop-blur-xl lg:hidden">
         <a
-          href="tel:+12512190140"
+          href="tel:+12516223200"
           data-track-event="Phone Click"
           data-track-location="mobile_sticky_bar"
           className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-black uppercase tracking-[0.04em] text-white focus-ring"
