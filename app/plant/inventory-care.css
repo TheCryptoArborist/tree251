@@ -2,7 +2,8 @@
 .plant-guide .inventory-notice{padding:16px 20px;margin:0 0 22px;border:1px solid rgba(246,201,90,.35);border-radius:14px;background:rgba(246,201,90,.045);color:var(--ink)}
 .plant-guide .inventory-notice strong{color:var(--amber)}
 .plant-guide .inventory-notice p{margin:6px 0 0;font-size:15px;line-height:1.65}
-.plant-guide .inventory-grid .tree-card{display:flex;flex-direction:column}
+.plant-guide .inventory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.plant-guide .inventory-grid .tree-card,.plant-guide .inventory-grid .tree-card:nth-child(n+4),.plant-guide .inventory-grid .tree-card:last-child{display:flex;flex-direction:column;grid-column:auto;align-self:stretch}
 .plant-guide .inventory-grid .space-guidance{flex:1}
 .plant-guide .inventory-grid .tree-badge{white-space:normal;text-align:right;max-width:75%;line-height:1.4}
 .plant-guide .inventory-grid .tree-metrics strong{font-size:clamp(26px,3vw,36px)}
@@ -15,6 +16,6 @@
 .plant-guide .species-takeaway strong{max-width:180px}
 .plant-guide .inventory-exceptions{margin:18px 0;padding:17px 20px;border-left:3px solid var(--amber);background:rgba(246,201,90,.055);border-radius:0 12px 12px 0}
 .plant-guide .inventory-exceptions p{margin:0 0 10px}.plant-guide .inventory-exceptions p:last-child{margin:0}
-.plant-page .tree-picker-buttons a:last-child{grid-column:auto}
-@media(max-width:640px){.plant-guide .aftercare-priorities{grid-template-columns:1fr}.plant-guide .species-takeaway strong{max-width:none}.plant-page .tree-picker-inner{padding-top:16px;padding-bottom:8px}.plant-page .tree-picker-buttons a{min-height:52px}}
+.plant-page #choose-tree .tree-picker-buttons a:last-child{grid-column:auto}
+@media(max-width:640px){.plant-guide .inventory-grid,.plant-guide .aftercare-priorities{grid-template-columns:1fr}.plant-guide .species-takeaway strong{max-width:none}.plant-page .tree-picker-inner{padding-top:16px;padding-bottom:8px}.plant-page .tree-picker-buttons a{min-height:52px}}
 @media print{.plant-guide .inventory-notice,.plant-guide .inventory-exceptions,.plant-guide .aftercare-priorities article{background:white!important;color:#111!important;border-color:#aaa;break-inside:avoid}.plant-guide .inventory-notice strong,.plant-guide .inventory-aftercare h4,.plant-guide .aftercare-priorities h5,.plant-guide .aftercare-priorities p{color:#111!important}.plant-guide .aftercare-priorities{display:block}.plant-guide .aftercare-priorities article{margin-bottom:10px;padding:8px 10px}.plant-guide .aftercare-priorities h5{font-size:11pt}.plant-guide .aftercare-priorities p{font-size:9pt}.plant-guide .inventory-aftercare{break-inside:auto}.plant-guide .inventory-notice p{font-size:9pt}}
