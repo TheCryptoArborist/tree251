@@ -1,0 +1,143 @@
+name: Finish and verify top tree selector
+on:
+  push:
+    branches: [review/plant-education-2026-11-05]
+    paths: [.github/workflows/plant-selector-finish.yml]
+permissions:
+  contents: write
+defaults:
+  run:
+    shell: bash
+jobs:
+  verify-selector:
+    if: github.ref == 'refs/heads/review/plant-education-2026-11-05'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove the retired duplicate inside the introduction
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('app/plant/PlantingGuide.tsx')
+          s=p.read_text()
+          assert s.count('import "./tree-shortcuts.css";')==1
+          s=s.replace('import "./tree-shortcuts.css";\n','')
+          s,n=re.subn(r'<nav id="tree-selector" className="quick-species tree-shortcuts".*?</nav>','',s,count=1,flags=re.S)
+          assert n==1, 'Duplicate shortcut markup changed; stop without overwriting.'
+          start='      if (anchor) {\n                  const hash = anchor.getAttribute("href") || "";'
+          end='                }'
+          i=s.find(start)
+          assert i>=0
+          j=s.index(end,i)+len(end)
+          # The first closing line belongs to the inner if; include the outer closing line.
+          if s[j:].startswith('\n                }'):
+            j+=len('\n                }')
+          block=s[i:j]
+          assert 'anchor.closest(".tree-shortcuts")' in block and 'requestAnimationFrame' in block
+          s=s[:i]+'      if (anchor) reveal(anchor.getAttribute("href") || "", false);'+s[j:]
+          assert 'tree-shortcuts' not in s
+          p.write_text(s)
+          css=Path('app/plant/tree-shortcuts.css')
+          assert css.read_text().startswith('/* Five visible, on-page tree shortcuts.')
+          css.unlink()
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app/plant/PlantingGuide.tsx app/plant/tree-shortcuts.css
+          git rm .github/workflows/plant-selector-finish.yml
+          git commit -m 'Keep only the prominent top-level tree selector and remove retired duplicate styles'
+          git push origin HEAD:refs/heads/review/plant-education-2026-11-05
+      - name: Record source
+        if: always()
+        run: |
+          mkdir -p review-output
+          git rev-parse HEAD > review-output/tested-commit.txt
+          git archive --format=zip HEAD -o review-output/site-source.zip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Type check and build
+        run: |
+          set -o pipefail
+          npm run typecheck 2>&1 | tee review-output/typecheck.log
+          npm run build 2>&1 | tee review-output/build.log
+          test -s .next/BUILD_ID
+      - name: Verify all five buttons
+        run: |
+          npm install --prefix "$RUNNER_TEMP/selector-tools" --no-save --package-lock=false playwright
+          ln -s "$RUNNER_TEMP/selector-tools/node_modules/playwright" node_modules/playwright
+          "$RUNNER_TEMP/selector-tools/node_modules/.bin/playwright" install --with-deps chromium
+          npm run start > review-output/server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            kill -0 "$server_pid" || { cat review-output/server.log; exit 1; }
+            curl --fail --silent http://127.0.0.1:3000/plant >/dev/null && break
+            sleep 2
+          done
+          node scripts/verify-plant.mjs
+          node --input-type=module <<'JS'
+          import {chromium} from 'playwright';
+          import assert from 'node:assert/strict';
+          import {writeFile} from 'node:fs/promises';
+          const browser=await chromium.launch();
+          const species=['live-oak','overcup-oak','black-gum','chaste-tree','bald-cypress'];
+          const names=['Live Oak','Overcup Oak','Black Gum','Chaste Tree','Bald Cypress'];
+          const results=[];
+          try {
+            for(const width of [320,390,768,1440]) {
+              const context=await browser.newContext({viewport:{width,height:width<600?844:1000},reducedMotion:'reduce'});
+              await context.route('**/*',route=>new URL(route.request().url()).origin==='http://localhost:3000'?route.continue():route.abort());
+              const page=await context.newPage();
+              const errors=[];
+              page.on('pageerror',e=>errors.push(e.message));
+              await page.goto('http://localhost:3000/plant',{waitUntil:'networkidle'});
+              await page.waitForFunction(()=>{const img=document.querySelector('header img');return img?.complete&&img.naturalWidth>0;});
+              assert.equal(await page.locator('#choose-tree').count(),1);
+              assert.equal(await page.locator('.quick-species').count(),0);
+              assert.equal(await page.locator('#choose-tree .tree-picker-buttons a').count(),5);
+              assert.deepEqual(await page.locator('#choose-tree .tree-picker-buttons a>span:first-child').allTextContents(),names);
+              const bounds=await page.locator('#choose-tree').boundingBox();
+              assert(bounds.y<180 && bounds.y+bounds.height<700,'Tree selector is not visible at the top');
+              const targets=await page.locator('#choose-tree .tree-picker-buttons a').evaluateAll(nodes=>nodes.map(a=>({height:a.getBoundingClientRect().height,font:parseFloat(getComputedStyle(a).fontSize)})));
+              assert(targets.every(t=>t.height>=48&&t.font>=14));
+              await page.screenshot({path:`review-output/plant-tree-buttons-${width}.png`});
+              for(const id of species) {
+                await page.evaluate(id=>{document.getElementById(id).open=false;window.scrollTo(0,0);},id);
+                await page.locator(`#choose-tree a[href="#${id}"]`).click();
+                await page.waitForFunction(id=>document.getElementById(id).open&&location.hash==='#'+id,id);
+                await page.waitForFunction(id=>document.activeElement===document.querySelector('#'+id+'>summary'),id);
+                const pos=await page.evaluate(id=>({top:document.getElementById(id).getBoundingClientRect().top,header:document.querySelector('header').getBoundingClientRect().bottom}),id);
+                assert(pos.top>=pos.header-2,`${id} obscured by header at ${width}: ${JSON.stringify(pos)}`);
+                assert(pos.top<450,`${id} did not land near top`);
+              }
+              await page.evaluate(()=>window.scrollTo(0,0));
+              await page.locator('#choose-tree a[href="#black-gum"]').focus();
+              await page.keyboard.press('Enter');
+              await page.waitForFunction(()=>document.getElementById('black-gum').open&&document.activeElement===document.querySelector('#black-gum>summary'));
+              assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+              const tels=await page.locator('a[href^="tel:"]').evaluateAll(nodes=>nodes.map(a=>a.getAttribute('href')));
+              assert(tels.length>=3&&tels.every(t=>t==='tel:+12516223200'));
+              assert.deepEqual(errors,[]);
+              await page.screenshot({path:`review-output/plant-tree-destination-${width}.png`});
+              results.push({width,selectorTop:bounds.y,selectorBottom:bounds.y+bounds.height,buttons:5,allGuidesOpen:true,keyboardPassed:true,clearOfHeader:true,horizontalOverflow:false,javascriptErrors:0});
+              await context.close();
+            }
+            await writeFile('review-output/tree-button-checks.json',JSON.stringify({passed:true,results},null,2));
+          } catch(error) {
+            await writeFile('review-output/tree-button-checks.json',JSON.stringify({passed:false,results,error:String(error)},null,2));
+            throw error;
+          } finally {await browser.close();}
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: plant-top-tree-buttons
+          path: review-output/
+          retention-days: 7
