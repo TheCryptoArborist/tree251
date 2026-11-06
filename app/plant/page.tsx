@@ -5,7 +5,7 @@ import "./tree-picker.css";
 import "./plant-print-finish.css";
 
 const title = "Your New Tree: Planting & Care";
-const description = "Tree guides for live oak, overcup oak, black gum, chaste tree, and bald cypress. Learn mature size, site needs, container care, planting, and first-year aftercare.";
+const description = "Planting and aftercare for all ten Mobile giveaway trees, including Ogeechee Tupelo, Longleaf Pine, Pawpaw, and Shoal Creek Chaste Tree. Common-name guides, mature sizes, and first-year care.";
 export const metadata: Metadata = {
   title, description,
   alternates: { canonical: "/plant" },

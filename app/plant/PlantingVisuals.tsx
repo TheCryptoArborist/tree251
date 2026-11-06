@@ -1,37 +1,16 @@
 import Image from "next/image";
 import photographs from "./plant-photos.json";
 
-const trees = [
-  ["live-oak", "Southern live oak"],
-  ["overcup-oak", "Overcup oak"],
-  ["black-gum", "Black gum"],
-  ["chaste-tree", "Chaste tree / vitex"],
-  ["bald-cypress", "Bald cypress"]
-] as const;
-
-export function TreeFinder() {
-  return <aside className="tree-finder" aria-labelledby="tree-finder-title" id="tree-selector">
-    <p className="eyebrow">START WITH YOUR TREE</p>
-    <h2 id="tree-finder-title">Which tree did you bring home?</h2>
-    <p>Choose the name on its identification tag.</p>
-    <nav aria-label="Choose your tree" className="tree-picker">
-      {trees.map(([id, name]) => <a key={id} href={`#${id}`} data-species-link aria-controls={id}>
-        <span>{name}</span><span aria-hidden="true">↗</span>
-      </a>)}
-    </nav>
-    <a className="tree-finder-compare" href="#tree-guide">Compare mature sizes <span aria-hidden="true">↓</span></a>
-  </aside>;
-}
-
 export function SpeciesPhotos({ species }: { species: string }) {
   // These local WebP assets are already resized to at most 960px. Serve them
   // directly so opening a guide does not depend on an image-conversion request.
+  if (!photographs.some(photo => photo.species === species)) return null;
   return <div className="species-photos">
     {photographs.filter(photo => photo.species === species).map(photo => <figure key={photo.src} className="species-photo">
       <div className="photo-frame"><Image src={photo.src} alt={photo.alt} width={photo.width} height={photo.height} unoptimized loading="lazy" /></div>
       <figcaption><strong>{photo.title}</strong><span>{photo.author} · <a href="#photo-credits">Photo credit &amp; license</a></span></figcaption>
     </figure>)}
-    {species === "chaste-tree" && <p className="cultivar-photo-note">These photos show named selections. Your tree may have a different form or flower color; use its tag to confirm the cultivar.</p>}
+    {species === "chaste-tree" && <p className="cultivar-photo-note">The supplied Chaste Tree is ‘Shoal Creek’. These labeled photos show other selections of the same species, not ‘Shoal Creek’; they are identification examples, not photographs of the supplied cultivar.</p>}
   </div>;
 }
 
@@ -73,6 +52,6 @@ export function PlantingDiagram() {
       <li><b>3</b><div><strong>Firm support below</strong><p>Rest the root ball on undisturbed soil so it does not settle too deeply. Remove the pot completely.</p></div></li>
       <li><b>4</b><div><strong>Broad mulch ring</strong><p>Use 2–3 inches over the surrounding soil; keep any mulch over the root ball thin and keep the trunk and flare clear.</p></div></li>
     </ol>
-    <figcaption>General guidance for a well-drained site. Poor drainage or substantial root defects need site-specific advice. <a href="#guide-sources">Planting sources</a></figcaption>
+    <figcaption>General guidance for a well-drained site. Longleaf Pine must have its central growing bud clear of soil and mulch; see its own planting instructions. Poor drainage or substantial root defects need site-specific advice. <a href="#guide-sources">Planting sources</a></figcaption>
   </figure>;
 }

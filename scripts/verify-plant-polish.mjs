@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 
 const origin = process.env.PLANT_TEST_ORIGIN || 'http://127.0.0.1:3000';
 const output = 'review-output';
-const species = ['live-oak','overcup-oak','black-gum','chaste-tree','bald-cypress'];
+const species = ["ogeechee-tupelo", "live-oak", "overcup-oak", "bald-cypress", "chaste-tree", "longleaf-pine", "chickasaw-plum", "sweetbay-magnolia", "american-beech", "pawpaw"];
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const results = [];
@@ -17,7 +17,7 @@ try {
     page.on('pageerror', e => errors.push(e.message));
     await page.goto(`${origin}/plant`, {waitUntil:'networkidle'});
     await page.waitForFunction(() => { const img=document.querySelector('header img');return img?.complete && img.naturalWidth>0; });
-    assert.equal(await page.locator('#choose-tree .tree-picker-buttons a').count(),5);
+    assert.equal(await page.locator('#choose-tree .tree-picker-buttons a').count(),10);
     const finder = await page.locator('#choose-tree').boundingBox();
     if (width === 390) assert(finder.y < 650, `Mobile selector starts too low: ${finder.y}`);
     const fontSizes = await page.locator('#choose-tree .tree-picker-buttons a, .care-tab, .hero-actions .button').evaluateAll(nodes => nodes.map(n=>parseFloat(getComputedStyle(n).fontSize)));
@@ -32,7 +32,7 @@ try {
     for (const id of species) {
       await page.locator(`#choose-tree .tree-picker-buttons a[href="#${id}"]`).click();
       await page.waitForFunction(id=>document.getElementById(id).open,id);
-      assert.equal(await page.locator(`#${id} .species-photo`).count(),2);
+      assert.equal(await page.locator(`#${id} .species-photo`).count(), ['live-oak','overcup-oak','chaste-tree','bald-cypress'].includes(id) ? 2 : 0);
       assert.equal(await page.locator(`#${id} .profile-topic`).count(),6);
       assert.equal(await page.locator(`#${id} a[href^="http"]`).count(),0);
     }
@@ -40,10 +40,10 @@ try {
     await page.waitForFunction(()=>[...document.querySelectorAll('.species-photo img')].every(img=>img.complete&&img.naturalWidth>0));
     const imagePaths=await page.locator('.species-photo img').evaluateAll(images=>images.map(img=>img.getAttribute('src')));
     assert(imagePaths.every(src=>src.startsWith('/')));
-    await page.locator('#black-gum .species-photo a[href="#photo-credits"]').first().click();
+    await page.locator('#live-oak .species-photo a[href="#photo-credits"]').first().click();
     await page.waitForFunction(()=>document.getElementById('photo-credits').open);
-    assert.equal(await page.locator('#photo-credits .photo-credit-list li').count(),10);
-    await page.locator('#black-gum .species-actions a[data-stage="planting"]').click();
+    assert.equal(await page.locator('#photo-credits .photo-credit-list li').count(),8);
+    await page.locator('#live-oak .species-actions a[data-stage="planting"]').click();
     assert.equal(await page.locator('#tab-planting').getAttribute('aria-selected'),'true');
     assert.equal(await page.locator('#panel-planting .planting-illustration').isVisible(),true);
     await page.locator('#tab-planting').press('End');
@@ -51,8 +51,8 @@ try {
     await page.locator('#tab-after').press('Home');
     assert.equal(await page.locator('#tab-before').getAttribute('aria-selected'),'true');
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
-    await page.goto(`${origin}/plant#black-gum`,{waitUntil:'networkidle'});
-    await page.waitForFunction(()=>document.getElementById('black-gum').open);
+    await page.goto(`${origin}/plant#ogeechee-tupelo`,{waitUntil:'networkidle'});
+    await page.waitForFunction(()=>document.getElementById('ogeechee-tupelo').open);
     await page.screenshot({path:`${output}/plant-polished-species-${width}.png`});
     await page.goto(`${origin}/plant`,{waitUntil:'networkidle'});
     await page.screenshot({path:`${output}/plant-polished-${width}.png`});
@@ -93,7 +93,7 @@ try {
       assert(await page.locator('#resources-projects a[href="/plant"]').count()>0);
     }
     assert.deepEqual(errors,[]);
-    results.push({width,phoneLinks:telLinks.length,selectorTop:finder.y,localPhotos:10,workingSpeciesGuides:5,overflow:false,javascriptErrors:0});
+    results.push({width,phoneLinks:telLinks.length,selectorTop:finder.y,localPhotos:8,workingSpeciesGuides:10,overflow:false,javascriptErrors:0});
     await context.close();
   }
   await writeFile(`${output}/polish-checks.json`,JSON.stringify({passed:true,results},null,2));

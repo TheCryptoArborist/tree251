@@ -31,7 +31,7 @@ export function InventoryCards() {
 
 export function InventoryProfiles({ onStage }: { onStage: (stage: Stage) => void }) {
   return <section className="species-library" aria-labelledby="species-library-title">
-    <div className="species-library-heading"><p className="eyebrow">YOUR TREE'S OWN GUIDE</p><h2 id="species-library-title">Planting and aftercare by common name.</h2><p>Open your tree for its container care, planting location, first-year watering, and seasonal changes. Dimensions describe typical mature trees, not minimum yard sizes or guaranteed limits.</p></div>
+    <div className="species-library-heading"><p className="eyebrow">YOUR TREE’S OWN GUIDE</p><h2 id="species-library-title">Planting and aftercare by common name.</h2><p>Open your tree for its container care, planting location, first-year watering, and seasonal changes. Dimensions describe typical mature trees, not minimum yard sizes or guaranteed limits.</p></div>
     <nav className="species-jump-nav" aria-label="Choose a species guide">{inventory.map(tree => <a key={tree.id} data-species-link href={`#${tree.id}`}>{tree.name}</a>)}</nav>
     {inventory.map((tree, index) => <details className="species-profile" id={tree.id} key={tree.id}>
       <summary><span className="species-number">{String(index + 1).padStart(2, '0')}</span><span className="species-heading"><span className="species-name">{tree.name}{tree.cultivar ? ` (‘${tree.cultivar}’)` : ''}</span><i>{tree.botanical}</i></span><span className="species-kind">{tree.kind}</span><span aria-hidden="true" className="species-toggle">+</span></summary>
@@ -46,7 +46,7 @@ export function InventoryProfiles({ onStage }: { onStage: (stage: Stage) => void
 }
 
 export function AftercareSummary() {
-  return <section className="inventory-aftercare" aria-labelledby="inventory-aftercare-title"><h4 id="inventory-aftercare-title">First-year priorities for your tree</h4><p>The moisture checks below apply to all ten trees. Use your tree's own guidance alongside them—not one identical watering schedule for every species.</p><div className="aftercare-priorities">{inventory.map(tree => <article key={tree.id}><h5><a href={`#${tree.id}`}>{tree.name}{tree.cultivar ? ` (‘${tree.cultivar}’)` : ''}</a></h5><p>{tree.water}</p></article>)}</div></section>;
+  return <section className="inventory-aftercare" aria-labelledby="inventory-aftercare-title"><h4 id="inventory-aftercare-title">First-year priorities for your tree</h4><p>The moisture checks below apply to all ten trees. Use your tree’s own guidance alongside them—not one identical watering schedule for every species.</p><div className="aftercare-priorities">{inventory.map(tree => <article key={tree.id}><h5><a href={`#${tree.id}`}>{tree.name}{tree.cultivar ? ` (‘${tree.cultivar}’)` : ''}</a></h5><p>{tree.water}</p></article>)}</div></section>;
 }
 
 export function InventoryReferences() {
