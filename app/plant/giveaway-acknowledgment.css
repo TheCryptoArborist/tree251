@@ -4,7 +4,8 @@
 .plant-guide .giveaway-memory figure{margin:0;min-width:0;}
 .plant-guide .giveaway-memory video{display:block;width:100%;height:auto;aspect-ratio:512/910;object-fit:contain;background:#061019;border:1px solid rgba(163,198,190,.3);border-radius:14px;color-scheme:dark;}
 .plant-guide .giveaway-video-frame{position:relative;overflow:hidden;border-radius:14px;}
-.plant-guide .giveaway-memory figcaption{margin-top:10px;font-size:12px;line-height:1.5;color:#b8c6c3;text-align:center;}
+.plant-guide .giveaway-memory video[role="button"]{cursor:pointer;touch-action:manipulation;}
+.plant-guide .giveaway-memory video[role="button"]:focus-visible{outline:3px solid #f6c95a;outline-offset:-4px;}
 .plant-guide .giveaway-memory .eyebrow{font-size:11px;letter-spacing:.15em;line-height:1.5;color:#ecd39b;margin:0 0 12px;}
 .plant-guide .giveaway-memory h2{font-family:Arial,Helvetica,sans-serif;font-size:clamp(25px,3vw,36px);font-weight:850;letter-spacing:-.035em;line-height:1.12;color:#f1eee5;margin:0 0 14px;}
 .plant-guide .giveaway-memory .giveaway-thanks{font-size:15px;line-height:1.75;color:#c9d6d2;max-width:590px;margin-bottom:20px;}
@@ -18,10 +19,5 @@
 .plant-guide .giveaway-memory .giveaway-closing{color:#b8c6c3;font-size:13px;line-height:1.7;margin:17px 0 0;max-width:560px;}
 @media(max-width:700px){.plant-guide .giveaway-memory{padding:23px 18px;margin-bottom:36px;}.plant-guide .giveaway-memory-grid{grid-template-columns:minmax(0,1fr);gap:23px;}.plant-guide .giveaway-memory figure{width:176px;margin:0 auto;}.plant-guide .giveaway-memory h2{font-size:27px;}.plant-guide .giveaway-memory .giveaway-thanks{font-size:14px;}.plant-guide .giveaway-logo-panel{gap:8px;}.plant-guide .giveaway-logo-panel li{min-height:72px;padding:12px;}.plant-guide .giveaway-logo-panel li:first-child{min-height:92px;padding:12px 15px;}.plant-guide .giveaway-logo-panel .aufa-logo{width:300px;}.plant-guide .giveaway-logo-panel .adf-logo{width:165px;}.plant-guide .giveaway-logo-panel .verizon-logo{width:125px;}}
 @media print{.plant-guide .giveaway-memory{display:none!important;}}
-
-.plant-guide .giveaway-video-toggle{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:46px;margin-top:10px;padding:10px 12px;background:#f6c95a;color:#07131b;border:1px solid #f6c95a;border-radius:12px;font:700 14px/1.4 Arial,Helvetica,sans-serif;cursor:pointer;}
-.plant-guide .giveaway-video-toggle:hover{background:#ffdc70;}
-.plant-guide .giveaway-video-toggle:focus-visible{outline:3px solid #fff;outline-offset:4px;}
-.plant-guide .giveaway-video-status{font:400 12px/1.5 Arial,Helvetica,sans-serif;color:#d0ddd6;text-align:center;min-height:36px;margin:8px 0 0;}
 .plant-guide .giveaway-memory{scroll-margin-top:10rem;}
 @media(prefers-reduced-motion:reduce){.plant-guide .giveaway-memory *{scroll-behavior:auto!important;transition:none!important;}}
