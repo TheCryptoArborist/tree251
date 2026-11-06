@@ -1,0 +1,56 @@
+/* On-page species guides. All selectors stay within /plant. */
+.plant-guide .species-card-link{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 -24px;padding:16px 24px;min-height:52px;border-top:1px solid var(--line);background:rgba(4,14,21,.22);color:var(--amber);font-size:13px;font-weight:800;text-decoration:none}
+.plant-guide .species-card-link:hover{background:rgba(246,201,90,.075)}
+.plant-guide .species-card-link>span{font-size:19px;line-height:1}
+.plant-guide .species-library{margin-top:55px;padding-top:40px;border-top:1px solid var(--line)}
+.plant-guide .species-library-heading .eyebrow{color:var(--flow-gold)}
+.plant-guide .species-library-heading h2{font-family:var(--sans);font-size:36px;line-height:1.13;font-weight:900;letter-spacing:-.04em;color:var(--ink);margin:0 0 15px}
+.plant-guide .species-library-heading>p:last-child{color:var(--muted);font-size:16px;line-height:1.7;max-width:760px}
+.plant-guide .species-jump-nav{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0}
+.plant-guide .species-jump-nav a{display:inline-flex;align-items:center;min-height:44px;padding:10px 17px;border:1px solid var(--line);border-radius:30px;color:var(--ink);background:#142832;font-size:13px;font-weight:750;text-decoration:none}
+.plant-guide .species-jump-nav a:hover{color:var(--amber);border-color:rgba(246,201,90,.5)}
+.plant-guide .species-profile{margin:14px 0;border:1px solid rgba(163,198,190,.24);border-radius:22px;background:linear-gradient(145deg,#172b35,#13242e);overflow:hidden;scroll-margin-top:16px}
+.plant-guide .species-profile>summary{display:flex;align-items:center;gap:18px;list-style:none;padding:23px 26px;cursor:pointer}
+.plant-guide .species-profile>summary::-webkit-details-marker{display:none}
+.plant-guide .species-profile>summary:hover{background:rgba(155,203,188,.045)}
+.plant-guide .species-number{display:grid;place-items:center;flex:none;width:38px;height:38px;border:1px solid rgba(246,201,90,.28);border-radius:50%;background:rgba(246,201,90,.06);font-weight:900;font-size:14px;color:var(--amber)}
+.plant-guide .species-heading{display:block;flex:1;min-width:0}
+.plant-guide .species-name{display:block;font-size:24px;line-height:1.25;letter-spacing:-.03em;font-weight:900;color:var(--ink)}
+.plant-guide .species-heading i{display:block;margin-top:4px;color:#b8c6c3;font-size:13px;font-weight:400}
+.plant-guide .species-kind{flex:none;color:var(--green);font-size:12px;max-width:220px;text-align:right}
+.plant-guide .species-toggle{display:grid;place-items:center;flex:none;width:32px;height:32px;border:1px solid var(--line);border-radius:50%;font-size:23px;font-weight:400;color:var(--amber)}
+.plant-guide .species-profile[open]>.species-toggle{transform:rotate(45deg)}
+.plant-guide .species-profile[open]>summary .species-toggle{transform:rotate(45deg)}
+.plant-guide .species-profile[open]>summary{border-bottom:1px solid var(--line)}
+.plant-guide .species-body{padding:27px 30px 30px}
+.plant-guide .species-introduction>p:first-child{font-size:17px;line-height:1.75;color:var(--ink);max-width:930px;margin-bottom:9px}
+.plant-guide .species-size-note{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:23px}
+.plant-guide .species-facts{display:grid;grid-template-columns:.8fr .8fr 1.15fr 1.6fr;gap:20px;margin:0 0 28px;padding:19px 21px;background:rgba(4,14,21,.3);border:1px solid var(--line);border-radius:15px}
+.plant-guide .species-facts div{min-width:0}
+.plant-guide .species-facts dt{font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.plant-guide .species-facts dd{font-size:15px;line-height:1.5;font-weight:750;color:var(--ink);margin:0}
+.plant-guide .species-topics{display:grid;grid-template-columns:1fr 1fr;gap:25px 34px}
+.plant-guide .profile-topic h4{font-family:var(--sans);font-size:17px;line-height:1.35;font-weight:850;color:var(--flow-gold);margin:0 0 9px;letter-spacing:-.01em}
+.plant-guide .profile-topic p{font-size:15px;line-height:1.78;color:var(--muted);margin:0}
+.plant-guide .species-cite{font-size:10px;font-weight:700;white-space:nowrap}
+.plant-guide .species-cite a{color:var(--green);text-decoration:none;margin-left:2px;padding:3px}
+.plant-guide .species-cite a:hover{text-decoration:underline;color:var(--amber)}
+.plant-guide .species-takeaway{display:flex;gap:20px;margin-top:28px;padding:17px 20px;border-left:3px solid var(--amber);background:rgba(246,201,90,.055);border-radius:0 12px 12px 0}
+.plant-guide .species-takeaway strong{flex:none;color:var(--amber);font-size:12px;letter-spacing:.04em;text-transform:uppercase;line-height:1.8}
+.plant-guide .species-takeaway p{margin:0;font-size:14px;line-height:1.7;color:var(--ink)}
+.plant-guide .species-actions{display:flex;flex-wrap:wrap;align-items:center;gap:15px 25px;padding-top:25px;margin-top:25px;border-top:1px solid var(--line)}
+.plant-guide .species-actions>a{display:inline-flex;align-items:center;gap:10px;min-height:44px;font-weight:750;font-size:13px;color:var(--green);text-decoration:none}
+.plant-guide .species-actions>a.button{color:#06110d;padding:12px 21px;font-size:12px}
+.plant-guide .species-actions>a:last-child{margin-left:auto}
+.plant-guide .sources .onsite-reference-list{display:grid;grid-template-columns:1fr 1fr;gap:20px 32px;list-style:none;padding:20px 0 0;margin:0}
+.plant-guide .onsite-reference-list>li{scroll-margin-top:16px;border-bottom:1px solid var(--line);padding-bottom:16px;font-size:12px;line-height:1.7}
+.plant-guide .onsite-reference-list strong{display:block;color:var(--ink);margin-bottom:6px;font-size:13px}
+.plant-guide .onsite-reference-list p{margin:0}
+.plant-guide .onsite-reference-list cite{font-style:normal}
+.plant-guide .onsite-reference-list li:target{outline:1px solid var(--amber);outline-offset:8px;border-radius:4px}
+.plant-guide .other-reference-heading{font-family:var(--sans);color:var(--ink);font-size:15px;font-weight:800;margin:27px 0 8px}
+.plant-guide .source-editorial-note{margin-top:22px}
+@media(max-width:900px){.plant-guide .species-facts{grid-template-columns:1fr 1fr}.plant-guide .species-kind{max-width:160px}.plant-guide .species-topics{gap:23px}.plant-guide .species-actions>a:last-child{margin-left:0}}
+@media(max-width:640px){.plant-guide .species-card-link{margin:0 -23px;padding:15px 23px}.plant-guide .species-library{margin-top:32px;padding-top:30px}.plant-guide .species-library-heading .eyebrow{color:var(--flow-gold)}
+.plant-guide .species-library-heading h2{font-size:29px}.plant-guide .species-library-heading>p:last-child{font-size:15px}.plant-guide .species-jump-nav{gap:8px;margin:20px 0}.plant-guide .species-jump-nav a{font-size:12px;padding:9px 13px}.plant-guide .species-profile{border-radius:17px}.plant-guide .species-profile>summary{padding:18px 16px;gap:11px}.plant-guide .species-number{width:30px;height:30px;font-size:12px}.plant-guide .species-name{font-size:20px}.plant-guide .species-heading i{font-size:12px}.plant-guide .species-kind{display:none}.plant-guide .species-toggle{width:27px;height:27px;font-size:20px}.plant-guide .species-body{padding:20px 18px 22px}.plant-guide .species-introduction>p:first-child{font-size:16px}.plant-guide .species-facts{padding:15px;gap:17px 15px}.plant-guide .species-facts dd{font-size:14px}.plant-guide .species-topics{grid-template-columns:1fr;gap:23px}.plant-guide .profile-topic p{font-size:15px}.plant-guide .species-takeaway{display:block;padding:16px;margin-top:25px}.plant-guide .species-takeaway strong{display:block;margin-bottom:5px}.plant-guide .species-actions{display:grid;gap:10px;padding-top:20px;margin-top:20px}.plant-guide .species-actions>a.button{width:100%}.plant-guide .species-actions>a:not(.button){justify-content:center;font-size:13px}.plant-guide .sources .onsite-reference-list{grid-template-columns:1fr;gap:17px}}
+@media print{.plant-guide .species-jump-nav,.plant-guide .species-card-link,.plant-guide .species-actions,.plant-guide .species-toggle{display:none!important}.plant-guide .species-library{margin-top:20px;padding-top:20px}.plant-guide .species-profile{background:white!important;border:1px solid #aaa!important;overflow:visible;break-inside:auto}.plant-guide .species-profile>summary{break-after:avoid;page-break-after:avoid;padding:12px 16px}.plant-guide .species-profile>summary,.plant-guide .species-name,.plant-guide .species-kind,.plant-guide .species-heading i,.plant-guide .profile-topic h4,.plant-guide .profile-topic p,.plant-guide .species-introduction>p:first-child,.plant-guide .species-facts dd,.plant-guide .species-facts dt,.plant-guide .species-takeaway p,.plant-guide .species-takeaway strong,.plant-guide .onsite-reference-list strong{color:#111!important}.plant-guide .species-body{padding:15px}.plant-guide .species-facts,.plant-guide .species-takeaway{background:#f5f5f5!important;border-color:#aaa!important}.plant-guide .profile-topic{break-inside:avoid}.plant-guide .species-topics{gap:16px 25px}.plant-guide .profile-topic p{font-size:10pt}.plant-guide .profile-topic h4{font-size:12pt}.plant-guide .species-cite a{color:#333!important}.plant-guide .sources .onsite-reference-list{display:block}.plant-guide .sources li{break-inside:avoid}}

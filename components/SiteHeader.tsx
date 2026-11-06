@@ -29,6 +29,7 @@ const desktopNavItems = [
 ];
 
 const resourceNavItems = [
+  { href: "/plant", label: "Tree Planting & Care", external: false },
   { href: "/historic-trees", label: "Historic Trees", external: false },
   { href: "/resources/storm-tree-checklist", label: "Storm Tree Checklist", external: false },
   { href: "/knowledge-center", label: "Tree Codes", external: false },
@@ -189,13 +190,14 @@ export function SiteHeader() {
           <Link href="/#services" className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Services</Link>
           <Link href="/tree-inventories" className="min-w-[7.1rem] rounded-full border border-[#f6c95a]/45 bg-[#f6c95a]/10 px-2 py-2.5 focus-ring">Inventories</Link>
           <Link href="/real-estate" className="min-w-[5.8rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Real Estate</Link>
+          <Link href="/plant" className="min-w-[6.4rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Planting Guide</Link>
           <Link href="/resources/storm-tree-checklist" className="min-w-[7.4rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Storm Checklist</Link>
         </nav>
       </header>
 
       <nav aria-label="Mobile contact actions" className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-3 border-t border-teal-300/20 bg-[#050b12]/97 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-14px_34px_rgba(0,0,0,0.4)] backdrop-blur-xl lg:hidden">
         <a
-          href="tel:+12512190140"
+          href="tel:+12516223200"
           data-track-event="Phone Click"
           data-track-location="mobile_sticky_bar"
           className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-black uppercase tracking-[0.04em] text-white focus-ring"
