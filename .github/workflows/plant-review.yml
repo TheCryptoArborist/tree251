@@ -12,24 +12,32 @@ permissions:
 concurrency:
   group: plant-guide-review
   cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
 jobs:
   verify:
     if: github.ref == 'refs/heads/review/plant-education-2026-11-05'
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
     steps:
       - uses: actions/checkout@v4
-      - name: Correct React numeric focus attributes
+      - name: Correct native footer navigation
         run: |
           python3 - <<'PY'
-          import hashlib
+          import hashlib, re
           from pathlib import Path
           p = Path('app/plant/PlantingGuide.tsx')
           s = p.read_text()
-          before = '444990ce8975f78e81ff9ea6a4cc44bc36ee6a359c60a68b0e958757bc011eb7'
-          after = '04aef6835c7bbabea56eeeb40b3aed69bb0af53fced1cc56885bef3fbfe8bd51'
+          before = '04aef6835c7bbabea56eeeb40b3aed69bb0af53fced1cc56885bef3fbfe8bd51'
+          after = '9d3f7553fc788b4bce2c7e04ddd7ee966bef2e97985d8ff3541d4bcd229c6e3b'
           assert hashlib.sha256(s.encode()).hexdigest() in [before, after]
-          s = s.replace('tabIndex="0"', 'tabIndex={0}').replace('tabIndex="-1"', 'tabIndex={-1}')
+          if hashlib.sha256(s.encode()).hexdigest() == before:
+              s = s.replace('import type { KeyboardEvent } from "react";', 'import type { KeyboardEvent } from "react";\nimport Link from "next/link";')
+              s, n = re.subn(r'<a href="(/[^"]*)">([^<]+)</a>', r'<Link href="\1">\2</Link>', s)
+              assert n == 3
           assert hashlib.sha256(s.encode()).hexdigest() == after
           p.write_text(s)
           PY
@@ -37,7 +45,7 @@ jobs:
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
             git add app/plant/PlantingGuide.tsx
-            git commit -m 'Use numeric React tabIndex values in accessible planting guide controls'
+            git commit -m 'Use Next Link for the planting guide footer navigation'
             git push origin HEAD:refs/heads/review/plant-education-2026-11-05
           fi
       - name: Collect integrated source
@@ -54,13 +62,23 @@ jobs:
       - name: Type check
         run: npm run typecheck 2>&1 | tee review-output/typecheck.log
       - name: Production build
-        run: npm run build 2>&1 | tee review-output/build.log
+        run: |
+          npm run build 2>&1 | tee review-output/build.log
+          test -s .next/BUILD_ID
       - name: Browser checks
         run: |
-          npm install --no-save --package-lock=false playwright
-          npx playwright install --with-deps chromium
+          npm install --prefix "$RUNNER_TEMP/plant-browser" --no-save --package-lock=false playwright
+          ln -s "$RUNNER_TEMP/plant-browser/node_modules/playwright" node_modules/playwright
+          "$RUNNER_TEMP/plant-browser/node_modules/.bin/playwright" install --with-deps chromium
           npm run start > review-output/server.log 2>&1 &
-          for i in $(seq 1 45); do curl --fail --silent http://127.0.0.1:3000/plant >/dev/null && break; sleep 2; done
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            kill -0 "$server_pid" || { cat review-output/server.log; exit 1; }
+            curl --fail --silent http://127.0.0.1:3000/plant >/dev/null && break
+            sleep 2
+          done
+          curl --fail --silent http://127.0.0.1:3000/plant >/dev/null
           node scripts/verify-plant.mjs
       - uses: actions/upload-artifact@v4
         if: always()
