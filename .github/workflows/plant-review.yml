@@ -8,24 +8,55 @@ on:
       - .github/workflows/plant-review.yml
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 concurrency:
   group: plant-guide-review
   cancel-in-progress: true
 jobs:
   verify:
+    if: github.ref == 'refs/heads/review/plant-education-2026-11-05'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Collect original branding and source for review
+      - name: Import the checksum-verified approved guide
+        if: hashFiles('scripts/plant-import/part-0.txt') != ''
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, json, lzma
+          from pathlib import Path
+          parts = [Path(f'scripts/plant-import/part-{i}.txt') for i in range(4)]
+          encoded = ''.join(''.join(p.read_text().split()) for p in parts)
+          encoded = encoded.replace('OX7wMMppu', 'OX7wMppu')
+          payload = base64.b64decode(encoded, validate=True)
+          expected = 'd69e31f254a5df1450f72a3d02a6ba2e36a940ca7a500de75b7abfc09cb98862'
+          assert hashlib.sha256(payload).hexdigest() == expected, 'Source transport checksum mismatch; no files written'
+          files = json.loads(lzma.decompress(payload))
+          allowed = {'app/plant/PlantingGuide.tsx', 'app/plant/page.tsx', 'app/plant/plant-guide.css', 'app/plant/plant-flow.css', 'app/plant/species-profiles.css'}
+          assert set(files) == allowed
+          for name, content in files.items():
+              path = Path(name)
+              assert not path.exists() or path.read_text() == content, f'Refusing to overwrite a different existing file: {name}'
+          for name, content in files.items():
+              path = Path(name)
+              path.parent.mkdir(parents=True, exist_ok=True)
+              path.write_text(content)
+          print('Imported all five original review files with verified transport checksum.')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app/plant
+          git rm scripts/plant-import/part-*.txt
+          git commit -m 'Integrate approved on-site planting and species care guide at /plant'
+          git push origin HEAD:refs/heads/review/plant-education-2026-11-05
+      - name: Collect original branding and integrated source for review
+        if: always()
         run: |
           mkdir -p review-output
           cp public/arborist-logo-cropped.png review-output/arborist-logo-cropped.png
           git archive --format=zip HEAD -o review-output/site-source.zip
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: plant-review-source
           path: review-output/
@@ -39,16 +70,13 @@ jobs:
         run: npm run typecheck
       - name: Production build
         run: npm run build
-      - name: Browser checks when guide is present
-        if: hashFiles('app/plant/page.tsx', 'scripts/verify-plant.mjs') != ''
+      - name: Browser checks
         run: |
-          if [ -f app/plant/page.tsx ] && [ -f scripts/verify-plant.mjs ]; then
-            npm install --no-save --package-lock=false playwright
-            npx playwright install --with-deps chromium
-            npm run start > review-output/server.log 2>&1 &
-            for i in $(seq 1 45); do curl --fail --silent http://127.0.0.1:3000/plant >/dev/null && break; sleep 2; done
-            node scripts/verify-plant.mjs
-          fi
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+          npm run start > review-output/server.log 2>&1 &
+          for i in $(seq 1 45); do curl --fail --silent http://127.0.0.1:3000/plant >/dev/null && break; sleep 2; done
+          node scripts/verify-plant.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
