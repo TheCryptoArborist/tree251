@@ -56,7 +56,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add app/plant public/plant components/SiteHeader.tsx components/TheArboristHomePage.tsx app/sitemap.ts scripts/verify-plant-polish.mjs
-          git rm .github/workflows/plant-polish-apply.yml .github/workflows/plant-polish-media.yml scripts/apply-plant-polish.py scripts/reconcile-plant-polish.py
+          git rm -f .github/workflows/plant-polish-apply.yml .github/workflows/plant-polish-media.yml scripts/apply-plant-polish.py scripts/reconcile-plant-polish.py
           git commit -m 'Finish planting guide photos, planting diagram, mobile readability, print layout, navigation and sharing card'
           git push origin HEAD:refs/heads/review/plant-polish-2026-11-06
       - name: Record exact tested source
