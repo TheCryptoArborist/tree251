@@ -79,7 +79,10 @@ jobs:
               await page.waitForFunction(()=>{const i=document.querySelector('header img');return i?.complete&&i.naturalWidth>0;});
               const phones=await page.locator('a[href^="tel:"]').evaluateAll(ns=>ns.map(n=>n.getAttribute('href')));
               assert(phones.length>=3&&phones.every(p=>p==='tel:+12516223200'));
-              for(const id of ['live-oak','overcup-oak','black-gum','chaste-tree','bald-cypress']){
+              // Exercise the actual published inventory; the candidate's exact inventory is tested locally above.
+              const ids=await page.locator('#choose-tree .tree-picker-buttons a').evaluateAll(links=>links.map(a=>a.hash.slice(1)));
+              assert(ids.length>=5&&new Set(ids).size===ids.length);
+              for(const id of ids){
                 await page.locator('#choose-tree a[href="#'+id+'"]').click();
                 await page.waitForFunction(id=>document.getElementById(id).open,id);
                 assert.equal(new URL(page.url()).pathname,'/plant');
@@ -89,7 +92,7 @@ jobs:
               assert.deepEqual(errors,[]);
               await page.goto(origin+'/plant',{waitUntil:'networkidle'});
               await page.screenshot({path:'security-review/live-'+width+'.png'});
-              results.push({width,treeButtons:5,logoLoaded:true,phoneLinks:phones.length,horizontalOverflow:false,javascriptErrors:errors});
+              results.push({width,treeButtons:ids.length,logoLoaded:true,phoneLinks:phones.length,horizontalOverflow:false,javascriptErrors:errors});
               await context.close();
             }
             await writeFile('security-review/live-checks.json',JSON.stringify({passed:true,origin,results},null,2));

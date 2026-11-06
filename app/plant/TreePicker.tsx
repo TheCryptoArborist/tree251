@@ -2,13 +2,8 @@
 
 import type { MouseEvent } from "react";
 
-const trees = [
-  { id: "live-oak", name: "Live Oak" },
-  { id: "overcup-oak", name: "Overcup Oak" },
-  { id: "black-gum", name: "Black Gum" },
-  { id: "chaste-tree", name: "Chaste Tree" },
-  { id: "bald-cypress", name: "Bald Cypress" }
-] as const;
+import inventory from './tree-inventory.json';
+const trees = inventory;
 
 export default function TreePicker() {
   function openGuide(event: MouseEvent<HTMLAnchorElement>, id: string) {
@@ -40,7 +35,7 @@ export default function TreePicker() {
             </a>
           ))}
         </div>
-        <a className="tree-picker-compare" href="#tree-guide">Not sure? Compare the five trees <span aria-hidden="true">→</span></a>
+        <a className="tree-picker-compare" href="#tree-guide">Not sure? Compare all ten trees <span aria-hidden="true">→</span></a>
       </div>
     </nav>
   );

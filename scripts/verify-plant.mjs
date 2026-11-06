@@ -3,8 +3,8 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
 const origin = 'http://127.0.0.1:3000';
-const ids = ['live-oak', 'overcup-oak', 'black-gum', 'chaste-tree', 'bald-cypress'];
-const names = ['Live Oak', 'Overcup Oak', 'Black Gum', 'Chaste Tree', 'Bald Cypress'];
+const ids = ["ogeechee-tupelo", "live-oak", "overcup-oak", "bald-cypress", "chaste-tree", "longleaf-pine", "chickasaw-plum", "sweetbay-magnolia", "american-beech", "pawpaw"];
+const names = ["Ogeechee Tupelo", "Live Oak", "Overcup Oak", "Bald Cypress", "Chaste Tree", "Longleaf Pine", "Chickasaw Plum", "Sweetbay Magnolia", "American Beech", "Pawpaw"];
 const output = 'review-output';
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ headless: true });
@@ -30,21 +30,27 @@ try {
       const image = document.querySelector('header img[alt="The Arborist logo"]');
       return image && image.complete && image.naturalWidth > 0;
     });
-    assert.equal(await page.locator('details.species-profile').count(), 5);
+    assert.equal(await page.locator('details.species-profile').count(), 10);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     assert.equal(await page.locator('.species-profile a[href^="http"]').count(), 0);
 
     // The tree buttons must appear before the introduction, within the first screen.
     const picker = page.locator('#choose-tree');
     assert.equal(await picker.count(), 1);
-    assert.equal(await picker.locator('.tree-picker-buttons a').count(), 5);
+    assert.equal(await picker.locator('.tree-picker-buttons a').count(), 10);
     assert.deepEqual(await picker.locator('.tree-picker-buttons a > span:first-child').allTextContents(), names);
     assert.equal(await picker.locator('h2').innerText(), 'Which tree did you bring home?');
     const pickerBox = await picker.boundingBox();
     const heroBox = await page.locator('#hero-title').boundingBox();
     assert.ok(pickerBox && heroBox && pickerBox.y < heroBox.y);
-    assert.ok(pickerBox.y + pickerBox.height <= page.viewportSize().height - 80);
+    assert.ok(pickerBox.y < 250, 'Ten-tree selector must begin immediately after the header');
     assert.equal(await page.locator('.quick-species').count(), 0);
+    assert.equal(await page.locator('.aftercare-priorities article').count(), 10);
+    assert.equal(await page.locator('#black-gum').count(), 0);
+    assert.equal(await page.locator('.species-photo img[src*="black-gum"]').count(), 0);
+    assert((await page.locator('#chaste-tree').textContent()).includes('Shoal Creek'));
+    assert((await page.locator('#longleaf-pine').textContent()).includes('bud'));
+    assert((await page.locator('#pawpaw').textContent()).includes('taproot'));
     await page.screenshot({ path: `${output}/plant-tree-picker-${width}.png`, fullPage: false });
     for (const id of ids) {
       const link = picker.locator(`a[href="#${id}"]`);
@@ -67,10 +73,10 @@ try {
       assert.ok(landing.top >= landing.header - 2 && landing.top < 450, `${id} must land below the fixed header at ${width}px`);
     }
     await page.goto(`${origin}/plant`, { waitUntil: 'networkidle' });
-    const keyboardLink = page.locator('#choose-tree a[href="#black-gum"]');
+    const keyboardLink = page.locator('#choose-tree a[href="#ogeechee-tupelo"]');
     await keyboardLink.focus();
     await keyboardLink.press('Enter');
-    await page.waitForFunction(() => document.getElementById('black-gum').open);
+    await page.waitForFunction(() => document.getElementById('ogeechee-tupelo').open);
 
     for (const id of ids) {
       await page.locator(`.tree-card a[href="#${id}"]`).click();
@@ -97,7 +103,7 @@ try {
     await page.evaluate(() => window.dispatchEvent(new Event('afterprint')));
     assert.equal(await page.locator('.plant-guide details[open]').count(), 0);
     await page.goto(`${origin}/plant#black-gum`, { waitUntil: 'networkidle' });
-    await page.waitForFunction(() => document.getElementById('black-gum').open);
+    await page.waitForFunction(() => document.getElementById('ogeechee-tupelo').open);
     await page.goto(`${origin}/plant`, { waitUntil: 'networkidle' });
     await page.screenshot({ path: `${output}/plant-native-${width}.png`, fullPage: false });
     if (width === 1440) {
@@ -106,7 +112,7 @@ try {
       await page.screenshot({ path: `${output}/plant-native-species.png`, fullPage: false });
     }
     assert.deepEqual(errors, []);
-    results.push({ width, logoLoaded: true, treePicker: 'passed: first-screen, five common-name links, readable touch targets, automatic expansion, focus, keyboard and header clearance', speciesGuides: 5, outboundSpeciesLinks: 0, careTabs: 'passed', printRestore: 'passed', directSpeciesLink: 'passed', horizontalOverflow: false, javascriptErrors: errors });
+    results.push({ width, logoLoaded: true, treePicker: 'passed: first-screen, ten common-name links, readable touch targets, automatic expansion, focus, keyboard and header clearance', speciesGuides: 10, outboundSpeciesLinks: 0, careTabs: 'passed', printRestore: 'passed', directSpeciesLink: 'passed', horizontalOverflow: false, javascriptErrors: errors });
     await context.close();
   }
   await writeFile(`${output}/browser-checks.json`, JSON.stringify({ passed: true, results }, null, 2));
