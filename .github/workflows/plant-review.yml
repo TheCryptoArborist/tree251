@@ -1,7 +1,7 @@
 name: Plant guide review
 on:
   push:
-    branches: [main, release/plant-polish-final-2026-11-06]
+    branches: [main]
     paths: ['app/plant/**', 'public/plant/**', 'scripts/verify-plant*.mjs', 'components/SiteHeader.tsx', 'components/TheArboristHomePage.tsx', 'app/sitemap.ts', '.github/workflows/plant-review.yml']
   pull_request:
     branches: [main]
@@ -50,7 +50,7 @@ jobs:
         run: |
           npm install --prefix "$RUNNER_TEMP/plant-browser" --no-save --package-lock=false playwright axe-core
           ln -s "$RUNNER_TEMP/plant-browser/node_modules/playwright" node_modules/playwright
-          "$RUNNER_TEMP/plant-browser/node_modules/.bin/playwright" install --with-deps chromium
+          "$RUNNER_TEMP/plant-browser/node_modules/.bin/playwright" install chromium
           npm run start > review-output/server.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
