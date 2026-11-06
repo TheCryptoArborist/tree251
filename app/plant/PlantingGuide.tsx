@@ -7,6 +7,7 @@ import { ArboristLogo, consultationAnchor } from "@/components/ConsultBranding";
 import "./plant-guide.css";
 import "./plant-flow.css";
 import "./species-profiles.css";
+import "./tree-shortcuts.css";
 
 type Stage = "before" | "planting" | "after";
 const stages: Stage[] = ["before", "planting", "after"];
@@ -74,7 +75,15 @@ export default function PlantingGuide() {
     function onClick(event: MouseEvent) {
       const element = event.target instanceof Element ? event.target : null;
       const anchor = element?.closest<HTMLAnchorElement>('a[href^="#"]');
-      if (anchor) reveal(anchor.getAttribute("href") || "", false);
+      if (anchor) {
+        const hash = anchor.getAttribute("href") || "";
+        reveal(hash, false);
+        if (anchor.closest(".tree-shortcuts") && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+          const target = document.getElementById(hash.slice(1));
+          const summary = target?.querySelector<HTMLElement>("summary");
+          requestAnimationFrame(() => summary?.focus({ preventScroll: true }));
+        }
+      }
     }
     const onHashChange = () => reveal(window.location.hash, true);
     root.addEventListener("click", onClick);
@@ -88,7 +97,16 @@ export default function PlantingGuide() {
   // app/layout.tsx supplies SiteHeader, the real site logo, and mobile contact actions.
   return <div className="plant-guide" ref={rootRef}>
  
-<div className="hero-shell"><section aria-labelledby="hero-title" className="hero container" id="top"> <div className="hero-copy"><p className="eyebrow">YOUR NEW TREE · A PRACTICAL CARE GUIDE</p><h1 id="hero-title">Your new tree.<br /><em>A healthy start.</em></h1><p className="intro">Find your tree, check its mature size, and follow practical steps from nursery pot to planting and establishment.</p><nav className="quick-species" aria-label="Choose your tree"><strong>Which tree did you bring home?</strong><div><a href="#live-oak">Live oak</a><a href="#overcup-oak">Overcup oak</a><a href="#black-gum">Black gum</a><a href="#chaste-tree">Chaste tree</a><a href="#bald-cypress">Bald cypress</a></div></nav><div className="hero-actions"><a className="button" href="#tree-guide">Find your tree <svg aria-hidden="true" fill="none" height="17" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" viewBox="0 0 24 24" width="17"><path d="M12 4v16M6 14l6 6 6-6"></path></svg></a><a className="button secondary" href="#care">Planting &amp; care <svg aria-hidden="true" fill="none" height="17" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" viewBox="0 0 24 24" width="17"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div><div className="hero-note"><svg aria-hidden="true" fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" viewBox="0 0 24 24" width="16"><path d="m5 12 4 4L19 6"></path></svg> Guidance from Peter · ISA Certified Arborist</div></div> <aside className="owner-start" aria-labelledby="owner-start-title">
+<div className="hero-shell"><section aria-labelledby="hero-title" className="hero container" id="top"> <div className="hero-copy"><p className="eyebrow">YOUR NEW TREE · A PRACTICAL CARE GUIDE</p><h1 id="hero-title">Your new tree.<br /><em>A healthy start.</em></h1><p className="intro">Find your tree, check its mature size, and follow practical steps from nursery pot to planting and establishment.</p><nav id="tree-selector" className="quick-species tree-shortcuts" aria-labelledby="tree-selector-title" aria-describedby="tree-selector-help">
+<h2 id="tree-selector-title">Which tree did you bring home?</h2>
+<p id="tree-selector-help">Tap your tree to jump straight to its guide.</p>
+<div className="tree-picker">
+<a href="#live-oak" aria-controls="live-oak" data-species-link>Live Oak <span aria-hidden="true">↓</span></a>
+<a href="#overcup-oak" aria-controls="overcup-oak" data-species-link>Overcup Oak <span aria-hidden="true">↓</span></a>
+<a href="#black-gum" aria-controls="black-gum" data-species-link>Black Gum <span aria-hidden="true">↓</span></a>
+<a href="#chaste-tree" aria-controls="chaste-tree" data-species-link>Chaste Tree <span aria-hidden="true">↓</span></a>
+<a href="#bald-cypress" aria-controls="bald-cypress" data-species-link>Bald Cypress <span aria-hidden="true">↓</span></a>
+</div></nav><div className="hero-actions"><a className="button" href="#tree-guide">Find your tree <svg aria-hidden="true" fill="none" height="17" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" viewBox="0 0 24 24" width="17"><path d="M12 4v16M6 14l6 6 6-6"></path></svg></a><a className="button secondary" href="#care">Planting &amp; care <svg aria-hidden="true" fill="none" height="17" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" viewBox="0 0 24 24" width="17"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a></div><div className="hero-note"><svg aria-hidden="true" fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" viewBox="0 0 24 24" width="16"><path d="m5 12 4 4L19 6"></path></svg> Guidance from Peter · ISA Certified Arborist</div></div> <aside className="owner-start" aria-labelledby="owner-start-title">
   <p className="owner-kicker">JUST BROUGHT IT HOME?</p>
   <h2 id="owner-start-title">Three things to do first.</h2>
   <ol className="owner-checklist">
