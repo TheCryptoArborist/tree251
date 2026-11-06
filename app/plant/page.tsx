@@ -2,25 +2,17 @@ import type { Metadata } from "next";
 import PlantingGuide from "./PlantingGuide";
 import TreePicker from "./TreePicker";
 import "./tree-picker.css";
+import "./plant-print-finish.css";
 
+const title = "Your New Tree: Planting & Care";
+const description = "Tree guides for live oak, overcup oak, black gum, chaste tree, and bald cypress. Learn mature size, site needs, container care, planting, and first-year aftercare.";
 export const metadata: Metadata = {
-  title: "Your New Tree: Planting & Care",
-  description: "On-page tree guides for live oak, overcup oak, black gum, chaste tree, and bald cypress. Learn mature size, site needs, container care, planting, and first-year aftercare.",
+  title, description,
   alternates: { canonical: "/plant" },
-  openGraph: {
-    title: "Your New Tree: Planting & Care | The Arborist",
-    description: "From a three-gallon container to a healthy landscape tree: planting guidance from Peter Toler, ISA Certified Arborist.",
-    url: "/plant",
-    type: "article",
-    images: [{ url: "/plant/opengraph-image", alt: "The Arborist tree planting and care guide" }]
-  }
+  openGraph: { title: `${title} | The Arborist`, description, url: "/plant", type: "article", images: [{ url: "/plant/opengraph-image", width: 1200, height: 630, alt: "Your New Tree: Planting & Care — The Arborist, Peter Toler" }] },
+  twitter: { card: "summary_large_image", title: `${title} | The Arborist`, description, images: ["/plant/opengraph-image"] }
 };
-
 export default function PlantPage() {
-  return (
-    <div className="plant-page">
-      <TreePicker />
-      <PlantingGuide />
-    </div>
-  );
+  const article = { "@context": "https://schema.org", "@type": "Article", headline: title, description, url: "https://tree251.xyz/plant", dateModified: "2026-11-06", author: { "@type": "Person", name: "Peter Toler", jobTitle: "ISA Certified Arborist" }, publisher: { "@type": "Organization", name: "The Arborist", url: "https://tree251.xyz" }, image: "https://tree251.xyz/plant/opengraph-image", inLanguage: "en-US" };
+  return <div className="plant-page"><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(article).replace(/</g, "\\u003c") }} /><TreePicker /><PlantingGuide /></div>;
 }

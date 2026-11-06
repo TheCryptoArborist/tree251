@@ -1,0 +1,100 @@
+name: Published planting guide check
+on:
+  push:
+    branches: [main]
+    paths: ['app/plant/**', 'public/plant/**', '.github/workflows/plant-live-check.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: plant-published-check
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
+jobs:
+  check:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install isolated browser tooling
+        run: |
+          npm install --prefix "$RUNNER_TEMP/plant-live" --no-save --package-lock=false playwright
+          ln -s "$RUNNER_TEMP/plant-live/node_modules" node_modules
+          "$RUNNER_TEMP/plant-live/node_modules/.bin/playwright" install chromium
+      - name: Inspect published page without forms, analytics or API writes
+        run: |
+          mkdir -p live-review
+          node --input-type=module <<'JS'
+          import { chromium } from 'playwright';
+          import { writeFile } from 'node:fs/promises';
+          import assert from 'node:assert/strict';
+          const origin='https://www.tree251.xyz';
+          const ids=['live-oak','overcup-oak','black-gum','chaste-tree','bald-cypress'];
+          let ready=false;
+          for(let i=0;i<45;i++) {
+            try {
+              const r=await fetch(origin+'/plant',{signal:AbortSignal.timeout(15000),headers:{'Cache-Control':'no-cache'}});
+              const html=await r.text();
+              if(r.ok&&html.includes('species-photo')&&html.includes('photo-credits')) {ready=true;break;}
+            } catch {}
+            await new Promise(r=>setTimeout(r,2000));
+          }
+          assert(ready,'Published photo-and-care guide did not become available.');
+          const browser=await chromium.launch({headless:true});
+          const results=[];
+          try {
+            for(const width of [390,1440]) {
+              const context=await browser.newContext({viewport:{width,height:width<600?844:1100},reducedMotion:'reduce'});
+              await context.route('**/*',route=>{
+                const req=route.request(),u=new URL(req.url());
+                return ['GET','HEAD'].includes(req.method())&&u.origin===origin&&!u.pathname.startsWith('/api/')?route.continue():route.abort();
+              });
+              const page=await context.newPage(),errors=[];
+              page.on('pageerror',e=>errors.push(e.message));
+              const response=await page.goto(origin+'/plant',{waitUntil:'networkidle'});
+              assert.equal(response.status(),200);
+              await page.waitForFunction(()=>{const i=document.querySelector('header img');return i?.complete&&i.naturalWidth>0;});
+              assert.equal(await page.locator('#choose-tree .tree-picker-buttons a').count(),5);
+              assert.equal(await page.locator('.species-photo').count(),10);
+              const phones=await page.locator('a[href^="tel:"]').evaluateAll(a=>a.map(x=>x.getAttribute('href')));
+              assert(phones.length>=3&&phones.every(p=>p==='tel:+12516223200'));
+              await page.screenshot({path:`live-review/plant-live-${width}.png`});
+              for(const id of ids) {
+                await page.locator(`#choose-tree a[href="#${id}"]`).click();
+                await page.waitForFunction(id=>document.getElementById(id).open,id);
+                assert.equal(new URL(page.url()).pathname,'/plant');
+                assert.equal(await page.locator(`#${id} .species-photo`).count(),2);
+              }
+              await page.locator('.species-photo img').evaluateAll(images=>images.forEach(i=>i.loading='eager'));
+              await page.waitForFunction(()=>[...document.querySelectorAll('.species-photo img')].every(i=>i.complete&&i.naturalWidth>0));
+              assert.equal(await page.locator('.species-profile a[href^="http"]').count(),0);
+              assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+              await page.locator('#choose-tree a[href="#live-oak"]').click();
+              await page.screenshot({path:`live-review/plant-live-species-${width}.png`});
+              await page.locator('#live-oak .species-actions a[data-stage="planting"]').click();
+              assert.equal(await page.locator('#panel-planting .planting-illustration').isVisible(),true);
+              await page.screenshot({path:`live-review/plant-live-planting-${width}.png`});
+              assert.deepEqual(errors,[]);
+              results.push({width,status:200,localPhotos:10,treeButtons:5,phoneLinks:phones.length,javascriptErrors:errors,overflow:false});
+              await context.close();
+            }
+            await writeFile('live-review/results.json',JSON.stringify({passed:true,checkedAt:new Date().toISOString(),sourceCommit:process.env.GITHUB_SHA,origin,results},null,2));
+          } catch(error) {
+            await writeFile('live-review/results.json',JSON.stringify({passed:false,error:String(error),results},null,2));
+            throw error;
+          } finally {await browser.close();}
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: plant-published-check
+          path: live-review/
+          retention-days: 7

@@ -1,21 +1,16 @@
 name: Plant guide review
 on:
   push:
-    branches: [review/plant-education-2026-11-05]
-    paths:
-      - app/plant/**
-      - scripts/verify-plant.mjs
+    branches: [main]
+    paths: ['app/plant/**', 'public/plant/**', 'scripts/verify-plant*.mjs', 'components/SiteHeader.tsx', 'components/TheArboristHomePage.tsx', 'app/sitemap.ts', '.github/workflows/plant-review.yml']
   pull_request:
     branches: [main]
-    paths:
-      - app/plant/**
-      - scripts/verify-plant.mjs
-      - .github/workflows/plant-review.yml
+    paths: ['app/plant/**', 'public/plant/**', 'scripts/verify-plant*.mjs', 'components/SiteHeader.tsx', 'components/TheArboristHomePage.tsx', 'app/sitemap.ts', '.github/workflows/plant-review.yml']
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: plant-guide-review-${{ github.head_ref || github.ref }}
+  group: plant-guide-review-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 defaults:
   run:
@@ -40,19 +35,22 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - name: Record existing dependency audit
-        run: npm audit --json > review-output/dependency-audit.json || true
+      - name: Check dependency security without changing versions
+        run: |
+          npm audit --json > review-output/dependency-audit.json || true
+          npm audit --omit=dev --json > review-output/production-audit.json
+          npm audit --audit-level=high
       - name: Type check
         run: npm run typecheck 2>&1 | tee review-output/typecheck.log
       - name: Production build
         run: |
           npm run build 2>&1 | tee review-output/build.log
           test -s .next/BUILD_ID
-      - name: Browser checks
+      - name: Responsive browser, accessibility, and print checks
         run: |
-          npm install --prefix "$RUNNER_TEMP/plant-browser" --no-save --package-lock=false playwright
+          npm install --prefix "$RUNNER_TEMP/plant-browser" --no-save --package-lock=false playwright axe-core
           ln -s "$RUNNER_TEMP/plant-browser/node_modules/playwright" node_modules/playwright
-          "$RUNNER_TEMP/plant-browser/node_modules/.bin/playwright" install --with-deps chromium
+          "$RUNNER_TEMP/plant-browser/node_modules/.bin/playwright" install chromium
           npm run start > review-output/server.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
@@ -63,9 +61,10 @@ jobs:
           done
           curl --fail --silent http://127.0.0.1:3000/plant >/dev/null
           node scripts/verify-plant.mjs
+          AXE_SCRIPT="$RUNNER_TEMP/plant-browser/node_modules/axe-core/axe.min.js" node scripts/verify-plant-polish.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: plant-review-checks
+          name: plant-final-review
           path: review-output/
           retention-days: 7
