@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import PlantingGuide from "./PlantingGuide";
+import TreePicker from "./TreePicker";
+import "./tree-picker.css";
 
 export const metadata: Metadata = {
   title: "Your New Tree: Planting & Care",
@@ -15,5 +17,10 @@ export const metadata: Metadata = {
 };
 
 export default function PlantPage() {
-  return <PlantingGuide />;
+  return (
+    <div className="plant-page">
+      <TreePicker />
+      <PlantingGuide />
+    </div>
+  );
 }
