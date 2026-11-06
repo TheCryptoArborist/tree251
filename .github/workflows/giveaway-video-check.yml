@@ -1,0 +1,79 @@
+name: Giveaway video and planting guide checks
+on:
+  push:
+    branches: [main, feature/plant-event-video-2026-11-06]
+    paths: ['app/plant/**', 'public/plant/event/**', 'scripts/verify-giveaway-video.mjs', '.github/workflows/giveaway-video-check.yml']
+  pull_request:
+    branches: [main]
+    paths: ['app/plant/GiveawayAcknowledgment.tsx', 'app/plant/giveaway-acknowledgment.css', 'public/plant/event/**', 'scripts/verify-giveaway-video.mjs', '.github/workflows/giveaway-video-check.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: giveaway-video-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Record source and inspect silent media
+        run: |
+          mkdir -p review-output
+          git rev-parse HEAD > review-output/tested-commit.txt
+          git archive --format=zip HEAD -o review-output/site-source.zip
+          if ! command -v ffprobe >/dev/null; then sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends ffmpeg; fi
+          ffprobe -v error -show_entries format=duration,size -show_entries stream=codec_type,codec_name,width,height -of json public/plant/event/arbor-day-banner-silent.mp4 > review-output/video-streams.json
+          python3 -c "import json; d=json.load(open('review-output/video-streams.json')); assert len(d['streams'])==1 and d['streams'][0]['codec_type']=='video'; assert 10<float(d['format']['duration'])<12"
+      - run: npm ci
+      - name: Type check and production build
+        run: |
+          npm run typecheck 2>&1 | tee review-output/typecheck.log
+          npm run build 2>&1 | tee review-output/build.log
+          test -s .next/BUILD_ID
+      - name: Verify original guide and new video behaviors
+        run: |
+          npm install --prefix "$RUNNER_TEMP/event-tools" --no-save --package-lock=false playwright axe-core
+          ln -s "$RUNNER_TEMP/event-tools/node_modules/playwright" node_modules/playwright
+          "$RUNNER_TEMP/event-tools/node_modules/.bin/playwright" install --with-deps chromium
+          npm run start > review-output/server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            kill -0 "$server_pid" || { cat review-output/server.log; exit 1; }
+            curl --fail --silent http://127.0.0.1:3000/plant >/dev/null && break
+            sleep 2
+          done
+          node scripts/verify-plant.mjs
+          AXE_SCRIPT="$RUNNER_TEMP/event-tools/node_modules/axe-core/axe.min.js" node scripts/verify-plant-polish.mjs
+          AXE_SCRIPT="$RUNNER_TEMP/event-tools/node_modules/axe-core/axe.min.js" node scripts/verify-giveaway-video.mjs
+      - name: Read-only published-video check
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          node --input-type=module <<'JS'
+          let ready=false;
+          for(let i=0;i<60;i++){
+            try{const r=await fetch('https://www.tree251.xyz/plant',{signal:AbortSignal.timeout(10000),headers:{'Cache-Control':'no-cache'}}); const s=await r.text();if(r.ok&&s.includes('giveaway-banner-video')){ready=true;break;}}catch{}
+            await new Promise(r=>setTimeout(r,2000));
+          }
+          if(!ready)throw Error('Published event video not available.');
+          JS
+          PLANT_TEST_ORIGIN=https://www.tree251.xyz BANNER_OUTPUT=review-output/live node scripts/verify-giveaway-video.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: plant-event-video-review
+          path: review-output/
+          retention-days: 7
