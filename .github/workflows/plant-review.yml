@@ -1,0 +1,57 @@
+name: Plant guide review
+on:
+  push:
+    branches: [review/plant-education-2026-11-05]
+    paths:
+      - app/plant/**
+      - scripts/verify-plant.mjs
+      - .github/workflows/plant-review.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: plant-guide-review
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Collect original branding and source for review
+        run: |
+          mkdir -p review-output
+          cp public/arborist-logo-cropped.png review-output/arborist-logo-cropped.png
+          git archive --format=zip HEAD -o review-output/site-source.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plant-review-source
+          path: review-output/
+          retention-days: 7
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Type check
+        run: npm run typecheck
+      - name: Production build
+        run: npm run build
+      - name: Browser checks when guide is present
+        if: hashFiles('app/plant/page.tsx', 'scripts/verify-plant.mjs') != ''
+        run: |
+          if [ -f app/plant/page.tsx ] && [ -f scripts/verify-plant.mjs ]; then
+            npm install --no-save --package-lock=false playwright
+            npx playwright install --with-deps chromium
+            npm run start > review-output/server.log 2>&1 &
+            for i in $(seq 1 45); do curl --fail --silent http://127.0.0.1:3000/plant >/dev/null && break; sleep 2; done
+            node scripts/verify-plant.mjs
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: plant-review-checks
+          path: review-output/
+          retention-days: 7
