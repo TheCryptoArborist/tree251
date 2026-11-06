@@ -683,3 +683,16 @@
 .plant-guide .planting-figure figcaption{font-size:14px;line-height:1.55;color:#e2e8df;margin:5px 10px}
 @media(max-width:560px){.plant-guide .care-tab,.plant-guide .hero-actions .button,.plant-guide .hero .eyebrow{font-size:12px!important}.plant-guide .quick-species a{font-size:13px}.plant-guide .planting-figure{padding:7px}.plant-guide .planting-figure figcaption{font-size:12px}}
 @media print{header.sticky,nav[aria-label="Mobile contact actions"],.plant-guide .quick-species,.plant-guide .section-nav,.plant-guide .hero-actions,.plant-guide .planting-figure{display:none!important}.plant-guide .species-profile{break-inside:avoid-page}.plant-guide .care-panel{color:#111!important}}
+
+/* Prominent five-species jump navigation on the hero */
+.plant-guide .tree-shortcuts{margin-top:22px;padding:20px;border:1px solid rgba(246,201,90,.5);background:rgba(6,28,29,.72);border-radius:18px}
+.plant-guide .tree-shortcuts h2{font-size:clamp(19px,2.4vw,25px);line-height:1.2;font-weight:800;color:#f6c95a;margin:0 0 4px}
+.plant-guide .tree-shortcuts p{font-size:14px;color:#e5eee8;margin:0 0 15px}
+.plant-guide .tree-shortcuts .tree-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.plant-guide .tree-shortcuts .tree-picker a{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:50px;padding:12px 14px;border-radius:12px;border:1px solid #7da998;background:#1b4b42;color:#fff;font-size:14px;font-weight:800;text-decoration:none;line-height:1.25}
+.plant-guide .tree-shortcuts .tree-picker a:hover,.plant-guide .tree-shortcuts .tree-picker a:focus-visible{background:#286254;border-color:#f6c95a;outline-offset:3px}
+.plant-guide .tree-shortcuts .tree-picker a span{color:#f6c95a;font-size:18px}
+.plant-guide .species-profile{scroll-margin-top:145px}
+@media(max-width:680px){.plant-guide .tree-shortcuts{padding:15px}.plant-guide .tree-shortcuts .tree-picker{grid-template-columns:repeat(2,minmax(0,1fr))}.plant-guide .tree-shortcuts .tree-picker a{min-height:54px;font-size:14px}}
+@media(max-width:350px){.plant-guide .tree-shortcuts .tree-picker{grid-template-columns:1fr}}
+@media print{.plant-guide .tree-shortcuts{display:none!important}}
