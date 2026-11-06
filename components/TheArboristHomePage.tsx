@@ -84,6 +84,13 @@ const serviceGroups = [
 
 const resources = [
   {
+    title: "Tree Planting & Care",
+    text: "Brought home a new tree? Find your species, choose its planting location, and follow container care, planting, and first-year guidance.",
+    href: "/plant",
+    icon: TreePine,
+    external: false
+  },
+  {
     title: "Hidden Giants & Historic Trees",
     text: "Explore remarkable Gulf Coast trees, their stories, measurements, arboricultural observations, and preservation value.",
     href: "/historic-trees",

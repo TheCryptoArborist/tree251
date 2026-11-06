@@ -17,10 +17,10 @@ try {
     page.on('pageerror', e => errors.push(e.message));
     await page.goto(`${origin}/plant`, {waitUntil:'networkidle'});
     await page.waitForFunction(() => { const img=document.querySelector('header img');return img?.complete && img.naturalWidth>0; });
-    assert.equal(await page.locator('.tree-picker a').count(),5);
-    const finder = await page.locator('#tree-selector').boundingBox();
+    assert.equal(await page.locator('#choose-tree .tree-picker-buttons a').count(),5);
+    const finder = await page.locator('#choose-tree').boundingBox();
     if (width === 390) assert(finder.y < 650, `Mobile selector starts too low: ${finder.y}`);
-    const fontSizes = await page.locator('.tree-picker a, .care-tab, .hero-actions .button').evaluateAll(nodes => nodes.map(n=>parseFloat(getComputedStyle(n).fontSize)));
+    const fontSizes = await page.locator('#choose-tree .tree-picker-buttons a, .care-tab, .hero-actions .button').evaluateAll(nodes => nodes.map(n=>parseFloat(getComputedStyle(n).fontSize)));
     assert(fontSizes.every(size=>size>=13));
     assert.equal(await page.locator('a[aria-label="Back to top"]').isVisible(),false);
     assert.equal(await page.locator('.inline-back-top').count(),1);
@@ -30,7 +30,7 @@ try {
     const text=await page.locator('.plant-guide').innerText();
     assert(!text.includes('Do not multiply') && !text.includes('14,400'));
     for (const id of species) {
-      await page.locator(`.tree-picker a[href="#${id}"]`).click();
+      await page.locator(`#choose-tree .tree-picker-buttons a[href="#${id}"]`).click();
       await page.waitForFunction(id=>document.getElementById(id).open,id);
       assert.equal(await page.locator(`#${id} .species-photo`).count(),2);
       assert.equal(await page.locator(`#${id} .profile-topic`).count(),6);

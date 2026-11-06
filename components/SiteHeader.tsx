@@ -185,12 +185,12 @@ export function SiteHeader() {
           </div>
         </div>
 
-        <nav aria-label="Mobile quick navigation" className="flex gap-1 overflow-x-auto border-t border-teal-300/15 px-2 py-1.5 text-center text-[10px] font-black text-emerald-50/90 lg:hidden">
+        <nav aria-label="Mobile quick navigation" className="flex gap-1 overflow-x-auto border-t border-teal-300/15 px-2 py-1.5 text-center text-xs font-black text-emerald-50/90 lg:hidden">
+          <Link href="/plant" className="min-w-[8rem] rounded-full border border-[#f6c95a]/45 bg-[#f6c95a]/10 px-3 py-2.5 focus-ring">Planting &amp; Care</Link>
           <Link href="/#start-here" className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Start Here</Link>
           <Link href="/#services" className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Services</Link>
           <Link href="/tree-inventories" className="min-w-[7.1rem] rounded-full border border-[#f6c95a]/45 bg-[#f6c95a]/10 px-2 py-2.5 focus-ring">Inventories</Link>
           <Link href="/real-estate" className="min-w-[5.8rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Real Estate</Link>
-          <Link href="/plant" className="min-w-[6.4rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Planting Guide</Link>
           <Link href="/resources/storm-tree-checklist" className="min-w-[7.4rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Storm Checklist</Link>
         </nav>
       </header>
@@ -200,7 +200,7 @@ export function SiteHeader() {
           href="tel:+12516223200"
           data-track-event="Phone Click"
           data-track-location="mobile_sticky_bar"
-          className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-black uppercase tracking-[0.04em] text-white focus-ring"
+          className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-xs font-black uppercase tracking-[0.04em] text-white focus-ring"
         >
           <Phone className="size-4 text-[#f6c95a]" aria-hidden="true" />
           Call
@@ -211,7 +211,7 @@ export function SiteHeader() {
           rel="noreferrer"
           data-track-event="Schedule Phone Click"
           data-track-location="mobile_sticky_bar"
-          className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl border-x border-white/10 text-[10px] font-black uppercase tracking-[0.04em] text-white focus-ring"
+          className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl border-x border-white/10 text-xs font-black uppercase tracking-[0.04em] text-white focus-ring"
         >
           <CalendarDays className="size-4 text-[#f6c95a]" aria-hidden="true" />
           Schedule
@@ -220,7 +220,7 @@ export function SiteHeader() {
           href={consultationAnchor}
           data-track-event="Request Assessment Click"
           data-track-location="mobile_sticky_bar"
-          className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl bg-[#f6c95a] text-[10px] font-black uppercase tracking-[0.04em] text-[#06110d] focus-ring"
+          className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl bg-[#f6c95a] text-xs font-black uppercase tracking-[0.04em] text-[#06110d] focus-ring"
         >
           <ArrowRight className="size-4" aria-hidden="true" />
           Request
