@@ -28,7 +28,7 @@ jobs:
         run: |
           npm install --prefix "$RUNNER_TEMP/plant-live" --no-save --package-lock=false playwright
           ln -s "$RUNNER_TEMP/plant-live/node_modules" node_modules
-          "$RUNNER_TEMP/plant-live/node_modules/.bin/playwright" install --with-deps chromium
+          "$RUNNER_TEMP/plant-live/node_modules/.bin/playwright" install chromium
       - name: Inspect published page without forms, analytics or API writes
         run: |
           mkdir -p live-review
