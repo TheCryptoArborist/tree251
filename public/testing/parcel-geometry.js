@@ -1,0 +1,9 @@
+/* ArcGIS 102630 Alabama West coordinates are in US survey feet. */
+(function(root){
+ function ringArea(r){if(r.length<3)return 0;const [ox,oy]=r[0];let a=0;for(let i=0;i<r.length;i++){const p=r[i],q=r[(i+1)%r.length];a+=(p[0]-ox)*(q[1]-oy)-(q[0]-ox)*(p[1]-oy);}return a/2;}
+ function convexHull(points){const p=points.map(x=>[x[0],x[1]]).sort((a,b)=>a[0]-b[0]||a[1]-b[1]);const cross=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);const lo=[],hi=[];for(const x of p){while(lo.length>=2&&cross(lo.at(-2),lo.at(-1),x)<=0)lo.pop();lo.push(x);}for(const x of p.slice().reverse()){while(hi.length>=2&&cross(hi.at(-2),hi.at(-1),x)<=0)hi.pop();hi.push(x);}return lo.slice(0,-1).concat(hi.slice(0,-1));}
+ function describe(rings){if(!Array.isArray(rings)||!rings.length)return null;const pts=rings.flat().filter(p=>Array.isArray(p)&&Number.isFinite(p[0])&&Number.isFinite(p[1]));if(pts.length<3)return null;const hull=convexHull(pts);if(hull.length<3||hull.length>2000)return null;const origin=hull[0];let best=null;for(let i=0;i<hull.length;i++){const a=hull[i],b=hull[(i+1)%hull.length],angle=Math.atan2(b[1]-a[1],b[0]-a[0]),c=Math.cos(angle),s=Math.sin(angle);let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;for(const p of hull){const x=(p[0]-origin[0])*c+(p[1]-origin[1])*s,y=-(p[0]-origin[0])*s+(p[1]-origin[1])*c;minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y);}const w=maxX-minX,h=maxY-minY;if(!best||w*h<best.boxArea)best={short:Math.min(w,h),long:Math.max(w,h),boxArea:w*h};}
+ const area=Math.abs(rings.reduce((sum,r)=>sum+ringArea(r),0));if(!(area>0)||!best||!(best.boxArea>0))return null;return {...best,area,rectangular:rings.length===1&&area/best.boxArea>=.98,ratio:area/best.boxArea};
+ }
+ root.ParcelGeometry={describe};if(typeof module!=='undefined')module.exports=root.ParcelGeometry;
+})(typeof window!=='undefined'?window:globalThis);
