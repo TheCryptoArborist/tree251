@@ -380,7 +380,7 @@ document.documentElement.dataset.checkerReady = 'true';
 </script>
 
 <script type="module">
-import {screen, species, sources} from './mobile-tree-permit-rules.mjs';
+import {screenPermit as screen, SPECIES as species, REFERENCES as sources} from './mobile-tree-permit-rules.mjs';
 const el=id=>document.getElementById(id);
 const sc={
  city:el('scCity'),location:el('scLocation'),work:el('scWork'),property:el('scProperty'),
@@ -389,7 +389,7 @@ const sc={
 };
 for(const [key,entry] of Object.entries(species)){
  if(key==='unknown')continue;
- const opt=document.createElement('option');opt.value=key;opt.textContent=entry[0];sc.species.appendChild(opt);
+ const opt=document.createElement('option');opt.value=key;opt.textContent=entry.label;sc.species.appendChild(opt);
 }
 const showList=(id,lines)=>{
  const n=el(id);n.replaceChildren();
@@ -399,7 +399,7 @@ const last={result:null};
 el('permitForm').addEventListener('submit',event=>{
  event.preventDefault();
  const d=Object.fromEntries(Object.entries(sc).map(([k,node])=>[k,node.type==='checkbox'?node.checked:node.value]));
- const r=screen(d); last.result=r;
+ d.jurisdiction=d.city; if(d.location==='city-property')d.location='city'; if(d.work==='root')d.work='roots'; const r=screen(d); last.result=r;
  el('permitOutcome').textContent=r.title;
  el('permitReason').textContent=r.reason;
  el('permitNext').textContent=r.next;
@@ -409,8 +409,8 @@ el('permitForm').addEventListener('submit',event=>{
  const title=document.createElement('strong');title.textContent='Sources and basis:';refs.appendChild(title);
  for(const key of r.refs){const source=sources[key];if(!source)continue;
   const p=document.createElement('p');p.style.margin='0';
-  if(source[1]){const link=document.createElement('a');link.href=source[1];link.target='_blank';link.rel='noopener noreferrer';link.textContent=source[0];p.appendChild(link);}
-  else p.textContent=source[0];
+  if(source.url){const link=document.createElement('a');link.href=source.url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=source.label;p.appendChild(link);}
+  else p.textContent=source.label;
   refs.appendChild(p);
  }
  el('permitOutput').classList.remove('hidden');
@@ -422,7 +422,7 @@ el('sendToEmail').addEventListener('click',()=>{
  const locSelect=el('location');if(loc[sc.location.value])locSelect.value=loc[sc.location.value];
  const values={removal:'removal',pruning:'pruning',root:'root or construction work',clearing:'other',relocation:'other',planting:'other'};
  el('work').value=values[sc.work.value]||'other';
- el('species').value=species[sc.species.value]?.[0]||'Species not verified';
+ el('species').value=species[sc.species.value]?.label||'Species not verified';
  el('dbh').value=sc.dbh.value;
  el('limbDiameter').value=sc.limb.value;
  el('storm').checked=sc.storm.checked;
