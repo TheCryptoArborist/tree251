@@ -1,4 +1,5 @@
 import {installResultWorkflow} from './mobile-tree-result-workflow.mjs';
+import {installPlainLanguage} from './mobile-tree-plain-language.mjs';
 /* Work qualifications are independent of permit outcomes and species exemptions.
  * Sources checked 2026-11-13: adopted Chapter 65, Article IX(3), (4)(a)-(c),
  * and City Urban Forestry FAQ. This screen never verifies a contractor.
@@ -106,4 +107,5 @@ export function installQualificationsUI(doc) {
 if(typeof document !== 'undefined'){
   installQualificationsUI(document);
   installResultWorkflow(document,getWorkQualifications);
+  installPlainLanguage(document);
 }
