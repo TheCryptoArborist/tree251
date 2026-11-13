@@ -104,10 +104,15 @@ export function installQualificationsUI(doc) {
   }));
   return true;
 }
-// The existing rule-module import is the entry point; no GIS dependency or storage.
 if(typeof document !== 'undefined'){
   installQualificationsUI(document);
   installResultWorkflow(document,getWorkQualifications);
   installPlainLanguage(document);
   installEmailAccess(document);
+  // Load mapping independently: a map-library problem must not disable screening.
+  import('./mobile-tree-address-map.mjs').then(({installAddressMap})=>installAddressMap(document)).catch(()=>{
+    const n=document.createElement('p');n.className='notice';
+    n.textContent='The address-map feature could not load. You can still answer the permit questions manually.';
+    document.getElementById('permitCard')?.prepend(n);
+  });
 }
