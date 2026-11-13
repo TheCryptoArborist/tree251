@@ -1,0 +1,38 @@
+name: Mobile tree GIS live check
+on:
+  pull_request:
+    paths:
+      - 'app/api/mobile-tree-gis/**'
+      - 'public/testing/mobile-tree-address-map.mjs'
+      - '.github/workflows/mobile-tree-gis-check.yml'
+permissions:
+  contents: read
+jobs:
+  live-public-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check public City GIS using the agreed 6 Maury test address
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          const root='https://maps.cityofmobile.org/arcgis/rest/services/';
+          async function get(url,params){
+            const u=new URL(url+'/query');u.search=new URLSearchParams({...params,f:'json',outSR:'4326'});
+            const r=await fetch(u,{signal:AbortSignal.timeout(15000)});
+            const d=await r.json();if(!r.ok||d.error||!Array.isArray(d.features)||d.exceededTransferLimit)throw Error('Invalid City response: '+JSON.stringify(d.error||{status:r.status}));
+            return d;
+          }
+          try {
+            const addr=await get(root+'Address_Points_MS/MapServer/0',{where:"hsn = 6 AND UPPER(roadname) LIKE '%MAURY%'",outFields:'objectid,address,roadname,zipcode',returnGeometry:'true',resultRecordCount:'25'});
+            console.log('LIVE_ADDRESS_CHECK',JSON.stringify({checkedAt:new Date().toISOString(),source:root+'Address_Points_MS/MapServer/0',spatialReference:addr.spatialReference,matches:addr.features}));
+            if(addr.features.length!==1)throw Error('Address lookup did not return exactly one candidate; do not automatically select.');
+            const p=addr.features[0].geometry;
+            const defs={city:['Operational_Map_Data1_MS/MapServer/0','objectid,name'],historic:['Operational_Map_Data1_MS/MapServer/7','objectid,name'],zoning:['Portal_Operational_Layers/PLAN_ZONE_APP_MS/MapServer/10','objectid,district_code,district_name,sub_district_code,sub_district_name,overlay'],parcel:['Parcel_Details_MS/MapServer/0','objectid,parcel,acreage,undeveloped'],planning:['EG_Data_MS/MapServer/55','objectid,tmcaseno,decision,request']};
+            for(const [layer,[path,fields]] of Object.entries(defs)){
+              try {const d=await get(root+path,{where:layer==='city'?"UPPER(name) = 'MOBILE'":'1=1',geometry:p.x+','+p.y,geometryType:'esriGeometryPoint',inSR:'4326',spatialRel:'esriSpatialRelIntersects',outFields:fields,returnGeometry:'false',resultRecordCount:'40'});console.log('LIVE_CONTEXT_CHECK',JSON.stringify({layer,source:root+path,count:d.features.length,attributes:d.features.map(f=>f.attributes)}));}
+              catch(e){console.log('LIVE_CONTEXT_UNAVAILABLE',JSON.stringify({layer,message:String(e)}));process.exitCode=1;}
+            }
+            console.log('An address-point check does not verify an individual tree location or a permit.');
+          } catch(e){console.error('LIVE_GIS_NOT_VALIDATED',String(e));process.exitCode=1;}
+          NODE

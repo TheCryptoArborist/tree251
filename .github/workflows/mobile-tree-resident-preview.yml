@@ -1,0 +1,107 @@
+name: Mobile tree resident workflow check
+on:
+  pull_request:
+    paths:
+      - 'public/testing/mobile-tree-property-policy.mjs'
+      - 'public/testing/mobile-tree-resident-workflow.mjs'
+      - 'public/testing/mobile-tree-map-data.mjs'
+      - '.github/workflows/mobile-tree-resident-preview.yml'
+permissions:
+  contents: read
+jobs:
+  resident-workflow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - name: Install isolated test browser package
+        run: npm install --prefix "$RUNNER_TEMP/resident-check" --no-audit --no-fund playwright
+      - name: Test existing hosted preview and public property data
+        shell: bash
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-9--tree251.netlify.app
+        run: |
+          cat > "$RUNNER_TEMP/resident-check/check.mjs" <<'NODE'
+          import assert from 'node:assert/strict';
+          import {execSync} from 'node:child_process';
+          import {chromium} from 'playwright';
+          const origin=process.env.PREVIEW_ORIGIN;
+          const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+          let policy;
+          for(let i=0;i<50;i++){
+            try {
+              const boot=await (await fetch(origin+'/testing/mobile-tree-map-data.mjs',{cache:'no-store'})).text();
+              const raw=await (await fetch(origin+'/testing/mobile-tree-property-policy.mjs',{cache:'no-store'})).text();
+              if(boot.includes('installResidentWorkflow(document,interpretContext)')&&raw.includes("RESIDENT_VERSION='0.4.0'")){
+                policy=await import('data:text/javascript;base64,'+Buffer.from(raw).toString('base64'));break;
+              }
+            }catch{}
+            await sleep(4000);
+          }
+          assert.ok(policy,'Resident build not deployed yet');
+          let assertions=0;const eq=(a,b,message)=>{assert.equal(a,b,message);assertions++;};
+          const f=(code='R-1',name='Single-Family Residential',overlay='N/A')=>({zoning:{state:'inside',matches:[{attributes:{district_code:code,district_name:name,sub_district_name:'Suburban',overlay}}]},overlays:{state:'none',matches:[]}});
+          eq(policy.mappedProperty(f()).zoning,'r1r2');eq(policy.mappedProperty(f()).overlay,'none');
+          eq(policy.mappedProperty(f('R-2','Two-Family Residential')).zoning,'r1r2');
+          eq(policy.mappedProperty(f('DDD','Downtown Development District')).overlay,'downtown');
+          eq(policy.mappedProperty(f('PD','Planned Development')).overlay,'planned');
+          eq(policy.mappedProperty(f('B-2','Neighborhood Business','Springhill Overlay')).overlay,'springhill');
+          eq(policy.mappedProperty({...f(),zoning:{...f().zoning,state:'boundary'}}).zoning,'unknown');
+          eq(policy.mappedProperty({...f(),overlays:{state:'unavailable'}}).overlay,'unknown');
+          eq(policy.mappedProperty(f('R-1','Single-Family Residential',null)).overlay,'unknown');
+          eq(policy.mappedProperty(f()).priorApprovals,'not_verified');
+          eq(policy.staffPlanReview({city:'inside',location:'private',property:'commercial',plan:'unknown'}).code,'STAFF_VERIFICATION');
+          eq(policy.staffPlanReview({city:'inside',location:'private',property:'developed',zoning:'r1r2',overlay:'none',development:'no',plan:'unknown'}).code,'STANDARD_EXCLUSION');
+          eq(policy.staffPlanReview({city:'inside',location:'private',development:'yes',landDisturbance:'issued'}).code,'STAFF_VERIFICATION');
+          assert.match(policy.staffPlanReview({development:'yes',landDisturbance:'issued'}).projectNote,/not treated as tree-removal approval/);assertions++;
+          assert.match(policy.engineeringReview({city:'inside',location:'row',work:'planting'}).requirement,/Engineering/);assertions++;
+          eq(policy.engineeringReview({city:'inside',location:'row',work:'removal'}),null);
+          const executablePath=execSync('command -v google-chrome || command -v chromium || command -v chromium-browser',{encoding:'utf8'}).trim();
+          const browser=await chromium.launch({executablePath,headless:true,args:['--no-sandbox']});
+          try {
+            const page=await browser.newPage({viewport:{width:390,height:844}});const errors=[];
+            page.on('pageerror',e=>errors.push(e.message));
+            await page.goto(origin+'/testing/mobile-tree-checker.html',{waitUntil:'domcontentloaded'});
+            await page.waitForSelector('#propertyMapAddress');
+            eq(await page.getAttribute('#permitForm','data-resident-workflow'),'0.4.0');
+            await page.fill('#propertyMapAddress','6 Maury Drive');await page.check('#propertyMapConsent');await page.click('#findPropertyMap');
+            await page.locator('#propertyMapCandidates button').first().click({timeout:40000});
+            await page.waitForFunction(()=>document.getElementById('udcZoning').value==='r1r2',{},{timeout:50000});
+            await page.waitForSelector('#applyMapAnswers:not([disabled])',{timeout:45000});
+            eq(await page.inputValue('#udcOverlay'),'none');
+            eq(await page.locator('#udcZoning').isVisible(),false);eq(await page.locator('#udcOverlay').isVisible(),false);
+            assert.match(await page.textContent('#udcZoningRecord'),/R-1.*Single-Family/);assertions++;
+            assert.match(await page.textContent('#udcOverlayRecord'),/NOT been ruled out/);assertions++;
+            eq(await page.locator('#scProperty option[value="commercial"]').count(),0);
+            eq(await page.locator('#scProperty option[value="undeveloped"]').count(),1);
+            eq(await page.locator('#udcPlan option[value="no"]').count(),0);
+            for(const id of ['udcRequiredTree','udcCredit','udcBuffer']){eq(await page.locator('#'+id).isVisible(),false);eq(await page.inputValue('#'+id),'unknown');}
+            await page.click('#applyMapAnswers');eq(await page.inputValue('#udcZoning'),'r1r2');
+            // Move the tree near the parcel edge; property zoning must not turn into a citizen question.
+            const box=await page.locator('#propertyTreeMap').boundingBox();
+            await page.locator('#propertyTreeMap').click({position:{x:box.width/2+20,y:box.height/2-18}});
+            await page.waitForSelector('#applyMapAnswers:not([disabled])',{timeout:45000});await page.click('#applyMapAnswers');
+            eq(await page.inputValue('#udcZoning'),'r1r2');
+            await page.selectOption('#scLocation','row');await page.selectOption('#scWork','pruning');await page.selectOption('#scSpecies','liveoak');await page.fill('#scLimb','7');
+            await page.click('#screenNow');await page.waitForSelector('#workerQualifications:not(.hidden)');
+            assert.match(await page.textContent('#permitOutcome'),/Commission/);assertions++;
+            assert.match(await page.textContent('#workerQualifications'),/ISA Certified Arborist/);assertions++;
+            assert.match(await page.textContent('label[for="scLocation"]'),/trunk meet the ground/);assertions++;
+            await page.selectOption('#scWork','planting');eq(await page.locator('#scLimb').isVisible(),false);eq(await page.locator('#scDbh').isVisible(),false);
+            await page.click('#screenNow');await page.waitForSelector('#residentEngineering:not([hidden])');
+            assert.match(await page.textContent('#residentEngineering'),/Engineering.*right-of-way/);assertions++;
+            await page.selectOption('#scWork','removal');await page.selectOption('#scLocation','private');await page.selectOption('#scProperty','undeveloped');await page.fill('#scDbh','18');
+            await page.selectOption('#udcDevelopment','yes');await page.selectOption('#residentLDStatus','issued');await page.fill('#residentLDNumber','TEST-REVIEW-ONLY');
+            await page.click('#screenNow');await page.waitForSelector('#permitOutput:not(.hidden)');
+            assert.match(await page.textContent('#permitOutcome'),/permit required/i);assertions++;
+            assert.match(await page.textContent('#udcOutcome'),/separately from the land-disturbance/);assertions++;
+            await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');
+            const body=await page.inputValue('#emailBody');assert.match(body,/Please retrieve the approved site\/landscape plan/);assertions++;
+            assert.match(body,/TEST-REVIEW-ONLY/);assertions++;
+            assert.match(body,/not treated as tree-removal approval/);assertions++;
+            for(const width of [390,820,1200]){await page.setViewportSize({width,height:844});eq(await page.evaluate(()=>document.body.scrollWidth<=innerWidth+2),true,'No horizontal overflow');}
+            await page.fill('#propertyMapAddress','205 Government Street');eq(await page.inputValue('#udcZoning'),'unknown');eq(await page.locator('#permitOutput').isVisible(),false);eq(await page.locator('#draftArea').isVisible(),false);
+            assert.deepEqual(errors,[]);assertions++;
+            console.log('RESIDENT_WORKFLOW_PASS',JSON.stringify({assertions,liveAddress:'6 MAURY DR',automaticPropertyZoning:true,technicalPlanQuestionsHidden:true,planYesOrUnknown:true,landDisturbanceNotTreePermission:true,rowPlantingEngineeringRoute:true,changedAddressInvalidates:true,physicalIPhone:false,noEmailSent:true}));
+          } finally {await browser.close();}
+          NODE
+          node "$RUNNER_TEMP/resident-check/check.mjs"
