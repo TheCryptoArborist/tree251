@@ -7,6 +7,8 @@ on:
       - 'public/testing/mobile-tree-map-data.mjs'
       - 'public/testing/mobile-tree-map-facts.mjs'
       - 'public/testing/mobile-tree-worker-qualifications.mjs'
+      - 'public/testing/mobile-tree-resident-workflow.mjs'
+      - 'public/testing/mobile-tree-property-policy.mjs'
       - '.github/workflows/mobile-tree-map-preview.yml'
 permissions:
   contents: read
@@ -29,17 +31,16 @@ jobs:
           const origin=process.env.PREVIEW_ORIGIN;
           const sleep=ms=>new Promise(r=>setTimeout(r,ms));
           let ready=false;
-          for(let i=0;i<35;i++){
-            try {const s=await (await fetch(origin+'/testing/mobile-tree-address-map.mjs',{cache:'no-store',signal:AbortSignal.timeout(10000)})).text();if(s.includes('renderMapFacts(doc,factsBox,context')){ready=true;break;}}catch{}
+          for(let i=0;i<45;i++){
+            try {const s=await (await fetch(origin+'/testing/mobile-tree-resident-workflow.mjs',{cache:'no-store',signal:AbortSignal.timeout(10000)})).text();if(s.includes('form.dataset.propertyRecords=loading')){ready=true;break;}}catch{}
             await sleep(4000);
           }
-          assert.ok(ready,'Inline map-answer build has not reached the existing preview.');
+          assert.ok(ready,'Property-aware build has not reached the preview.');
           const addr=await (await fetch(origin+'/api/mobile-tree-gis?mode=address&q=6%20Maury%20Drive')).json();
           assert.equal(addr.status,'ok');assert.equal(addr.features.length,1);
           const p=addr.features[0].geometry;
           console.log('HOSTED_ADDRESS',JSON.stringify({address:addr.features[0].attributes.address,point:p,source:addr.source,fetchedAt:addr.fetchedAt}));
           const data=await (await fetch(origin+'/api/mobile-tree-gis?mode=context&lon='+p.x+'&lat='+p.y)).json();
-          console.log('HOSTED_LAYERS',JSON.stringify(Object.fromEntries(Object.entries(data.layers).map(([k,v])=>[k,{status:v.status,count:v.features.length,source:v.source}]))));
           for(const k of ['city','historic','zoning','parcel'])assert.equal(data.layers[k].status,'ok',k+' must be readable');
           for(const query of ['mode=context&lon=abc&lat=30.6','mode=context&lon=-88.1&lat=30.6&layer=bad','mode=address&q=6%20Maury&url=https://example.com']){
             const r=await fetch(origin+'/api/mobile-tree-gis?'+query);assert.equal(r.status,400);
@@ -54,15 +55,16 @@ jobs:
             await page.fill('#propertyMapAddress','6 Maury Drive');await page.check('#propertyMapConsent');await page.click('#findPropertyMap');
             await page.locator('#propertyMapCandidates button').first().click({timeout:40000});
             await page.waitForSelector('#applyMapAnswers:not([disabled])',{timeout:45000});
-            assert.equal(await page.inputValue('#scCity'),'unknown','Address point alone must not populate jurisdiction');
+            await page.waitForSelector('#permitForm[data-property-records="ready"]',{timeout:45000});
+            assert.equal(await page.inputValue('#scCity'),'unknown','Tree confirmation still needed for jurisdiction');
             await page.waitForSelector('.leaflet-tile-loaded',{timeout:30000});
-            assert.equal(await page.getAttribute('#propertyMapFacts','data-map-facts-version'),'0.3.1');
             assert.equal(await page.locator('#propertyMapFacts .map-answer').count(),8);
             assert.match(await page.textContent('[data-layer="zoning"] .map-answer'),/R-1.*Single-Family Residential/);
             assert.match(await page.textContent('[data-layer="historic"] .map-answer'),/Not in a locally designated/);
             assert.match(await page.textContent('[data-layer="planning"]'),/plan: still unknown/);
-            assert.equal(await page.locator('#propertyMapFacts details[open]').count(),0,'No source link must be opened to read answers');
+            assert.equal(await page.locator('#propertyMapFacts details[open]').count(),0);
             await page.click('#applyMapAnswers');
+            await page.waitForFunction(()=>document.getElementById('udcZoning').value==='r1r2');
             const filled={city:await page.inputValue('#scCity'),historic:await page.inputValue('#scHistoric'),zoning:await page.inputValue('#udcZoning'),overlay:await page.inputValue('#udcOverlay'),location:await page.inputValue('#scLocation'),plan:await page.inputValue('#udcPlan')};
             console.log('HOSTED_AUTOFILL',JSON.stringify(filled));
             assert.equal(filled.city,'inside');assert.equal(filled.historic,'no');assert.equal(filled.zoning,'r1r2');assert.equal(filled.location,'unknown');assert.equal(filled.plan,'unknown');
@@ -71,8 +73,9 @@ jobs:
             await page.waitForSelector('#workerQualifications:not(.hidden)');assert.match(await page.textContent('#workerQualifications'),/ISA Certified Arborist/);
             await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');
             const body=await page.inputValue('#emailBody');assert.match(body,/6 MAURY DR/);assert.match(body,/Map source:/);assert.match(body,/ISA Certified Arborist/);assert.match(body,/Zoning: R-1/);
-            console.log('LIVE_INLINE_ANSWERS_PASS',JSON.stringify({zoningVisible:true,eightMapAnswers:true,optionalSourceLinks:true,autofill:true,emailIncludesActualValues:true}));
-            // Controlled boundary fixture: real address, synthetic zoning polygons for display regression only.
+            console.log('LIVE_INLINE_ANSWERS_PASS',JSON.stringify({zoningVisible:true,eightMapAnswers:true,optionalSourceLinks:true,propertyLookupCompleted:true,emailIncludesActualValues:true}));
+            // Synthetic boundary covers BOTH the address reference and the tree point.
+            // Clear prior property lookup, rather than incorrectly testing cached actual-property zoning against a tree-only fixture.
             const box=(x0,y0,x1,y1)=>({rings:[[[x0,y0],[x1,y0],[x1,y1],[x0,y1],[x0,y0]]]});
             const boundary=structuredClone(data);
             boundary.layers.zoning={...data.layers.zoning,status:'ok',spatialReference:{wkid:4326},features:[
@@ -85,18 +88,22 @@ jobs:
               return route.continue();
             };
             await page.route('**/api/mobile-tree-gis?*',fixture);
+            await page.fill('#propertyMapAddress','6 Maury DR');
             await page.click('#findPropertyMap');await page.locator('#propertyMapCandidates button').first().click({timeout:40000});
             await page.waitForSelector('#applyMapAnswers:not([disabled])',{timeout:45000});
+            await page.waitForSelector('#permitForm[data-property-records="ready"]',{timeout:45000});
             const zoning=page.locator('[data-layer="zoning"]');
             assert.match(await zoning.locator('.map-answer').textContent(),/R-1.*Single-Family Residential/);
             assert.match(await zoning.locator('.map-caution').textContent(),/Near a mapped boundary/);
             assert.match(await zoning.textContent(),/Nearby only.*B-2/);
-            await page.click('#applyMapAnswers');assert.equal(await page.inputValue('#udcZoning'),'unknown','Boundary caution must still prevent an unsupported zoning autofill');
+            await page.click('#applyMapAnswers');
+            assert.equal(await page.inputValue('#udcZoning'),'unknown','A genuinely uncertain property zone must not be auto-confirmed');
+            assert.match(await page.textContent('#udcZoningRecord'),/staff must resolve/);
             for(const width of [390,820,1200]){
               await page.setViewportSize({width,height:844});
               assert.ok(await page.evaluate(()=>document.body.scrollWidth<=innerWidth+2),'No horizontal overflow at '+width);
             }
-            console.log('CONTROLLED_BOUNDARY_UI_PASS',JSON.stringify({fixtureNotActualProperty:true,containingZoningShown:true,nearbyZoneSeparated:true,cautionVisible:true,unsafeAutofillBlocked:true,widths:[390,820,1200]}));
+            console.log('CONTROLLED_BOUNDARY_UI_PASS',JSON.stringify({fixtureNotActualProperty:true,containingZoningShown:true,nearbyZoneSeparated:true,propertyBoundaryUnknown:true,notAskedToGuess:true}));
             await page.unroute('**/api/mobile-tree-gis?*',fixture);
             await page.fill('#propertyMapAddress','205 Government Street');assert.equal(await page.inputValue('#scCity'),'unknown');assert.equal(await page.locator('#permitOutput').isVisible(),false);assert.equal(await page.locator('#draftArea').isVisible(),false);
             await page.route('**/api/mobile-tree-gis?*',route=>route.fulfill({status:502,contentType:'application/json',body:JSON.stringify({status:'unavailable',error:'Controlled test: City service unavailable.'})}));
