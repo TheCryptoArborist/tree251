@@ -34,7 +34,7 @@ const sectionMap = [
   ["Section H", "Tree Committee", "Creates an advisory Tree Committee, defines membership and terms, lists advisory duties, and requires public meetings and records."],
   ["Section I", "Severability", "Keeps remaining provisions in force if part of the ordinance is held invalid."],
   ["Section J", "Repealer", "Repeals Ordinance 87B and conflicting provisions to the extent of conflict."],
-  ["Section K", "Effective date", "Makes Ordinance 87C effective following adoption and publication; the signed copy records an effective date of April 28, 2026."]
+  ["Section K", "Effective date", "The reviewed text provides for an effective date following adoption and publication. Confirm the date in the controlling signed copy."]
 ] as const;
 
 const permitHighlights = [
@@ -75,12 +75,12 @@ export default function DauphinIslandOrdinance87CPage() {
           <p className="mt-8 text-xs font-black uppercase tracking-[0.18em] text-[#f6c95a]">Dauphin Island, Alabama · Municipal ordinance</p>
           <h1 className="mt-4 text-4xl font-black leading-[1.02] sm:text-6xl">Trees and Vegetation Protection Ordinance 87C</h1>
           <p className="mt-6 max-w-3xl text-base leading-7 text-emerald-50/84 sm:text-xl sm:leading-8">
-            A practical guide to protected trees, heritage trees, construction impact zones, removal permits, mitigation fees, prohibited acts, exemptions, enforcement, and the Town Tree Committee.
+            A guide to the reviewed Ordinance 87C text: protected trees, heritage trees, construction impact zones, removal permits, mitigation fees, prohibited acts, exemptions, enforcement, and the Town Tree Committee.
           </p>
           <div className="mt-7 flex flex-wrap gap-2 text-xs font-black uppercase tracking-[0.12em] text-emerald-50/68">
-            <span className="rounded-full border border-teal-300/25 bg-white/[0.05] px-4 py-2">Adopted April 21, 2026</span>
-            <span className="rounded-full border border-teal-300/25 bg-white/[0.05] px-4 py-2">Effective April 28, 2026</span>
-            <span className="rounded-full border border-teal-300/25 bg-white/[0.05] px-4 py-2">Replaces Ordinance 87B</span>
+            <span className="rounded-full border border-teal-300/25 bg-white/[0.05] px-4 py-2">Source version needs reconciliation</span>
+            <span className="rounded-full border border-teal-300/25 bg-white/[0.05] px-4 py-2">Verify controlling signed text</span>
+            <span className="rounded-full border border-teal-300/25 bg-white/[0.05] px-4 py-2">Text references Ordinance 87B</span>
           </div>
         </div>
       </section>
@@ -89,9 +89,9 @@ export default function DauphinIslandOrdinance87CPage() {
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <div className="rounded-2xl border border-[#f6c95a]/35 bg-[#f6c95a]/10 p-5 sm:p-6">
             <Info className="size-7 text-[#f6c95a]" aria-hidden="true" />
-            <h2 className="mt-3 text-xl font-black">Important boundary</h2>
+            <h2 className="mt-3 text-xl font-black">Source status and important boundary</h2>
             <p className="mt-3 text-sm leading-6 text-emerald-50/82">
-              The Arborist does not issue permits or citations and does not speak on behalf of the Town of Dauphin Island or any municipality. This guide is educational, is not legal advice, and does not replace the signed ordinance, Town interpretations, permit conditions, or advice from a qualified attorney.
+              The public PDF currently linked below has blank adoption and effective-date fields. Earlier review referred to a separately supplied copy; those sources have not yet been reconciled. This page does not establish the currently controlling ordinance. Confirm the signed text and later amendments before relying on this summary or its planning limits. The Arborist does not issue permits or citations and does not speak on behalf of the Town of Dauphin Island or any municipality. This guide is educational, is not legal advice, and does not replace the signed ordinance, Town interpretations, permit conditions, or advice from a qualified attorney.
             </p>
           </div>
         </div>
@@ -192,17 +192,17 @@ export default function DauphinIslandOrdinance87CPage() {
             <h2 className="text-3xl font-black sm:text-4xl">Sources and verification</h2>
           </div>
           <p className="mt-4 max-w-3xl text-sm leading-6 text-emerald-50/76">
-            Reviewed page by page against the signed 13-page Ordinance 87C PDF supplied to The Arborist. The signature pages record adoption on April 21, 2026, posting on April 22, and an effective date of April 28, 2026. Verify later amendments with the Town.
+            Public source checked November 13, 2026: the linked 13-page PDF has blank adoption and effective-date fields. Earlier review referred to a separately supplied copy, which is not available from this link. The versions and their legal status need reconciliation. Blank fields in this public copy do not establish that the ordinance was never adopted. This page is a summary, not the full ordinance reader.
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             <a href={ordinancePdfUrl} target="_blank" rel="noreferrer" className="flex min-h-16 items-center justify-between gap-3 rounded-2xl border border-[#f6c95a]/30 bg-white/[0.05] p-4 text-sm font-black transition hover:border-[#f6c95a]/70 focus-ring">
-              <span>Open Ordinance 87C PDF</span><ExternalLink className="size-4 shrink-0 text-[#f6c95a]" aria-hidden="true" />
+              <span>Open public 87C PDF · dates blank</span><ExternalLink className="size-4 shrink-0 text-[#f6c95a]" aria-hidden="true" />
             </a>
             <a href={officialOrdinancesUrl} target="_blank" rel="noreferrer" className="flex min-h-16 items-center justify-between gap-3 rounded-2xl border border-teal-300/25 bg-white/[0.05] p-4 text-sm font-black transition hover:border-[#f6c95a]/70 focus-ring">
               <span>Town of Dauphin Island ordinances</span><ExternalLink className="size-4 shrink-0 text-[#f6c95a]" aria-hidden="true" />
             </a>
           </div>
-          <p className="mt-6 text-xs leading-5 text-emerald-50/58">Last reviewed July 13, 2026.</p>
+          <p className="mt-6 text-xs leading-5 text-emerald-50/58">Source status checked November 13, 2026. Summary content awaits reconciliation with the controlling signed text.</p>
         </div>
       </section>
     </div>
