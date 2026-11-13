@@ -14,9 +14,35 @@
 <a class="skip" href="#main">Skip to tool</a>
 <header><div class="wrap top"><div class="wordmark">THE ARBORIST</div><span class="tag">Working prototype<br>Not a City service</span></div></header>
 <main class="wrap" id="main">
-<section class="hero"><div class="eyebrow">Mobile Tree Permit Checker · Phase 2</div><h1>Find the location.<br>Prepare the right questions.</h1><p class="lead">A development preview for address lookup and an Urban Forestry email draft. This is not the permit decision engine or the final website design.</p><div class="notice"><strong>No authorization is issued here.</strong> Live City GIS queries and website integration still need validation. You can prepare an email even when mapping is unavailable.</div></section>
+<section class="hero"><div class="eyebrow">Mobile Tree Permit Checker · Preliminary screening</div><h1>Find out whether a tree permit may be required.</h1><p class="lead">Start with the permit questionnaire. Use optional City GIS address lookup below to support location verification, then prepare an email to Urban Forestry when needed.</p><div class="notice"><strong>No authorization is issued here.</strong> Preliminary permit screening is available below. GIS results, owner-reported facts, and any exemption are not City authorization.</div></section>
+
+<section class="card" id="permitCard" aria-labelledby="permitTitle">
+ <div class="stephead"><span class="number" aria-hidden="true">1</span><div><h2 id="permitTitle">Check whether a tree permit is needed</h2><p class="muted">Answer these questions first. Address lookup below is optional and does not block the preliminary permit check.</p></div></div>
+ <p id="permitReady" class="notice" aria-live="polite">Permit screening is not active in this viewer. Use the hosted HTTPS preview in Safari.</p>
+ <form id="permitForm" method="dialog"><div class="grid">
+  <div><label for="scCity">Is the tree inside Mobile city limits?</label><select id="scCity" disabled data-permit-control><option value="unknown">Not verified / I don't know</option><option value="inside">Yes — reported by user</option><option value="outside">No — reported by user</option></select><p class="help">A Mobile mailing address is not proof of jurisdiction.</p></div>
+  <div><label for="scLocation">Where is the tree?</label><select id="scLocation" disabled data-permit-control><option value="unknown">Not sure / near a boundary</option><option value="private">Private property, outside ROW</option><option value="row">Public street right-of-way</option><option value="park">City park</option><option value="city-property">Other City-owned property</option></select></div>
+  <div><label for="scWork">What work is proposed?</label><select id="scWork" disabled data-permit-control><option value="removal">Remove tree</option><option value="pruning">Prune tree</option><option value="root">Root disturbance / construction</option><option value="clearing">Land clearing / grubbing</option><option value="relocation">Relocate tree</option><option value="planting">Plant tree</option></select></div>
+  <div><label for="scProperty">What type of property?</label><select id="scProperty" disabled data-permit-control><option value="unknown">Not sure</option><option value="developed">Developed single-/two-family, habitable home</option><option value="undeveloped">Undeveloped residential</option><option value="commercial">Commercial / other nonresidential</option><option value="multifamily">Multifamily / other use — review needed</option></select></div>
+  <div><label for="scHistoric">Locally designated historic district?</label><select id="scHistoric" disabled data-permit-control><option value="unknown">Not verified / I don't know</option><option value="yes">Yes</option><option value="no">No</option></select><p class="help">A National Register listing alone is not proof of local designation.</p></div>
+  <div><label for="scSpecies">Tree species</label><select id="scSpecies" disabled data-permit-control><option value="unknown">Not sure / identification needed</option></select><p class="help">Pecan is included in the hickory genus; water oak and bald cypress are not Chapter 65 heritage trees.</p></div>
+  <div><label for="scDbh">Trunk diameter (DBH), inches</label><input disabled data-permit-control id="scDbh" type="number" min="0" step="0.1" placeholder="If known"><p class="help">Measure at 4½ ft above grade; special forms/multistem trees need professional evaluation.</p></div>
+  <div><label for="scLimb">Largest limb proposed for pruning, inches</label><input disabled data-permit-control id="scLimb" type="number" min="0" step="0.1" placeholder="Pruning only, if known"></div>
+  <div><label for="scPlan">Applicable approved tree/landscape plan?</label><select id="scPlan" disabled data-permit-control><option value="unknown">Not verified / I don't know</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div><label for="scExtra">Other work restrictions or adjacent public trees?</label><select id="scExtra" disabled data-permit-control><option value="unknown">Not verified / I don't know</option><option value="none">No — user has checked</option><option value="present">Yes / possibly</option></select></div>
+  <div class="full"><label class="check"><input disabled data-permit-control type="checkbox" id="scStorm"><span>Suspected storm damage is present (user observation only; not a permit exemption or a certified-arborist finding).</span></label></div>
+ </div><div class="actions"><button disabled data-permit-control id="screenNow" type="submit">Check permit requirements</button></div></form>
+ <div id="permitOutput" class="hidden" aria-live="polite" style="margin-top:22px">
+  <h3 id="permitOutcome"></h3><div class="safe" id="permitReason"></div>
+  <p class="small" id="permitMissing" style="margin-top:10px"></p>
+  <h3 style="margin-top:17px">What to do next</h3><p id="permitNext"></p>
+  <div id="permitNotes" class="small"></div><div id="permitSources" class="source-list"></div>
+  <div class="actions"><button disabled data-permit-control type="button" id="sendToEmail" class="secondary">Use these answers in the Forestry email</button></div>
+ </div>
+ <p class="help">This is independent educational screening, not a permit, legal survey, Tree Commission decision, or City approval. Self-reported location and property status remain unverified until corroborated.</p>
+</section>
 <section class="card" id="locationCard" aria-labelledby="locationTitle">
-<div class="stephead"><span class="number" aria-hidden="true">1</span><div><h2 id="locationTitle">Locate the address</h2><p class="muted">Search by house number and street name. Select the correct returned address; do not assume the first match is yours.</p></div></div>
+<div class="stephead"><span class="number" aria-hidden="true">2</span><div><h2 id="locationTitle">Optional: look up the address</h2><p class="muted">Search by house number and street name. Select the correct returned address; do not assume the first match is yours.</p></div></div>
 <p id="scriptStatus" class="notice" role="status" aria-live="polite"><strong>Address search is not ready in this viewer.</strong> The interactive code has not started. Inputs stay disabled so this page cannot reload and discard your entry. Use the hosted test page in Safari rather than this attachment preview. A City GIS search has not run.</p><div class="actions" style="margin:0 0 12px"><button disabled data-needs-script="true" type="button" id="useTestAddress" class="secondary">Use 6 Maury test address</button></div><p class="help" style="margin:0 0 14px">The example button enters 6 Maury for a controlled test. Search results still need confirmation from the live City GIS.</p><form id="addressForm" method="dialog"><div class="searchgrid"><div><label for="house">House number</label><input disabled data-needs-script="true" id="house" inputmode="numeric" autocomplete="off" placeholder="House number" maxlength="7" required></div><div><label for="street">Street name only</label><input disabled data-needs-script="true" id="street" autocomplete="off" placeholder="Street name" maxlength="75" required></div></div><label class="check"><input disabled data-needs-script="true" id="consent" type="checkbox"><span><strong>Allow City GIS lookup.</strong> Send the house number, street name, and lookup coordinates to the City of Mobile GIS service only when I request a search.</span></label><button disabled data-needs-script="true" id="search" type="submit">Find address</button></form>
 <p class="help">No automatic location access. This prototype does not save entries to a database or send email. City services may keep their own request logs. On iPhone, an in-app file preview may not allow input or network requests; an HTTPS-hosted browser page is needed to validate live lookup.</p>
 <p id="addressStatus" class="status" role="status" aria-live="polite"></p><p id="queryHelp" class="help hidden">For diagnostics, you can open the <a id="rawQuery" href="https://maps.cityofmobile.org/arcgis/rest/services/Address_Points_MS/MapServer/0" target="_blank" rel="noopener noreferrer">exact search directly on the City GIS server</a>. It should return an ArcGIS feature-set response, not a permit decision.</p><div id="candidates" class="candidates"></div>
@@ -24,7 +50,7 @@
 <div class="actions"><button disabled data-needs-script="true" type="button" class="secondary" id="checkMaps">Check map context</button><a class="button secondary" href="https://www.cityofmobile.gov/services/mapping/my-place/" target="_blank" rel="noopener noreferrer">Open City My Place</a></div>
 <p id="mapStatus" class="status" role="status" aria-live="polite"></p><div id="mapResults" class="results hidden"></div><div id="mapWarning" class="safe hidden">Map context only. Boundary proximity is not evaluated. Ownership, right-of-way status, and permit requirements remain undetermined. A missing map match is not permission to proceed.</div>
 </section>
-<section class="card" id="workCard" aria-labelledby="workTitle"><div class="stephead"><span class="number" aria-hidden="true">2</span><div><h2 id="workTitle">Describe the tree and proposed work</h2><p class="muted">These details populate the draft. Leave unknown information blank rather than guessing.</p></div></div>
+<section class="card" id="workCard" aria-labelledby="workTitle"><div class="stephead"><span class="number" aria-hidden="true">3</span><div><h2 id="workTitle">Describe the tree and proposed work</h2><p class="muted">These details populate the draft. Leave unknown information blank rather than guessing.</p></div></div>
 <form id="workForm" method="dialog"><div class="grid">
 <div class="full"><label for="propertyAddress">Property address or nearest location</label><input disabled data-needs-script="true" id="propertyAddress" maxlength="180" autocomplete="street-address"><p class="help">You can enter an address manually when lookup is unavailable.</p></div>
 <div><label for="location">Reported tree location</label><select disabled data-needs-script="true" id="location"><option>Unknown / boundary not verified</option><option>Public street right-of-way — reported, not verified</option><option>Private property — reported, not verified</option><option>City park — reported, not verified</option><option>Other City property — reported, not verified</option></select></div>
@@ -41,12 +67,12 @@
 <div class="full"><label for="email">Your email address</label><input disabled data-needs-script="true" id="email" type="email" maxlength="150" autocomplete="email"></div>
 </div><div class="actions"><button disabled data-needs-script="true" id="prepare" type="submit">Prepare Forestry email</button></div></form>
 </section>
-<section class="card" id="emailCard" aria-labelledby="emailTitle"><div class="stephead"><span class="number" aria-hidden="true">3</span><div><h2 id="emailTitle">Review before sending</h2><p class="muted">To: <strong>forestry@cityofmobile.gov</strong></p></div></div>
+<section class="card" id="emailCard" aria-labelledby="emailTitle"><div class="stephead"><span class="number" aria-hidden="true">4</span><div><h2 id="emailTitle">Review before sending</h2><p class="muted">To: <strong>forestry@cityofmobile.gov</strong></p></div></div>
 <p id="emptyDraft" class="muted">Your editable draft will appear here. Nothing is sent automatically.</p>
 <div id="draftArea" class="hidden"><label for="emailSubject">Subject</label><input disabled data-needs-script="true" id="emailSubject" maxlength="240"><label for="emailBody" style="margin-top:16px">Message</label><textarea disabled data-needs-script="true" id="emailBody" class="emailbody" spellcheck="true"></textarea><p class="help">Review all details and attach photographs or reports separately in your email application. Long drafts are more reliable using Copy draft or Save text.</p><div class="actions no-print"><button disabled data-needs-script="true" class="secondary" id="copyEmail" type="button">Copy draft</button><button disabled data-needs-script="true" class="secondary" id="saveEmail" type="button">Save text</button><a class="button" id="openEmail" href="mailto:forestry@cityofmobile.gov">Open email application</a></div><p id="draftStatus" role="status" class="status" aria-live="polite"></p></div>
 </section>
-<details class="card no-print"><summary>Sources, privacy, and development limits</summary><p class="small" style="margin-top:15px">Source metadata reviewed November 12, 2026. This confirms field definitions and published capabilities—not live query success, data currency, legal boundaries, or permission to reuse data in production. No analytics, browser storage, photo upload, or automatic email transmission is included.</p><div class="source-list"><a href="https://maps.cityofmobile.org/arcgis/rest/services/Address_Points_MS/MapServer/0" target="_blank" rel="noopener noreferrer">City address points · layer 0</a><a href="https://maps.cityofmobile.org/arcgis/rest/services/Operational_Map_Data1_MS/MapServer/0" target="_blank" rel="noopener noreferrer">Mobile corporate limits · layer 0</a><a href="https://maps.cityofmobile.org/arcgis/rest/services/Operational_Map_Data1_MS/MapServer/7" target="_blank" rel="noopener noreferrer">Local historic districts · layer 7</a><a href="https://maps.cityofmobile.org/arcgis/rest/services/Operational_Map_Data1_MS/MapServer/2" target="_blank" rel="noopener noreferrer">City property, including owned / leased status · layer 2</a><a href="https://maps.cityofmobile.org/arcgis/rest/services/Operational_Map_Data1_MS/MapServer/10" target="_blank" rel="noopener noreferrer">Developed parks · layer 10</a></div><p class="small divider">Not implemented: interactive map, surveyed ROW boundaries, boundary-distance tests, address-to-parcel matching, permit rules, credential or assessment verification, and production website integration. A local reference is for your saved draft only; it is not a permit or a retrievable case record.</p></details>
-</main><footer class="wrap">The Arborist · www.tree251.xyz · 251-622-3200<br>Development preview v0.1.3 · Independent educational tool; not affiliated with the City of Mobile.</footer>
+<details class="card no-print"><summary>Sources, privacy, and development limits</summary><p class="small" style="margin-top:15px">Source metadata reviewed November 12, 2026. This confirms field definitions and published capabilities—not live query success, data currency, legal boundaries, or permission to reuse data in production. No analytics, browser storage, photo upload, or automatic email transmission is included.</p><div class="source-list"><a href="https://maps.cityofmobile.org/arcgis/rest/services/Address_Points_MS/MapServer/0" target="_blank" rel="noopener noreferrer">City address points · layer 0</a><a href="https://maps.cityofmobile.org/arcgis/rest/services/Operational_Map_Data1_MS/MapServer/0" target="_blank" rel="noopener noreferrer">Mobile corporate limits · layer 0</a><a href="https://maps.cityofmobile.org/arcgis/rest/services/Operational_Map_Data1_MS/MapServer/7" target="_blank" rel="noopener noreferrer">Local historic districts · layer 7</a><a href="https://maps.cityofmobile.org/arcgis/rest/services/Operational_Map_Data1_MS/MapServer/2" target="_blank" rel="noopener noreferrer">City property, including owned / leased status · layer 2</a><a href="https://maps.cityofmobile.org/arcgis/rest/services/Operational_Map_Data1_MS/MapServer/10" target="_blank" rel="noopener noreferrer">Developed parks · layer 10</a></div><p class="small divider">Not implemented: interactive map, surveyed ROW boundaries, boundary-distance tests, address-to-parcel matching, credential or assessment verification, and production website integration. Preliminary permit screening is conditional on user-entered facts. A local reference is for your saved draft only; it is not a permit or a retrievable case record.</p></details>
+</main><footer class="wrap">The Arborist · www.tree251.xyz · 251-622-3200<br>Development preview v0.2.0 · Independent educational tool; not affiliated with the City of Mobile.</footer>
 <script type="module">
 /**
  * Mobile Tree Permit Checker — location and email prototype.
@@ -351,5 +377,62 @@ $('scriptStatus').innerHTML = '<strong>Interactive tools loaded.</strong> Addres
 $('scriptStatus').style.background = 'var(--wash)';
 $('scriptStatus').style.borderColor = 'var(--line)';
 document.documentElement.dataset.checkerReady = 'true';
+</script>
+
+<script type="module">
+import {screen, species, sources} from './mobile-tree-permit-rules.mjs';
+const el=id=>document.getElementById(id);
+const sc={
+ city:el('scCity'),location:el('scLocation'),work:el('scWork'),property:el('scProperty'),
+ historic:el('scHistoric'),species:el('scSpecies'),dbh:el('scDbh'),limb:el('scLimb'),
+ plan:el('scPlan'),extra:el('scExtra'),storm:el('scStorm')
+};
+for(const [key,entry] of Object.entries(species)){
+ if(key==='unknown')continue;
+ const opt=document.createElement('option');opt.value=key;opt.textContent=entry[0];sc.species.appendChild(opt);
+}
+const showList=(id,lines)=>{
+ const n=el(id);n.replaceChildren();
+ for(const line of lines){const p=document.createElement('p');p.textContent=line;p.style.marginBottom='6px';n.appendChild(p);}
+};
+const last={result:null};
+el('permitForm').addEventListener('submit',event=>{
+ event.preventDefault();
+ const d=Object.fromEntries(Object.entries(sc).map(([k,node])=>[k,node.type==='checkbox'?node.checked:node.value]));
+ const r=screen(d); last.result=r;
+ el('permitOutcome').textContent=r.title;
+ el('permitReason').textContent=r.reason;
+ el('permitNext').textContent=r.next;
+ el('permitMissing').textContent=r.missing.length?'Still needed: '+r.missing.join('; '):'';
+ showList('permitNotes',r.notes);
+ const refs=el('permitSources');refs.replaceChildren();
+ const title=document.createElement('strong');title.textContent='Sources and basis:';refs.appendChild(title);
+ for(const key of r.refs){const source=sources[key];if(!source)continue;
+  const p=document.createElement('p');p.style.margin='0';
+  if(source[1]){const link=document.createElement('a');link.href=source[1];link.target='_blank';link.rel='noopener noreferrer';link.textContent=source[0];p.appendChild(link);}
+  else p.textContent=source[0];
+  refs.appendChild(p);
+ }
+ el('permitOutput').classList.remove('hidden');
+ el('permitOutput').scrollIntoView({block:'start',behavior:'smooth'});
+});
+el('sendToEmail').addEventListener('click',()=>{
+ if(!last.result)return;
+ const loc={private:'Private property — reported, not verified',row:'Public street right-of-way — reported, not verified',park:'City park — reported, not verified','city-property':'Other City property — reported, not verified'};
+ const locSelect=el('location');if(loc[sc.location.value])locSelect.value=loc[sc.location.value];
+ const values={removal:'removal',pruning:'pruning',root:'root or construction work',clearing:'other',relocation:'other',planting:'other'};
+ el('work').value=values[sc.work.value]||'other';
+ el('species').value=species[sc.species.value]?.[0]||'Species not verified';
+ el('dbh').value=sc.dbh.value;
+ el('limbDiameter').value=sc.limb.value;
+ el('storm').checked=sc.storm.checked;
+ const info='Permit screening: '+last.result.title+' — '+last.result.reason+' This is an educational screening, not City authorization.';
+ const scope=el('scope');if(!scope.value.trim())scope.value=info;
+ el('workCard').scrollIntoView({behavior:'smooth',block:'start'});
+});
+for(const node of document.querySelectorAll('[data-permit-control]'))node.disabled=false;
+el('permitReady').textContent='Permit questionnaire ready. GIS and ownership are not automatically verified; you can check requirements without an address search.';
+el('permitReady').style.background='var(--wash)';
+el('permitReady').style.borderColor='var(--line)';
 </script>
 </body></html>
