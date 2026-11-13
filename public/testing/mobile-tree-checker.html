@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Mobile Tree Checker · Location & Forestry Email Prototype</title>
+<style>
+:root{--ink:#203b32;--muted:#53635b;--paper:#f4f5ef;--card:#fff;--line:#d6ded3;--green:#224f3c;--wash:#eaf0e7;--amber:#fff5dd;--amberline:#cdb36b;--radius:15px}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:var(--green)}button,input,select,textarea{font:inherit}button,.button{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--green);border-radius:8px;background:var(--green);color:white;padding:11px 17px;text-decoration:none;cursor:pointer;font-weight:650;min-height:46px}button.secondary,.button.secondary{background:transparent;color:var(--green)}button:disabled{opacity:.55;cursor:not-allowed}input:disabled,select:disabled,textarea:disabled{background:#f0f0ec;cursor:not-allowed}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #bd7725;outline-offset:3px}header{border-bottom:1px solid var(--line);background:var(--card)}.wrap{width:min(1050px,calc(100% - 40px));margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 0}.wordmark{font-size:20px;font-weight:750;letter-spacing:.02em}.tag{font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:.08em}.hero{padding:42px 0 24px}.eyebrow{font-size:12px;font-weight:750;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}h1{font-size:clamp(30px,4.8vw,46px);line-height:1.12;letter-spacing:-.035em;max-width:760px;margin:11px 0 15px}h2{font-size:23px;line-height:1.25;margin:0 0 8px}h3{font-size:17px;margin:0 0 12px}p{margin:0 0 14px}.lead{max-width:780px;font-size:18px;color:var(--muted)}.notice{background:var(--amber);border:1px solid var(--amberline);border-radius:10px;padding:14px 17px;font-size:14px;margin-top:20px}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;margin:18px 0}.stephead{display:flex;align-items:flex-start;gap:14px;margin-bottom:22px}.number{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--wash);font-weight:750}.muted,.help{color:var(--muted)}.help{font-size:13px;line-height:1.5;margin:7px 0 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.searchgrid{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;align-items:end}.full{grid-column:1/-1}label{display:block;font-size:14px;font-weight:650;margin-bottom:7px}input,textarea,select{display:block;width:100%;border:1px solid #9caca0;border-radius:7px;background:#fff;color:var(--ink);padding:11px 12px;min-height:46px}textarea{resize:vertical;min-height:110px;line-height:1.55}.check{display:flex;align-items:flex-start;gap:10px;font-weight:450;margin:15px 0}.check input{width:19px;height:19px;min-height:19px;flex:0 0 19px;margin-top:3px}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.status{font-size:14px;margin-top:12px;white-space:pre-line}.status:empty{display:none}.candidates{display:grid;gap:8px;margin-top:16px}.candidate{justify-content:flex-start;text-align:left;background:var(--wash);color:var(--ink);border-color:var(--line)}details{border-top:1px solid var(--line);margin-top:22px;padding-top:17px}summary{cursor:pointer;font-weight:650}details .grid{margin-top:18px}.results{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-top:18px}.resultrow{background:#f8faf6;padding:12px 15px;display:grid;grid-template-columns:190px 1fr;gap:16px;font-size:14px;overflow-wrap:anywhere}.resultrow strong{font-size:13px}.safe{font-size:13px;background:var(--wash);border-radius:8px;padding:12px 14px;margin-top:12px}.emailbody{min-height:420px;font:14px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}.source-list{margin-top:12px;display:grid;gap:8px;overflow-wrap:anywhere;font-size:14px}.small{font-size:13px}footer{padding:20px 0 40px;color:var(--muted);font-size:13px}.hidden{display:none!important}.skip{position:absolute;left:-10000px}.skip:focus{left:20px;top:12px;background:white;padding:10px;z-index:2}.divider{border-top:1px solid var(--line);padding-top:20px;margin-top:22px}@media(max-width:680px){.wrap{width:calc(100% - 28px)}.top{align-items:flex-start}.tag{font-size:10px;max-width:120px;text-align:right}.hero{padding-top:29px}.card{padding:20px 16px}.grid,.searchgrid{grid-template-columns:1fr}.full{grid-column:auto}.resultrow{grid-template-columns:1fr;gap:4px}.actions>*{width:100%}.lead{font-size:16px}h2{font-size:21px}.wordmark{font-size:18px}}@media print{header,.no-print,#locationCard,#workCard{display:none}.card{border:0}.wrap{width:100%}textarea{border:0;min-height:750px}body{background:white}.notice{background:white}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to tool</a>
+<header><div class="wrap top"><div class="wordmark">THE ARBORIST</div><span class="tag">Working prototype<br>Not a City service</span></div></header>
+<main class="wrap" id="main">
+<section class="hero"><div class="eyebrow">Mobile Tree Permit Checker · Phase 2</div><h1>Find the location.<br>Prepare the right questions.</h1><p class="lead">A development preview for address lookup and an Urban Forestry email draft. This is not the permit decision engine or the final website design.</p><div class="notice"><strong>No authorization is issued here.</strong> Live City GIS queries and website integration still need validation. You can prepare an email even when mapping is unavailable.</div></section>
+<section class="card" id="locationCard" aria-labelledby="locationTitle">
+<div class="stephead"><span class="number" aria-hidden="true">1</span><div><h2 id="locationTitle">Locate the address</h2><p class="muted">Search by house number and street name. Select the correct returned address; do not assume the first match is yours.</p></div></div>
+<p id="scriptStatus" class="notice" role="status" aria-live="polite"><strong>Address search is not ready in this viewer.</strong> The interactive code has not started. Inputs stay disabled so this page cannot reload and discard your entry. Use the hosted test page in Safari rather than this attachment preview. A City GIS search has not run.</p><div class="actions" style="margin:0 0 12px"><button disabled data-needs-script="true" type="button" id="useTestAddress" class="secondary">Use 6 Maury test address</button></div><p class="help" style="margin:0 0 14px">The example button enters 6 Maury for a controlled test. Search results still need confirmation from the live City GIS.</p><form id="addressForm" method="dialog"><div class="searchgrid"><div><label for="house">House number</label><input disabled data-needs-script="true" id="house" inputmode="numeric" autocomplete="off" placeholder="House number" maxlength="7" required></div><div><label for="street">Street name only</label><input disabled data-needs-script="true" id="street" autocomplete="off" placeholder="Street name" maxlength="75" required></div></div><label class="check"><input disabled data-needs-script="true" id="consent" type="checkbox"><span><strong>Allow City GIS lookup.</strong> Send the house number, street name, and lookup coordinates to the City of Mobile GIS service only when I request a search.</span></label><button disabled data-needs-script="true" id="search" type="submit">Find address</button></form>
+<p class="help">No automatic location access. This prototype does not save entries to a database or send email. City services may keep their own request logs. On iPhone, an in-app file preview may not allow input or network requests; an HTTPS-hosted browser page is needed to validate live lookup.</p>
+<p id="addressStatus" class="status" role="status" aria-live="polite"></p><p id="queryHelp" class="help hidden">For diagnostics, you can open the <a id="rawQuery" href="https://maps.cityofmobile.org/arcgis/rest/services/Address_Points_MS/MapServer/0" target="_blank" rel="noopener noreferrer">exact search directly on the City GIS server</a>. It should return an ArcGIS feature-set response, not a permit decision.</p><div id="candidates" class="candidates"></div>
+<details><summary>Optional: enter the approximate tree coordinates</summary><p class="help">An address point is not the tree. Use decimal degrees only when you know the approximate tree location. This prototype does not establish property or right-of-way boundaries.</p><div class="grid"><div><label for="longitude">Longitude</label><input disabled data-needs-script="true" id="longitude" type="number" step="any" min="-180" max="180" placeholder="-88.…"></div><div><label for="latitude">Latitude</label><input disabled data-needs-script="true" id="latitude" type="number" step="any" min="-90" max="90" placeholder="30.…"></div></div><p class="help" id="pointType">No point selected.</p></details>
+<div class="actions"><button disabled data-needs-script="true" type="button" class="secondary" id="checkMaps">Check map context</button><a class="button secondary" href="https://www.cityofmobile.gov/services/mapping/my-place/" target="_blank" rel="noopener noreferrer">Open City My Place</a></div>
+<p id="mapStatus" class="status" role="status" aria-live="polite"></p><div id="mapResults" class="results hidden"></div><div id="mapWarning" class="safe hidden">Map context only. Boundary proximity is not evaluated. Ownership, right-of-way status, and permit requirements remain undetermined. A missing map match is not permission to proceed.</div>
+</section>
+<section class="card" id="workCard" aria-labelledby="workTitle"><div class="stephead"><span class="number" aria-hidden="true">2</span><div><h2 id="workTitle">Describe the tree and proposed work</h2><p class="muted">These details populate the draft. Leave unknown information blank rather than guessing.</p></div></div>
+<form id="workForm" method="dialog"><div class="grid">
+<div class="full"><label for="propertyAddress">Property address or nearest location</label><input disabled data-needs-script="true" id="propertyAddress" maxlength="180" autocomplete="street-address"><p class="help">You can enter an address manually when lookup is unavailable.</p></div>
+<div><label for="location">Reported tree location</label><select disabled data-needs-script="true" id="location"><option>Unknown / boundary not verified</option><option>Public street right-of-way — reported, not verified</option><option>Private property — reported, not verified</option><option>City park — reported, not verified</option><option>Other City property — reported, not verified</option></select></div>
+<div><label for="work">Proposed work</label><select disabled data-needs-script="true" id="work"><option value="pruning">Pruning</option><option value="removal">Removal</option><option value="root or construction work">Root or construction work</option><option value="other">Other</option></select></div>
+<div><label for="species">Reported species</label><input disabled data-needs-script="true" id="species" maxlength="150" placeholder="For example, water oak"></div>
+<div><label for="dbh">Trunk diameter / DBH (inches)</label><input disabled data-needs-script="true" id="dbh" type="number" min="0" step="0.1" placeholder="Leave blank if not measured"></div>
+<div class="full"><label for="treeDescription">Identify the specific tree</label><input disabled data-needs-script="true" id="treeDescription" maxlength="250" placeholder="For example, the tree beside the driveway, closest to the street"></div>
+<div><label for="reason">Reason for work / pruning objectives</label><textarea disabled data-needs-script="true" id="reason" maxlength="1500" placeholder="Describe the concern and what you hope the work will accomplish."></textarea></div>
+<div><label for="scope">Proposed work or pruning plan</label><textarea disabled data-needs-script="true" id="scope" maxlength="2000" placeholder="Describe the branches, areas, or work proposed. State whether a plan has been prepared."></textarea></div>
+<div><label for="limbDiameter">Largest limb proposed for pruning (inches)</label><input disabled data-needs-script="true" id="limbDiameter" type="number" min="0" step="0.1" placeholder="If known; not applicable to removal"></div>
+<div><label for="arborist">Arborist name and ISA credential number</label><input disabled data-needs-script="true" id="arborist" maxlength="250" placeholder="If selected"><p class="help">Entering a name or number does not verify a credential.</p></div>
+<div class="full"><label class="check"><input disabled data-needs-script="true" type="checkbox" id="storm"><span>I am reporting suspected storm damage. I understand this is an unverified observation, not a professional finding or permit exception.</span></label></div>
+<div><label for="contactName">Your name</label><input disabled data-needs-script="true" id="contactName" maxlength="120" autocomplete="name"></div><div><label for="phone">Phone</label><input disabled data-needs-script="true" id="phone" type="tel" maxlength="40" autocomplete="tel"></div>
+<div class="full"><label for="email">Your email address</label><input disabled data-needs-script="true" id="email" type="email" maxlength="150" autocomplete="email"></div>
+</div><div class="actions"><button disabled data-needs-script="true" id="prepare" type="submit">Prepare Forestry email</button></div></form>
+</section>
+<section class="card" id="emailCard" aria-labelledby="emailTitle"><div class="stephead"><span class="number" aria-hidden="true">3</span><div><h2 id="emailTitle">Review before sending</h2><p class="muted">To: <strong>forestry@cityofmobile.gov</strong></p></div></div>
+<p id="emptyDraft" class="muted">Your editable draft will appear here. Nothing is sent automatically.</p>
+<div id="draftArea" class="hidden"><label for="emailSubject">Subject</label><input disabled data-needs-script="true" id="emailSubject" maxlength="240"><label for="emailBody" style="margin-top:16px">Message</label><textarea disabled data-needs-script="true" id="emailBody" class="emailbody" spellcheck="true"></textarea><p class="help">Review all details and attach photographs or reports separately in your email application. Long drafts are more reliable using Copy draft or Save text.</p><div class="actions no-print"><button disabled data-needs-script="true" class="secondary" id="copyEmail" type="button">Copy draft</button><button disabled data-needs-script="true" class="secondary" id="saveEmail" type="button">Save text</button><a class="button" id="openEmail" href="mailto:forestry@cityofmobile.gov">Open email application</a></div><p id="draftStatus" role="status" class="status" aria-live="polite"></p></div>
+</section>
+<details class="card no-print"><summary>Sources, privacy, and development limits</summary><p class="small" style="margin-top:15px">Source metadata reviewed November 12, 2026. This confirms field definitions and published capabilities—not live query success, data currency, legal boundaries, or permission to reuse data in production. No analytics, browser storage, photo upload, or automatic email transmission is included.</p><div class="source-list"><a href="https://maps.cityofmobile.org/arcgis/rest/services/Address_Points_MS/MapServer/0" target="_blank" rel="noopener noreferrer">City address points · layer 0</a><a href="https://maps.cityofmobile.org/arcgis/rest/services/Operational_Map_Data1_MS/MapServer/0" target="_blank" rel="noopener noreferrer">Mobile corporate limits · layer 0</a><a href="https://maps.cityofmobile.org/arcgis/rest/services/Operational_Map_Data1_MS/MapServer/7" target="_blank" rel="noopener noreferrer">Local historic districts · layer 7</a><a href="https://maps.cityofmobile.org/arcgis/rest/services/Operational_Map_Data1_MS/MapServer/2" target="_blank" rel="noopener noreferrer">City property, including owned / leased status · layer 2</a><a href="https://maps.cityofmobile.org/arcgis/rest/services/Operational_Map_Data1_MS/MapServer/10" target="_blank" rel="noopener noreferrer">Developed parks · layer 10</a></div><p class="small divider">Not implemented: interactive map, surveyed ROW boundaries, boundary-distance tests, address-to-parcel matching, permit rules, credential or assessment verification, and production website integration. A local reference is for your saved draft only; it is not a permit or a retrievable case record.</p></details>
+</main><footer class="wrap">The Arborist · www.tree251.xyz · 251-622-3200<br>Development preview v0.1.3 · Independent educational tool; not affiliated with the City of Mobile.</footer>
+<script type="module">
+/**
+ * Mobile Tree Permit Checker — location and email prototype.
+ * Metadata inspected 2026-11-12. Live queries/CORS have NOT been validated.
+ * This module never returns a permit exemption or legal ownership determination.
+ * No dependencies; Node 22+ for tests, modern browser for the preview.
+ */
+const VERSION = '0.1.3';
+const BASE = 'https://maps.cityofmobile.org/arcgis/rest/services';
+const SOURCES = Object.freeze({
+  address: `${BASE}/Address_Points_MS/MapServer/0`,
+  city: `${BASE}/Operational_Map_Data1_MS/MapServer/0`,
+  historic: `${BASE}/Operational_Map_Data1_MS/MapServer/7`,
+  cityProperty: `${BASE}/Operational_Map_Data1_MS/MapServer/2`,
+  park: `${BASE}/Operational_Map_Data1_MS/MapServer/10`,
+});
+const FORESTRY_EMAIL = 'forestry@cityofmobile.gov';
+const SOURCE_CHECK_DATE = '2026-11-12';
+
+function oneLine(value, max = 200) {
+  return String(value ?? '').replace(/[\r\n\u0000-\u001f\u007f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
+}
+function narrative(value, max = 2500) {
+  return String(value ?? '').replace(/\r\n?/g, '\n').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, '').trim().slice(0, max);
+}
+function attr(record, key) {
+  if (!record || typeof record !== 'object') return undefined;
+  const found = Object.keys(record).find(k => k.toLowerCase() === key.toLowerCase());
+  return found === undefined ? undefined : record[found];
+}
+function featureSet(data) {
+  if (!data || data.error || !Array.isArray(data.features)) throw new Error('GIS response was not a valid feature set.');
+  if (data.exceededTransferLimit) throw new Error('GIS response was incomplete. Narrow the search.');
+  return data.features;
+}
+function validatePoint(point) {
+  const { longitude, latitude } = point ?? {};
+  if (typeof longitude !== 'number' || typeof latitude !== 'number' || !Number.isFinite(longitude) || !Number.isFinite(latitude) || longitude < -180 || longitude > 180 || latitude < -90 || latitude > 90) {
+    throw new Error('Enter valid longitude and latitude in decimal degrees.');
+  }
+  return { longitude, latitude };
+}
+function buildAddressURL(houseNumber, street) {
+  const house = String(houseNumber ?? '').trim();
+  const road = oneLine(street, 100).toUpperCase();
+  if (!/^\d{1,7}$/.test(house)) throw new Error('Use a whole house number. For suffixes, fractions, or vacant lots, use the manual location fields.');
+  if (road.length < 3 || road.length > 75 || !/^[A-Z0-9 .'-]+$/.test(road)) throw new Error('Enter at least three letters of the street name, without a city, ZIP code, or wildcard characters.');
+  const literal = road.replaceAll("'", "''");
+  const params = new URLSearchParams({
+    where: `hsn = ${Number(house)} AND UPPER(roadname) LIKE '%${literal}%'`,
+    outFields: 'objectid,address,hsn,roadname,unitno,zipcode,city',
+    returnGeometry: 'true', outSR: '4326', resultRecordCount: '25',
+    orderByFields: 'address,objectid', f: 'json',
+  });
+  return `${SOURCES.address}/query?${params}`;
+}
+function normalizeAddressResponse(data) {
+  const features = featureSet(data);
+  const sr = data.spatialReference?.latestWkid ?? data.spatialReference?.wkid;
+  if (features.length && sr !== 4326) throw new Error('The coordinate system could not be verified.');
+  return features.map(f => {
+    const a = f.attributes;
+    const point = validatePoint({ longitude: f.geometry?.x, latitude: f.geometry?.y });
+    const address = oneLine(attr(a, 'address'), 150);
+    const id = attr(a, 'objectid');
+    if (!address || !Number.isInteger(id)) throw new Error('An address record was missing required fields.');
+    return { id, address, mailingCity: oneLine(attr(a, 'city'), 100), zip: oneLine(attr(a, 'zipcode'), 5), unit: oneLine(attr(a, 'unitno'), 15), point,
+      pointRole: 'address_reference', source: SOURCES.address };
+  });
+}
+function buildSpatialURL(kind, point) {
+  if (!['city', 'historic', 'cityProperty', 'park'].includes(kind)) throw new Error('Unknown map layer.');
+  const p = validatePoint(point);
+  const outFields = kind === 'cityProperty' ? 'objectid,asset_name,status' : 'objectid,name';
+  const params = new URLSearchParams({
+    where: kind === 'city' ? "UPPER(name) = 'MOBILE'" : '1=1',
+    geometry: `${p.longitude},${p.latitude}`, geometryType: 'esriGeometryPoint',
+    inSR: '4326', spatialRel: 'esriSpatialRelIntersects', outFields,
+    returnGeometry: 'false', resultRecordCount: '100', f: 'json',
+  });
+  return `${SOURCES[kind]}/query?${params}`;
+}
+function classifySpatialResponse(kind, data) {
+  try {
+    if (!['city', 'historic', 'cityProperty', 'park'].includes(kind)) throw new Error('Unknown layer.');
+    const features = featureSet(data);
+    const matches = features.map(f => {
+      const name = oneLine(attr(f.attributes, kind === 'cityProperty' ? 'asset_name' : 'name'), 160);
+      const id = attr(f.attributes, 'objectid');
+      if (!name || !Number.isInteger(id)) throw new Error('Missing map fields.');
+      if (kind === 'city' && name.toUpperCase() !== 'MOBILE') throw new Error('Unexpected jurisdiction returned.');
+      return { id, name, ...(kind === 'cityProperty' ? { tenure: oneLine(attr(f.attributes, 'status'), 30) || 'UNSPECIFIED' } : {}) };
+    });
+    return { status: matches.length > 1 ? 'ambiguous' : matches.length ? 'map_match' : 'no_map_match', matches, source: SOURCES[kind] };
+  } catch {
+    return { status: 'unknown', matches: [], source: SOURCES[kind], message: 'Map result unavailable or incomplete; no negative finding inferred.' };
+  }
+}
+async function fetchJSON(url, { fetchImpl = globalThis.fetch, timeoutMs = 12000 } = {}) {
+  const parsed = new URL(url);
+  if (parsed.origin !== 'https://maps.cityofmobile.org' || !Object.values(SOURCES).some(base => url.startsWith(base + '/query?'))) {
+    throw new Error('Only the configured City GIS queries are allowed.');
+  }
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetchImpl(url, { signal: controller.signal, credentials: 'omit', referrerPolicy: 'no-referrer', headers: { Accept: 'application/json' } });
+    if (!response.ok) throw new Error('The City map service did not return a successful response.');
+    const data = await response.json();
+    if (data?.error) throw new Error('The City map service could not complete this query.');
+    return data;
+  } finally { clearTimeout(timer); }
+}
+async function searchAddresses(houseNumber, street, options = {}) {
+  return normalizeAddressResponse(await fetchJSON(buildAddressURL(houseNumber, street), options));
+}
+async function screenPoint(point, options = {}) {
+  validatePoint(point);
+  const entries = await Promise.all(['city', 'historic', 'cityProperty', 'park'].map(async kind => {
+    try { return [kind, classifySpatialResponse(kind, await fetchJSON(buildSpatialURL(kind, point), options))]; }
+    catch { return [kind, { status: 'unknown', matches: [], source: SOURCES[kind], message: 'Map lookup unavailable; use manual verification.' }]; }
+  }));
+  return { point, checkedAt: new Date().toISOString(), layers: Object.fromEntries(entries),
+    pointRole: options.pointRole === 'user_tree_point' ? 'user_tree_point' : 'address_reference',
+    boundaryReview: 'not_implemented', ownership: 'not_determined', rightOfWay: 'not_determined',
+    permitDecision: 'not_evaluated', sourceCurrency: 'not_confirmed', prototypeVersion: VERSION };
+}
+function describeLayer(result) {
+  if (!result || result.status === 'unknown') return 'Not verified — lookup unavailable or incomplete';
+  if (result.status === 'ambiguous') return `Multiple map matches — verify: ${result.matches.map(m => m.name).join('; ')}`;
+  if (result.status === 'map_match') return `Map match: ${result.matches.map(m => m.name + (m.tenure ? ` (${m.tenure.toLowerCase()})` : '')).join('; ')}`;
+  return 'No map match at this point — not a permit or ownership determination';
+}
+function newReference() {
+  const bytes = new Uint8Array(8);
+  globalThis.crypto.getRandomValues(bytes);
+  return `TREE251-${Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('').toUpperCase()}`;
+}
+function createForestryEmail(input, screen = null) {
+  const address = oneLine(input.address, 180) || '[Address or nearest location]';
+  const work = ['pruning', 'removal', 'root or construction work', 'other'].includes(input.work) ? input.work : 'tree work';
+  const ref = oneLine(input.reference, 50) || newReference();
+  const subject = oneLine(`Request for ${work === 'pruning' ? 'pruning plan review' : 'tree-work guidance'} — ${address}`, 240);
+  const clean = (key, fallback) => oneLine(input[key], 250) || fallback;
+  const lines = [
+    'Hello Mobile Urban Forestry,', '',
+    work === 'pruning' ? 'I am requesting administrative review and guidance on the following proposed pruning plan.' : `I am requesting guidance on proposed ${work} at the location below.`, '',
+    `Address / nearest location: ${address}`,
+    `Reported tree location: ${clean('location', 'Not established')}`,
+    `Tree identification / location description: ${clean('treeDescription', 'Not provided')}`,
+    `Reported species: ${clean('species', 'Not identified')}`,
+    `Reported trunk diameter (DBH, inches): ${clean('dbh', 'Not measured')}`,
+    `Proposed work: ${work}`,
+    `Pruning objectives / reason for work: ${narrative(input.reason) || 'Not yet described'}`,
+    `Proposed scope: ${narrative(input.scope) || 'A detailed work plan has not yet been prepared'}`,
+    `Largest limb proposed for pruning (diameter in inches): ${clean('limbDiameter', 'Not provided / not applicable')}`,
+    `Proposed arborist and ISA credential number: ${clean('arborist', 'Not yet selected')}`,
+    'Any entered credential has not been verified by this prototype.',
+  ];
+  if (input.suspectedStormDamage) lines.push('Suspected storm damage is reported by the applicant. This prototype has not verified a certified-arborist assessment; this observation is not an established professional finding.');
+  if (screen) {
+    lines.push('', 'PRELIMINARY MAP CONTEXT — NOT A SURVEY OR CITY DETERMINATION',
+      `Point type: ${screen.pointRole === 'user_tree_point' ? 'User-entered approximate tree coordinates' : 'Address reference point, not the tree location'}`,
+      `Coordinates (longitude, latitude): ${screen.point.longitude}, ${screen.point.latitude}`,
+      `Mobile corporate limits: ${describeLayer(screen.layers.city)}`,
+      `Local historic district: ${describeLayer(screen.layers.historic)}`,
+      `City-property layer: ${describeLayer(screen.layers.cityProperty)}`,
+      `Park layer: ${describeLayer(screen.layers.park)}`,
+      `Map query time: ${screen.checkedAt}`,
+      'Boundary proximity, ownership, right-of-way location, and current legal applicability have not been verified.');
+  } else lines.push('', 'City limits, local historic-district status, and ownership/right-of-way location have not been verified.');
+  lines.push('', 'Could you please advise:',
+    '1. Whether administrative approval or another authorization applies to this proposed work;',
+    work === 'pruning' ? '2. Whether the pruning plan is acceptable or needs changes; and' : '2. Which next steps apply to this specific tree and proposed activity; and',
+    '3. Which photographs, arborist documentation, or other information you need before work begins.', '',
+    'Photographs and supporting documents will be attached separately when available.', '',
+    `Name: ${clean('name', '[Your name]')}`,
+    `Phone: ${clean('phone', '[Your phone number]')}`,
+    `Email: ${clean('email', '[Your email address]')}`, '',
+    'Thank you.', '',
+    `Prepared using The Arborist location/email prototype. Local reference: ${ref}.`,
+    'This reference is not a City permit number and is not stored in a case-tracking system.',
+    'This message is a request for review, not an authorization to start work.');
+  const body = lines.join('\r\n');
+  const mailto = `mailto:${FORESTRY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  // A conservative UX fallback, not a universal email-client limit.
+  return { to: FORESTRY_EMAIL, subject, body, reference: ref, mailto, preferCopy: mailto.length > 1800 };
+}
+
+
+const $ = id => document.getElementById(id);
+let lookupRevision = 0;
+let lastScreen = null;
+let pointRole = 'user_tree_point';
+let currentDraft = null;
+let localReference = newReference();
+function clearDraft() {
+  currentDraft = null; $('draftArea').classList.add('hidden'); $('emptyDraft').classList.remove('hidden'); $('draftStatus').textContent = '';
+}
+function clearMap() {
+  lookupRevision++; lastScreen = null; $('mapResults').replaceChildren(); $('mapResults').classList.add('hidden'); $('mapWarning').classList.add('hidden'); $('mapStatus').textContent = ''; $('checkMaps').disabled = false; clearDraft();
+}
+function clearAddress() {
+  clearMap(); $('candidates').replaceChildren(); $('addressStatus').textContent = ''; $('queryHelp').classList.add('hidden'); $('search').disabled = false;
+  $('longitude').value = ''; $('latitude').value = ''; $('pointType').textContent = 'No point selected.'; pointRole = 'user_tree_point';
+}
+$('useTestAddress').addEventListener('click', () => {
+  $('house').value = '6'; $('street').value = 'Maury'; clearAddress();
+  $('addressStatus').textContent = 'Test address entered: 6 Maury. Check Allow City GIS lookup, then tap Find address. No City result has been retrieved yet.';
+});
+for (const id of ['house','street']) $(id).addEventListener('input', clearAddress);
+for (const id of ['longitude','latitude']) $(id).addEventListener('input', () => { clearMap(); pointRole = 'user_tree_point'; $('pointType').textContent = 'User-entered approximate tree point — not survey-verified.'; });
+$('consent').addEventListener('change', () => { if (!$('consent').checked) clearMap(); });
+$('propertyAddress').addEventListener('input', clearAddress);
+$('workForm').addEventListener('input', clearDraft);
+$('addressForm').addEventListener('submit', async event => {
+  event.preventDefault(); clearAddress();
+  if (!$('consent').checked) { $('addressStatus').textContent = 'GIS lookup permission is required: check Allow City GIS lookup above the button, or continue with a manually entered location below.'; $('consent').focus(); return; }
+  const revision = lookupRevision;
+  const submittedHouse = $('house').value.trim();
+  const submittedStreet = $('street').value.trim();
+  let queryUrl;
+  try { queryUrl = buildAddressURL(submittedHouse, submittedStreet); }
+  catch { $('addressStatus').textContent = 'Use a whole house number and at least three street-name characters, without a ZIP or special query symbols. Your entry is still in the fields above.'; return; }
+  $('rawQuery').href = queryUrl;
+  $('queryHelp').classList.remove('hidden');
+  $('search').disabled = true; $('addressStatus').textContent = `Searching the City address layer for ${submittedHouse} ${submittedStreet}…`;
+  try {
+    const results = await searchAddresses(submittedHouse, submittedStreet);
+    if (revision !== lookupRevision) return;
+    $('addressStatus').textContent = results.length ? `The City returned ${results.length} match${results.length === 1 ? '' : 'es'} for ${submittedHouse} ${submittedStreet}. Select the correct address below.` : `No City GIS address matches returned for ${submittedHouse} ${submittedStreet}. This is not a finding outside the city. Try another street name or use My Place.`;
+    for (const item of results) {
+      const button = document.createElement('button'); button.type = 'button'; button.className = 'candidate';
+      button.textContent = `${item.address}${item.unit ? ' · Unit ' + item.unit : ''}${item.mailingCity ? ' · ' + item.mailingCity : ''}${item.zip ? ' ' + item.zip : ''}`;
+      button.addEventListener('click', () => {
+        clearMap(); $('propertyAddress').value = `${item.address}${item.unit ? ' · Unit ' + item.unit : ''}${item.mailingCity ? ', ' + item.mailingCity : ''}${item.zip ? ' ' + item.zip : ''}`;
+        $('longitude').value = item.point.longitude; $('latitude').value = item.point.latitude;
+        pointRole = 'address_reference'; $('pointType').textContent = 'City address reference point — not the tree location.';
+        $('addressStatus').textContent = `Selected: ${button.textContent}. This is an address reference point, not the tree location.`;
+        $('candidates').replaceChildren();
+      });
+      $('candidates').append(button);
+    }
+  } catch (error) {
+    if (revision === lookupRevision) $('addressStatus').textContent = `Unable to obtain a live City GIS response for ${submittedHouse} ${submittedStreet}. Your entered address remains above. This could be a preview/browser restriction, network error, or City service issue; it is not a no-match or jurisdiction finding. Try the direct City GIS query link below or City My Place.`;
+  } finally { if (revision === lookupRevision) $('search').disabled = false; }
+});
+$('checkMaps').addEventListener('click', async () => {
+  clearMap();
+  if (!$('consent').checked) { $('mapStatus').textContent = 'Select GIS lookup permission before querying the City service, or continue without map verification.'; return; }
+  if (!$('longitude').value.trim() || !$('latitude').value.trim()) { $('mapStatus').textContent = 'Select an address match or enter approximate tree coordinates first. Manual email preparation remains available below.'; return; }
+  let point;
+  try { point = validatePoint({ longitude: Number($('longitude').value), latitude: Number($('latitude').value) }); }
+  catch { $('mapStatus').textContent = 'Please check the longitude and latitude. No map query was sent.'; return; }
+  const revision = lookupRevision;
+  $('checkMaps').disabled = true; $('mapStatus').textContent = 'Checking the four configured City layers…';
+  try {
+    const result = await screenPoint(point, { pointRole });
+    if (revision !== lookupRevision) return;
+    lastScreen = result;
+    const headings = { city: 'Mobile corporate limits', historic: 'Local historic district', cityProperty: 'City property', park: 'Developed park' };
+    for (const [kind, heading] of Object.entries(headings)) {
+      const row = document.createElement('div'); row.className = 'resultrow';
+      const label = document.createElement('strong'); label.textContent = heading;
+      const value = document.createElement('span'); value.textContent = describeLayer(result.layers[kind]);
+      row.append(label, value); $('mapResults').append(row);
+    }
+    $('mapResults').classList.remove('hidden'); $('mapWarning').classList.remove('hidden');
+    $('mapStatus').textContent = `${pointRole === 'address_reference' ? 'Address reference point' : 'Approximate user-entered tree point'} checked. Results are map context only; no permit decision has been made.`;
+  } finally { if (revision === lookupRevision) $('checkMaps').disabled = false; }
+});
+function emailText() { return `To: ${FORESTRY_EMAIL}\r\nSubject: ${$('emailSubject').value}\r\n\r\n${$('emailBody').value}`; }
+function refreshMailLink() {
+  const subject = $('emailSubject').value.replace(/[\r\n]/g, ' ');
+  const url = `mailto:${FORESTRY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent($('emailBody').value)}`;
+  $('openEmail').href = url;
+  $('draftStatus').textContent = url.length > 1800 ? 'Long draft: Copy draft or Save text is recommended. An email application may shorten a long mailto message. Nothing has been sent.' : 'Draft prepared. Review it, add attachments in your email application, and send it yourself.';
+}
+$('workForm').addEventListener('submit', event => {
+  event.preventDefault();
+  currentDraft = createForestryEmail({ address:$('propertyAddress').value, location:$('location').value, work:$('work').value, species:$('species').value, dbh:$('dbh').value, treeDescription:$('treeDescription').value, reason:$('reason').value, scope:$('scope').value, limbDiameter:$('limbDiameter').value, arborist:$('arborist').value, name:$('contactName').value, phone:$('phone').value, email:$('email').value, suspectedStormDamage:$('storm').checked, reference:localReference }, lastScreen);
+  $('emailSubject').value = currentDraft.subject; $('emailBody').value = currentDraft.body;
+  $('emptyDraft').classList.add('hidden'); $('draftArea').classList.remove('hidden'); refreshMailLink();
+  $('emailCard').scrollIntoView({ behavior:'smooth', block:'start' });
+});
+$('emailSubject').addEventListener('input', refreshMailLink); $('emailBody').addEventListener('input', refreshMailLink);
+$('copyEmail').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(emailText()); $('draftStatus').textContent = 'Draft copied. Paste it into an email to forestry@cityofmobile.gov. Nothing has been sent.'; }
+  catch { $('emailBody').focus(); $('emailBody').select(); $('draftStatus').textContent = 'Automatic copy is unavailable in this browser. The message is selected; copy it manually. Recipient: forestry@cityofmobile.gov.'; }
+});
+$('saveEmail').addEventListener('click', () => {
+  const url = URL.createObjectURL(new Blob([emailText()], { type:'text/plain;charset=utf-8' }));
+  const link = document.createElement('a'); link.href=url; link.download=`Forestry-review-${localReference}.txt`; document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  $('draftStatus').textContent = 'Draft saved as text. It is not a permit application and has not been sent.';
+});
+
+// A static/no-script preview must never offer a working-looking submit button.
+// Forms use method=dialog as a second non-network fallback, outside a dialog.
+// The normal handlers above still run validation and preventDefault().
+for (const control of document.querySelectorAll('[data-needs-script]')) control.disabled = false;
+$('scriptStatus').innerHTML = '<strong>Interactive tools loaded.</strong> Address entry is ready. Live City GIS connectivity has not been verified.';
+$('scriptStatus').style.background = 'var(--wash)';
+$('scriptStatus').style.borderColor = 'var(--line)';
+document.documentElement.dataset.checkerReady = 'true';
+</script>
+</body></html>
