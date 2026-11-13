@@ -489,7 +489,7 @@ el('sendToEmail').addEventListener('click',()=>{
  el('limbDiameter').value=sc.limb.value;
  el('storm').checked=sc.storm.checked;
  const info='Chapter 65: '+last.result.title+' — '+last.result.reason+' Chapter 64: '+(last.udc?.title||'Not evaluated')+' — '+(last.udc?.reason||'')+' This is educational screening, not City authorization.';
- const scope=el('scope');if(!scope.value.trim())scope.value=info;
+ const scope=el('scope');if(!scope.value.includes('Chapter 64:'))scope.value=[scope.value.trim(),info].filter(Boolean).join('\n\n');
  el('workCard').scrollIntoView({behavior:'smooth',block:'start'});
 });
 for(const node of document.querySelectorAll('[data-permit-control]'))node.disabled=false;
