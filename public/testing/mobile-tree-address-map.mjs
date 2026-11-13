@@ -1,8 +1,7 @@
-import {interpretContext, MAP_VERSION, validPoint} from './mobile-tree-map-data.mjs';
+import {interpretContext, validPoint} from './mobile-tree-map-data.mjs';
+import {renderMapFacts, describeMapFact, MAP_LABELS, MAP_FACTS_VERSION} from './mobile-tree-map-facts.mjs';
 const API='/api/mobile-tree-gis';
 const GEO=['scCity','scHistoric','udcZoning','udcOverlay'];
-const LABELS={city:'City limits',historic:'City-designated historic district',zoning:'Zoning',overlays:'Mapped neighborhood overlays',parcel:'Tax-map parcel',cityProperty:'City property records',park:'City park records',planning:'Planning-approval records'};
-const LABEL_FIELDS={city:['name'],historic:['name'],zoning:['district_code','district_name'],overlays:['neighborhood_name','sub_dist'],parcel:['parcel','undeveloped'],cityProperty:['asset_name','status'],park:['name'],planning:['tmcaseno','decision','request']};
 let leafletPromise;
 async function loadLeaflet(doc) {
   const win=doc.defaultView;if(win.L)return win.L;
@@ -43,20 +42,20 @@ export function installAddressMap(doc) {
   const useActions=make('div','',workspace);useActions.className='actions';
   const use=make('button','Use this tree location to fill answers',useActions);use.type='button';use.id='applyMapAnswers';use.disabled=true;
   const center=make('button','Return to the address',useActions);center.type='button';center.className='secondary';
-  const factsBox=make('div','',workspace);factsBox.id='propertyMapFacts';factsBox.className='results';
+  const factsBox=make('div','',workspace);factsBox.id='propertyMapFacts';factsBox.className='results';factsBox.setAttribute('aria-label','Answers from the City map for the selected pin');
   const limitation=make('p','',workspace);limitation.className='help';
-  limitation.textContent='The map can help with city limits, historic districts and zoning. It cannot confirm the tree species, size, legal ownership, required landscaping or the contents of an approved plan. A missing planning-map record does not mean no plan exists.';
+  limitation.textContent='The City’s available answers are displayed here. Source links are optional references, not another step needed to read the answers. Map data cannot confirm tree species, size, legal ownership, required landscaping or the contents of an approved plan.';
   permit.before(card);
   const legacy=el('locationCard');if(legacy)legacy.classList.add('hidden');
   const geoDetails=make('details','',form);geoDetails.id='mapFilledQuestions';
   make('summary','Location answers — filled from the map, or answer manually',geoDetails);
-  make('p','Map-filled answers are preliminary. Unavailable, conflicting or boundary-adjacent data stays “I’m not sure.” You can correct an answer; that becomes a manual answer.',geoDetails).className='help';
+  make('p','The map results above show the available facts. Clear results can fill these questions after you confirm the tree pin. A boundary caution does not hide the mapped designation, but keeps the affected permit answer uncertain. A manual correction is marked as your answer.',geoDetails).className='help';
   const geoGrid=make('div','',geoDetails);geoGrid.className='grid';
   for(const id of GEO){const field=el(id);if(field)geoGrid.append(field.parentElement);}
   const originalGrid=form.querySelector('.grid');if(originalGrid&&originalGrid!==geoGrid)originalGrid.before(geoDetails);
   const hero=doc.querySelector('.hero .lead');if(hero)hero.textContent='Start with an address and mark the tree on the map. We will fill in the location facts we can check, then ask about the tree and the work.';
   const intro=doc.querySelector('#permitCard .stephead .muted');if(intro)intro.textContent='Check the map-filled location answers, then tell us about the tree and what you want done. You can continue without a map.';
-  const styles=make('style','',doc.head);styles.textContent='#mapProvenance{overflow-wrap:anywhere;word-break:break-word}#propertyTreeMap{height:380px;border:1px solid var(--line);border-radius:10px;margin-top:16px;z-index:0}#propertyMapCard .leaflet-control a{color:#203b32}#propertyMapCard .tree-pin{border-radius:50%;background:#224f3c;color:white;font:bold 18px/30px system-ui;text-align:center;border:2px solid white;box-shadow:0 1px 5px #333}#propertyMapCard [hidden]{display:none!important}#propertyMapCard .leaflet-container{font:13px/1.4 system-ui}#propertyMapCard .leaflet-control-layers label{font:13px/1.4 system-ui;margin:3px}#propertyMapCard .leaflet-control-layers input{display:inline;width:auto;min-height:0}#mapFilledQuestions{margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:9px}#propertyMapCard .resultrow a{overflow-wrap:anywhere}@media(max-width:680px){#propertyTreeMap{height:330px}}';
+  const styles=make('style','',doc.head);styles.textContent='#mapProvenance{overflow-wrap:anywhere;word-break:break-word}#propertyTreeMap{height:380px;border:1px solid var(--line);border-radius:10px;margin-top:16px;z-index:0}#propertyMapCard .leaflet-control a{color:#203b32}#propertyMapCard .tree-pin{border-radius:50%;background:#224f3c;color:white;font:bold 18px/30px system-ui;text-align:center;border:2px solid white;box-shadow:0 1px 5px #333}#propertyMapCard [hidden]{display:none!important}#propertyMapCard .leaflet-container{font:13px/1.4 system-ui}#propertyMapCard .leaflet-control-layers label{font:13px/1.4 system-ui;margin:3px}#propertyMapCard .leaflet-control-layers input{display:inline;width:auto;min-height:0}#mapFilledQuestions{margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:9px}#propertyMapCard .resultrow a{overflow-wrap:anywhere}#propertyMapFacts .resultrow>div{min-width:0;overflow-wrap:anywhere}#propertyMapFacts .map-answer{font-size:15px;display:block}#propertyMapFacts .map-source{border:0;margin-top:9px;padding:0}#propertyMapFacts .map-source summary{font-weight:400;font-size:12px;padding:6px 0}#propertyMapFacts .map-caution{padding:9px 10px;background:var(--amber);border-left:3px solid var(--amberline);color:var(--ink)}@media(max-width:680px){#propertyTreeMap{height:330px}}';
   let map,L,marker,refMarker,parcelLines,context=null,point=null,addressPoint=null,currentAddress='',epoch=0,controller=null,applying=false,accepted=false,mapReady=false;
   const sources=new Map();const originalText=new Map();
   for(const id of GEO){const field=el(id);originalText.set(id,new Map([...field.options].map(o=>[o.value,o.textContent])));}
@@ -87,20 +86,8 @@ export function installAddressMap(doc) {
     const response=await win.fetch(API+'?'+new URLSearchParams(params),{signal,cache:'no-store'});
     const data=await response.json();if(!response.ok||data.status!=='ok')throw Error(data.error||'City records unavailable.');return data;
   }
-  function describe(kind,fact){
-    if(fact.state==='unavailable')return 'Not checked — this data source did not return usable information.';
-    if(fact.state==='boundary')return 'Close to a mapped boundary (within 15 m). Leave the answer uncertain until checked.';
-    if(fact.state==='ambiguous')return 'More than one record overlaps this point. Additional checking is needed.';
-    if(fact.state==='none')return kind==='city'?'No Mobile city-limit match at this point.':kind==='planning'?'No matching record in this layer. This does NOT establish that no approved plan exists.':kind==='parcel'?'No parcel match at this point. This does NOT establish public ownership.':'No match in this map layer at this point.';
-    const a=fact.matches[0].attributes;const prefix=kind==='parcel'?'Parcel / undeveloped flag: ':kind==='cityProperty'?'Mapped asset / owned-or-leased status: ':'';return prefix+LABEL_FIELDS[kind].map(k=>a[k]===null||a[k]===undefined?'':String(a[k])).filter(Boolean).join(' · ');
-  }
   function renderFacts(){
-    factsBox.replaceChildren();
-    for(const [kind,fact] of Object.entries(context.facts)){
-      const row=make('div','',factsBox);row.className='resultrow';make('strong',LABELS[kind],row);
-      const text=make('div','',row);make('span',describe(kind,fact),text);
-      if(fact.source){const p=make('p','',text);p.style.margin='5px 0 0';const a=make('a','City data source',p);a.href=fact.source;a.target='_blank';a.rel='noopener noreferrer';}
-    }
+    renderMapFacts(doc,factsBox,context,{applied:accepted});
     if(map&&L){
       parcelLines?.remove();parcelLines=L.layerGroup().addTo(map);
       const raw=context.facts.parcel;
@@ -117,7 +104,7 @@ export function installAddressMap(doc) {
     try{
       const data=await request({mode:'context',lon:p.lon.toFixed(7),lat:p.lat.toFixed(7)},controller.signal);
       if(token!==epoch)return;context=interpretContext(data);renderFacts();use.disabled=!mapReady;
-      status.textContent='Map records loaded. Position the T marker at the tree, then use that location to fill the available answers. No permit has been issued.';
+      status.textContent='City map answers are shown below. Position the T marker at the tree, then fill the available location questions. A caution appears beside any uncertain value rather than replacing it.';
       selected.textContent=(accepted?'Tree pin':'Map point')+': '+p.lat.toFixed(6)+', '+p.lon.toFixed(6)+' · Records fetched '+new Date(context.fetchedAt).toLocaleString()+'. Fetch time is not the data’s revision date.';
     }catch(error){if(token===epoch){status.textContent='Unable to check these City layers. No map answers were filled. You can use the manual questions.';use.disabled=true;}}
   }
@@ -168,7 +155,7 @@ export function installAddressMap(doc) {
     const sourceKeys={scCity:'city',scHistoric:'historic',udcZoning:'zoning',udcOverlay:'zoning'};
     for(const id of GEO){const value=context.proposals[id]||'unknown';const fact=context.facts[sourceKeys[id]];
       setAnswer(id,value,value==='unknown'?null:{source:fact.source,fetchedAt:context.fetchedAt,point:{...point},address:currentAddress});}
-    accepted=true;const count=sources.size;geoDetails.open=true;
+    accepted=true;const count=sources.size;geoDetails.open=true;renderFacts();
     status.textContent=count+' location answer'+(count===1?'':'s')+' filled from City maps for your approximate tree pin. Confirm the remaining tree and work details. Ownership and plan obligations were not inferred.';
     selected.textContent='Tree pin selected by you: '+point.lat.toFixed(6)+', '+point.lon.toFixed(6)+' (not a surveyed boundary).';
     permit.scrollIntoView({behavior:'smooth',block:'start'});
@@ -177,8 +164,10 @@ export function installAddressMap(doc) {
     if(!accepted||!sources.size)return;
     const notes=el('permitNotes');if(!notes)return;
     el('mapProvenance')?.remove();const n=make('p','',notes);n.id='mapProvenance';
-    n.textContent='Map source: '+currentAddress+'; user-positioned tree pin '+point.lat.toFixed(6)+', '+point.lon.toFixed(6)+'. Preliminary GIS suggestions, not legal boundary verification. '+[...sources].map(([id,s])=>id+': '+s.source+' (fetched '+s.fetchedAt+')').join('; ')+'. Tree ownership and approved-plan obligations were not determined by these map results.';
+    const shown=Object.entries(context.facts).map(([kind,fact])=>{const r=describeMapFact(kind,fact);return MAP_LABELS[kind]+': '+[r.answer,...r.details,...r.warnings].join(' ');}).join('\n');
+    n.style.whiteSpace='pre-line';
+    n.textContent='Map source: '+currentAddress+'; user-positioned tree pin '+point.lat.toFixed(6)+', '+point.lon.toFixed(6)+'. Preliminary GIS suggestions, not legal boundary verification. '+[...sources].map(([id,s])=>id+': '+s.source+' (fetched '+s.fetchedAt+')').join('; ')+'.\n'+shown+'\nTree ownership and approved-plan obligations were not determined by these map results.';
   });
-  const foot=doc.querySelector('footer');if(foot)make('span',' · Address and map '+MAP_VERSION,foot);
+  const foot=doc.querySelector('footer');if(foot)make('span',' · Address and map '+MAP_FACTS_VERSION,foot);
   return true;
 }
