@@ -1,8 +1,9 @@
-/* Tree251 screening rules v0.2.0. Decisions are conditional on reported facts.
+/* Tree251 screening rules v0.2.2. Decisions are conditional on reported facts.
  * Public sources and Peter's expert ROW policy are deliberately distinguished.
  * No GIS, self-reported emergency, or entered credential can grant authorization.
  */
-export const RULE_VERSION = '0.2.0';
+import {getWorkQualifications} from './mobile-tree-worker-qualifications.mjs';
+export const RULE_VERSION = '0.2.2';
 export const REFERENCES = Object.freeze({
   private: {label:'City of Mobile: private-property trimming/removal guidance; Chapter 65 §§65-1, 65-2, 65-6',url:'https://www.cityofmobile.gov/public-works/tree-trimming-removal-permits/'},
   bylaws: {label:'Mobile Tree Commission bylaws, Article VII(f), adopted November 19, 2019',url:'https://www.buildmobile.org/pdf/MTC%20Adopted%20Nov%2019%202019%20BY%20LAWS.pdf'},
@@ -44,7 +45,7 @@ export function screenPermit(input = {}) {
   if (a.extra !== 'none') notes.push('Additional project restrictions or impacts have not been resolved. A stated approval pathway does not clear those separate requirements.');
   if (a.storm) notes.push('Storm damage is recorded as an unverified observation. A named ISA Certified Arborist’s credential and report must be verified before accepting professional findings. Neither damage nor a report automatically waives approval.');
   if (['row','park','city'].includes(a.location)) notes.push('Public-tree work qualifications remain separate: applicable ISA certification, licensing, bonding and other work requirements still apply.');
-  const finish = (code,title,reason,next,refs,missing=[]) => ({code,title,reason,next,refs,missing,notes,version:RULE_VERSION});
+  const finish = (code,title,reason,next,refs,missing=[]) => ({code,title,reason,next,refs,missing,notes,version:RULE_VERSION,workQualifications:getWorkQualifications(a)});
   const unresolved = (reason,missing=[],refs=['private']) => finish('VERIFY','Additional verification needed',reason,'Resolve the listed facts, then check again. Use the prepared Forestry email for questions; do not assume an exemption.',refs,missing);
   if (a.jurisdiction === 'outside') return finish('OUTSIDE','Outside this Mobile checker’s jurisdiction','You reported that the tree is outside Mobile corporate limits. A Mobile mailing address alone does not establish municipal jurisdiction.','Check the applicable jurisdiction. This result does not mean no permit is required elsewhere.',['public']);
   if (a.jurisdiction !== 'inside') return unresolved('The tree’s location within Mobile corporate limits has not been established.',['City-limit status']);
