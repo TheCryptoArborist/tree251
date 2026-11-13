@@ -1,7 +1,8 @@
-/* Public GIS interpretation, v0.3.0. Map context is not a legal survey.
- * A 15 m caution zone is an application safeguard, not a statutory setback.
+import {installResidentWorkflow} from './mobile-tree-resident-workflow.mjs';
+/* Public GIS interpretation. A 15 m caution is an application safeguard, not a statutory setback.
+ * Property zoning is resolved separately from the tree position by the resident workflow.
  */
-export const MAP_VERSION = '0.3.0';
+export const MAP_VERSION = '0.4.0';
 export const CAUTION_METERS = 15;
 export function validPoint(p) {
   return !!p && typeof p.lon==='number' && typeof p.lat==='number' &&
@@ -35,7 +36,7 @@ export function analyzeLayer(layer,point) {
     return {...bad,state:nearby.length?'boundary':matches.length>1?'ambiguous':matches.length===1?'inside':'none',matches,nearby};
   } catch {return bad;}
 }
-export function interpretContext(data) {
+export function interpretContext(data,options={}) {
   if(data?.status!=='ok'||!validPoint(data.point)||!data.layers)throw Error('Incomplete location response');
   const facts=Object.fromEntries(['city','historic','zoning','overlays','parcel','cityProperty','park','planning'].map(k=>[k,analyzeLayer(data.layers[k],data.point)]));
   const proposals={};
@@ -47,14 +48,18 @@ export function interpretContext(data) {
     const a=facts.zoning.matches[0].attributes;
     const code=String(a.district_code||'').trim().toUpperCase();
     if(code)proposals.udcZoning=['R-1','R-2'].includes(code)?'r1r2':'other';
-    const tags=[a.overlay,a.sub_district_code,a.sub_district_name].map(x=>String(x||''));
+    const tags=[code,a.district_name,a.overlay,a.sub_district_code,a.sub_district_name].map(x=>String(x||''));
     if(facts.overlays.state==='inside')tags.push(...facts.overlays.matches.flatMap(f=>[String(f.attributes.neighborhood_name||''),String(f.attributes.sub_dist||'')]));
     const choices=new Set();
     if(tags.some(t=>t==='DDD'||/Downtown Development District/i.test(t)))choices.add('downtown');
     if(tags.some(t=>/Spring\s*Hill/i.test(t)))choices.add('springhill');
     if(code==='PD')choices.add('planned');
     if(choices.size===1&&facts.overlays.state!=='boundary')proposals.udcOverlay=[...choices][0];
-    // No match never proves there are no earlier approvals or special conditions.
   }
-  return {point:data.point,fetchedAt:data.fetchedAt,facts,proposals};
+  const result={point:data.point,fetchedAt:data.fetchedAt,facts,proposals};
+  if(options.emit!==false&&typeof document!=='undefined'){
+    document.dispatchEvent(new document.defaultView.CustomEvent('tree251:map-context',{detail:result}));
+  }
+  return result;
 }
+if(typeof document!=='undefined')installResidentWorkflow(document,interpretContext);
