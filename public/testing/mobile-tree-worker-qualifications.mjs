@@ -76,7 +76,7 @@ export function installQualificationsUI(doc) {
     }
   };
   form.addEventListener('input',clear);form.addEventListener('change',clear);
-  form.addEventListener('submit',()=>queueMicrotask(()=>{
+  form.addEventListener('submit',()=>setTimeout(()=>{
     if(output.classList.contains('hidden')){clear();return;}
     last=getWorkQualifications(read());panel.replaceChildren();
     if(!last){panel.classList.add('hidden');return;}
@@ -94,7 +94,7 @@ export function installQualificationsUI(doc) {
       a.target='_blank';a.rel='noopener noreferrer';a.textContent=source.label;p.appendChild(a);}
     panel.classList.remove('hidden');
   }));
-  doc.getElementById('sendToEmail')?.addEventListener('click',()=>queueMicrotask(()=>{
+  doc.getElementById('sendToEmail')?.addEventListener('click',()=>setTimeout(()=>{
     if(!last||output.classList.contains('hidden'))return;
     const scope=doc.getElementById('scope');
     if(scope){scope.value=withWorkerSummary(scope.value,last);scope.dispatchEvent(new Event('input',{bubbles:true}));}
