@@ -1,7 +1,7 @@
 import {RESIDENT_VERSION,mappedProperty,propertyIsDifferent,staffPlanReview,engineeringReview} from './mobile-tree-property-policy.mjs';
-/* Presentation and record handoff. Underlying Chapter 65 species/size rules remain unchanged.
- * Zoning is looked up for the selected property address, not borrowed from a tree across a boundary.
- * Only user-requested City lookups run. No contacts, photos, emails or permit submissions are sent.
+/* Presentation and record handoff. Chapter 65 species/size rules remain unchanged.
+ * Property zoning and mapped designations are separate from tree position and actual use.
+ * No contacts, photos, emails or permit submissions are sent. Manual typing is not a lookup.
  */
 export function installResidentWorkflow(doc,interpret) {
   const el=id=>doc.getElementById(id),win=doc.defaultView,form=el('permitForm');
@@ -43,7 +43,7 @@ export function installResidentWorkflow(doc,interpret) {
   if(development){chapter.append(development.parentElement);label('udcDevelopment','Is this tree work connected to a building project, site expansion or land clearing?');
     replaceOptions(development,[['unknown',"I'm not sure of the full project"],['no','No — only routine tree work'],['yes','Yes — part of construction or site work']]);}
   const ldBox=make('div','',chapter);ldBox.id='residentLDFields';ldBox.hidden=true;ldBox.className='grid';
-  const ldWrap=make('div','',ldBox);label;
+  const ldWrap=make('div','',ldBox);
   const ldLabel=make('label','What is the land-disturbance permit status, if known?',ldWrap);ldLabel.htmlFor='residentLDStatus';
   const ld=make('select','',ldWrap);ld.id='residentLDStatus';
   replaceOptions(ld,[['unknown',"I don't know"],['planned','Not applied for yet / planning the project'],['pending','Applied for — decision pending'],['issued','A permit has been issued']]);
@@ -74,6 +74,7 @@ export function installResidentWorkflow(doc,interpret) {
   }
   function setValue(id,value){const n=el(id);if(!n||n.value===value)return;writing=true;try{n.value=value;emit(n);}finally{writing=false;}}
   function refreshRecords(){
+    form.dataset.propertyRecords=loading?'loading':property?'ready':propertyError?'unavailable':'idle';
     const zone=el('udcZoningRecord'),overlay=el('udcOverlayRecord');
     if(!property){
       const msg=loading?'Looking up the selected property’s zoning and mapped districts…':propertyError||'Select the property address above. The checker retrieves zoning and mapped districts; you do not need to supply a code.';
@@ -90,22 +91,24 @@ export function installResidentWorkflow(doc,interpret) {
   async function loadProperty(value){
     value=String(value||'').trim();if(!value||!el('propertyMapConsent')?.checked){clearProperty();return;}
     if(value===address&&(property||loading))return;
-    clearProperty();address=value;loading=true;refreshRecords();controller=new win.AbortController();const token=revision;
-    const request=async params=>{const r=await win.fetch('/api/mobile-tree-gis?'+new URLSearchParams(params),{signal:controller.signal,cache:'no-store'});const data=await r.json();if(!r.ok||data.status!=='ok')throw Error('City records unavailable');return data;};
+    clearProperty();address=value;loading=true;refreshRecords();controller=new win.AbortController();const token=revision,signal=controller.signal;
+    const request=async params=>{const r=await win.fetch('/api/mobile-tree-gis?'+new URLSearchParams(params),{signal,cache:'no-store'});const data=await r.json();if(!r.ok||data.status!=='ok')throw Error('City records unavailable');return data;};
     try{
       const found=await request({mode:'address',q:value});if(token!==revision)return;
       const norm=s=>String(s||'').toUpperCase().replace(/\s+/g,' ').trim();
       const exact=found.features.filter(f=>norm(f.attributes?.address)===norm(value));
       if(exact.length!==1)throw Error('The property reference address could not be uniquely verified.');
       const p=exact[0].geometry;if(!p||!Number.isFinite(p.x)||!Number.isFinite(p.y))throw Error('Property coordinates unavailable');
-      const data=await request({mode:'context',lon:String(p.x),lat:String(p.y)});if(token!==revision)return;
+      // Fetch only the three property layers needed here; avoid waiting for unrelated planning/park services.
+      const parts=await Promise.all(['zoning','overlays','parcel'].map(layer=>request({mode:'context',lon:String(p.x),lat:String(p.y),layer})));
+      if(token!==revision)return;
+      const data={status:'ok',point:{lon:p.x,lat:p.y},fetchedAt:parts[0].fetchedAt,layers:Object.assign({},...parts.map(x=>x.layers))};
       propertyContext=interpret(data,{emit:false});property=mappedProperty(propertyContext.facts);
       mismatch=propertyIsDifferent(propertyContext.facts,treeContext?.facts);loading=false;
       sources.address=value;sources.point={lon:p.x,lat:p.y};sources.fetchedAt=data.fetchedAt;
       refreshRecords();
     }catch{if(token===revision){loading=false;propertyError='The property’s zoning or special-area records could not be verified. Staff verification is needed; you are not expected to choose a zoning code.';refreshRecords();}}
   }
-  // Property zoning remains based on the selected address; a nearby tree pin is a separate fact.
   doc.addEventListener('tree251:map-context',e=>{
     treeContext=e.detail;mismatch=propertyIsDifferent(propertyContext?.facts,treeContext?.facts);
     if(property&&!mismatch){
@@ -115,7 +118,12 @@ export function installResidentWorkflow(doc,interpret) {
     refreshRecords();
   });
   for(const id of ['udcZoning','udcOverlay'])el(id)?.addEventListener('change',()=>{if(!writing&&property)win.queueMicrotask(refreshRecords);});
-  const addressField=el('propertyAddress');addressField?.addEventListener('input',()=>loadProperty(addressField.value));
+  const addressField=el('propertyAddress');
+  addressField?.addEventListener('input',e=>{
+    // A trusted keystroke in the optional email form invalidates records but never searches on every letter.
+    if(e.isTrusted){clearProperty();return;}
+    loadProperty(addressField.value);
+  });
   const bindMap=()=>{
     if(mappingInstalled||!el('propertyMapAddress'))return;mappingInstalled=true;
     el('propertyMapAddress').addEventListener('input',clearProperty);
@@ -138,7 +146,7 @@ export function installResidentWorkflow(doc,interpret) {
     make('p','No staff review has been requested or completed by this website. Use the prepared email to ask for it.',notes);
     if(review.projectNote)make('p',review.projectNote+(a.caseNumber?' Reference supplied: '+a.caseNumber+'.':''),notes);
     el('residentProjectSummary')?.remove();
-    const permitNotes=el('permitNotes');const summary=make('p','',permitNotes);summary.id='residentProjectSummary';
+    const summary=make('p','',el('permitNotes'));summary.id='residentProjectSummary';
     summary.textContent=(property?'Property record: '+address+'; zoning '+property.zoneText+'; special districts '+property.overlayText+'; fetched '+sources.fetchedAt+'. This is an address-based map finding, not verified site use or plan history. ':'')+review.projectNote+(a.caseNumber?' Project reference: '+a.caseNumber+' (not verified).':'');
     engineering.replaceChildren();engineering.hidden=!eng;
     if(eng){
@@ -152,7 +160,6 @@ export function installResidentWorkflow(doc,interpret) {
     if(a.caseNumber)lastRequest+=' Project/permit reference supplied (not verified): '+a.caseNumber+'.';
     if(eng)lastRequest+=' '+eng.requirement+' Please identify the current Engineering ROW planting application and required Urban Forestry coordination.';
   }
-  // Runs after the existing synchronous decision renderer, before snapshot timers.
   doc.addEventListener('submit',e=>{if(e.target===form)paintStaffReview();
     if(e.target===el('workForm')&&lastRequest&&!el('draftArea')?.classList.contains('hidden')){
       const body=el('emailBody');if(body){const start='[Requested records and project review]',end='[/Requested records and project review]';
