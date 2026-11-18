@@ -60,6 +60,50 @@ export async function GET(request:Request) {
       if(data.features.some(f=>!f.geometry||!Number.isFinite(f.geometry.x)||!Number.isFinite(f.geometry.y)||!f.attributes.address))throw new Error('UPSTREAM');
       return reply({status:'ok',fetchedAt,source:ADDRESS,query:match[1]+' '+road,...data});
     }
+    if(mode==='property'){
+      // Check every mapped zoning district intersecting the selected tax parcel,
+      // rather than pretending that zoning at the street address represents
+      // an entire potentially split-zoned lot. Only trusted upstream polygon
+      // geometry is passed to the fixed City zoning service.
+      const p=point(number(u.searchParams.get('lon')),number(u.searchParams.get('lat')));
+      const parcels=await query(defs.parcel.url,{
+        where:'1=1',geometry:`${p.lon},${p.lat}`,geometryType:'esriGeometryPoint',
+        inSR:'4326',spatialRel:'esriSpatialRelIntersects',returnGeometry:'true',
+        resultRecordCount:'15'
+      },defs.parcel.fields);
+      if(parcels.features.length!==1){
+        return reply({status:'ok',fetchedAt,point:p,
+          propertyStatus:parcels.features.length===0?'not-mapped':'ambiguous',
+          parcel:null,zoningStatus:'unverified',zoningDistricts:[]});
+      }
+      const selected=parcels.features[0];
+      const rings=selected.geometry?.rings;
+      if(!Array.isArray(rings)||!rings.length||rings.some(r=>!Array.isArray(r)||r.length<4)){
+        return reply({status:'ok',fetchedAt,point:p,propertyStatus:'geometry-unavailable',
+          parcel:selected.attributes,zoningStatus:'unverified',zoningDistricts:[]});
+      }
+      const polygon={rings,spatialReference:{wkid:4326}};
+      let zoningStatus='unavailable';
+      let zoningDistricts:{code:string;name:string}[]=[];
+      try {
+        const zones=await query(defs.zoning.url,{
+          where:'1=1',geometry:JSON.stringify(polygon),
+          geometryType:'esriGeometryPolygon',inSR:'4326',
+          spatialRel:'esriSpatialRelIntersects',returnGeometry:'false',
+          resultRecordCount:'60'
+        },defs.zoning.fields);
+        const districtMap=new Map<string,{code:string;name:string}>();
+        for(const feature of zones.features){
+          const code=String(feature.attributes.district_code||'').trim().toUpperCase();
+          if(code)districtMap.set(code,{code,name:String(feature.attributes.district_name||'').trim()});
+        }
+        zoningDistricts=[...districtMap.values()];
+        zoningStatus=zoningDistricts.length?'ok':'no-match';
+      } catch {zoningStatus='unavailable';}
+      return reply({status:'ok',fetchedAt,point:p,propertyStatus:'ok',
+        parcel:selected.attributes,parcelSource:defs.parcel.url,
+        zoningStatus,zoningSource:defs.zoning.url,zoningDistricts});
+    }
     if(mode==='context'){
       const p=point(number(u.searchParams.get('lon')),number(u.searchParams.get('lat')));
       const requested=u.searchParams.get('layer');
