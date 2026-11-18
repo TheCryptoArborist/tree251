@@ -49,6 +49,20 @@ jobs:
           }
           assert.ok(policy,'Resident build not deployed yet');
           let assertions=0;const eq=(a,b,message)=>{assert.equal(a,b,message);assertions++;};
+          // Same official parcel spans both R-1 and B-1 zoning even though
+          // its street address point falls in R-1.
+          const airportAddress=await (await fetch(origin+'/api/mobile-tree-gis?mode=address&q=2721%20Airport%20Boulevard')).json();
+          assert.equal(airportAddress.features.length,1);assertions++;
+          const airportPoint=airportAddress.features[0].geometry;
+          const parcelLookup=new URLSearchParams({mode:'property',lon:String(airportPoint.x),lat:String(airportPoint.y)});
+          const parcelResponse=await fetch(origin+'/api/mobile-tree-gis?'+parcelLookup);
+          assert.equal(parcelResponse.status,200);assertions++;
+          const parcelZoning=await parcelResponse.json();
+          eq(parcelZoning.propertyStatus,'ok');
+          eq(parcelZoning.zoningStatus,'ok');
+          eq(parcelZoning.parcel.classcode_desc,'Commercial');
+          assert.deepEqual(parcelZoning.zoningDistricts.map(x=>x.code).sort(),['B-1','R-1']);assertions++;
+
           const f=(code='R-1',name='Single-Family Residential',overlay='N/A')=>({zoning:{state:'inside',matches:[{attributes:{district_code:code,district_name:name,sub_district_name:'Suburban',overlay}}]},overlays:{state:'none',matches:[]}});
           eq(policy.mappedProperty(f()).zoning,'r1r2');eq(policy.mappedProperty(f()).overlay,'none');
           eq(policy.mappedProperty(f('R-2','Two-Family Residential')).zoning,'r1r2');
@@ -143,6 +157,40 @@ jobs:
             assert.match(body,/not treated as tree-removal approval/);assertions++;
             for(const width of [390,820,1200]){await page.setViewportSize({width,height:844});eq(await page.evaluate(()=>document.body.scrollWidth<=innerWidth+2),true,'No horizontal overflow');}
             await page.fill('#propertyMapAddress','205 Government Street');eq(await page.inputValue('#udcZoning'),'unknown');eq(await page.locator('#permitOutput').isVisible(),false);eq(await page.locator('#draftArea').isVisible(),false);
+            // Separate live address: R-1 at street point, but commercial
+            // parcel and both R-1 + B-1 across the entire tax polygon.
+            await page.fill('#propertyMapAddress','2721 Airport Boulevard');
+            await page.click('#findPropertyMap');
+            await page.locator('#propertyMapCandidates button').first().click({timeout:35000});
+            await page.waitForSelector('#permitForm[data-property-records="ready"]',{timeout:60000});
+            eq(await page.getAttribute('#permitForm','data-parcel-tax-class'),'commercial');
+            eq(await page.getAttribute('#permitForm','data-split-zoned'),'yes');
+            assert.match(await page.textContent('#udcZoningRecord'),/R-1.*B-1/);assertions++;
+            assert.match(await page.textContent('#residentParcelStatus'),/Tax classification: Commercial/);assertions++;
+            eq(await page.locator('#scProperty option[value="commercial"]').count(),1);
+            eq(await page.inputValue('#scProperty'),'unknown');
+            // Reporting a habitable residence in conflict with commercial
+            // parcel records cannot create automatic no-permit clearance.
+            await page.selectOption('#scCity','inside');
+            await page.selectOption('#scHistoric','no');
+            await page.selectOption('#scLocation','private');
+            await page.selectOption('#scProperty','developed');
+            await page.selectOption('#scWork','removal');
+            await page.selectOption('#scSpecies','liveoak');
+            await page.fill('#scDbh','18');
+            await page.selectOption('#udcPlan','no');
+            await page.selectOption('#udcDevelopment','no');
+            await page.click('#screenNow');
+            await page.waitForSelector('#permitOutput:not(.hidden)');
+            assert.match(await page.textContent('#permitOutcome'),/verification/i);assertions++;
+            await page.waitForSelector('#simplePermitAnswer:not([hidden])');
+            assert.notEqual(await page.getAttribute('#simplePermitAnswer','data-outcome'),'residential-no-permit');assertions++;
+            await page.selectOption('#scProperty','commercial');
+            await page.click('#screenNow');
+            await page.waitForSelector('#permitOutput:not(.hidden)');
+            assert.match(await page.textContent('#permitOutcome'),/Tree permit required/);assertions++;
+            assert.match(await page.textContent('#simplePermitAnswer'),/Split zoning/);assertions++;
+
             assert.deepEqual(errors,[]);assertions++;
             console.log('RESIDENT_WORKFLOW_PASS',JSON.stringify({assertions,liveAddress:'6 MAURY DR',automaticPropertyZoning:true,technicalPlanQuestionsHidden:true,planYesOrUnknown:true,landDisturbanceNotTreePermission:true,rowPlantingEngineeringRoute:true,changedAddressInvalidates:true,physicalIPhone:false,noEmailSent:true}));
           } finally {await browser.close();}
