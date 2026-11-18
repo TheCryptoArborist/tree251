@@ -59,3 +59,10 @@ for(const svc of priority){
 }
 console.log('FIELD_NAME_MATCHES',JSON.stringify(allHits));
 console.log('FOLDERS_UNAVAILABLE',JSON.stringify(denied));
+
+try{
+  const qp=new URLSearchParams({where:'1=1',outFields:'flag_type,flag_name',
+    returnDistinctValues:'true',returnGeometry:'false',resultRecordCount:'250',f:'json'});
+  const records=await json(base+'/EG_Data_MS/MapServer/71/query?'+qp);
+  console.log('PUBLIC_PERMITTING_FLAG_TYPES',JSON.stringify((records.features||[]).slice(0,75).map(f=>f.attributes)));
+}catch(e){console.log('PUBLIC_PERMITTING_FLAG_TYPES_UNAVAILABLE',String(e));}
