@@ -38,7 +38,7 @@ jobs:
             try {
               const boot=await (await fetch(origin+'/testing/mobile-tree-map-data.mjs',{cache:'no-store'})).text();
               const raw=await (await fetch(origin+'/testing/mobile-tree-property-policy.mjs',{cache:'no-store'})).text();
-              if(boot.includes('installResidentWorkflow(document,interpretContext)')&&raw.includes("RESIDENT_VERSION='0.4.2'")&&(await (await fetch(origin+'/testing/mobile-tree-address-map.mjs',{cache:'no-store'})).text()).includes('consentLabel.hidden=true')&&(await (await fetch(origin+'/testing/mobile-tree-final-result.mjs',{cache:'no-store'})).text()).includes("RESULT_VERSION='0.4.3'")){
+              if(boot.includes('installResidentWorkflow(document,interpretContext)')&&raw.includes("RESIDENT_VERSION='0.4.2'")&&(await (await fetch(origin+'/testing/mobile-tree-address-map.mjs',{cache:'no-store'})).text()).includes('consentLabel.hidden=true')&&(await (await fetch(origin+'/testing/mobile-tree-final-result.mjs',{cache:'no-store'})).text()).includes("RESULT_VERSION='0.4.4'")){
                 policy=await import('data:text/javascript;base64,'+Buffer.from(raw).toString('base64'));break;
               }
             }catch{}
