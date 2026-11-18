@@ -41,7 +41,7 @@ export function installFinalResult(doc){
   const engineering=$('residentEngineering');
   if(engineering&&details.contains(engineering))details.insertAdjacentElement('beforebegin',engineering);
   const p=old.textContent.trim(),chapter=$('udcOutcome')?.textContent?.trim()||'Not evaluated';
-  const isHome=val('scCity')==='inside'&&val('scLocation')==='private'&&val('scHistoric')==='no'&&
+  const isHome=form.dataset.parcelTaxClass!=='commercial'&&form.dataset.splitZoned!=='yes'&&val('scCity')==='inside'&&val('scLocation')==='private'&&val('scHistoric')==='no'&&
    val('scProperty')==='developed'&&val('udcZoning')==='r1r2'&&val('udcOverlay')==='none'&&
    val('udcPlan')!=='yes'&&val('udcDevelopment')!=='yes'&&['removal','pruning'].includes(val('scWork'));
   const clear=p.startsWith('No Chapter 65')&&isHome&&(chapter.includes('No standard Chapter 64')||chapter.includes('Ordinary R-1/R-2'));
@@ -59,6 +59,8 @@ export function installFinalResult(doc){
    heading.textContent=p.startsWith('No Chapter 65')?'No Chapter 65 permit identified — other checks remain':p;
    explanation.textContent=$('permitReason')?.textContent?.trim()||'Check the requirements below.';
    add('Tree-work finding',p);
+   if(form.dataset.splitZoned==='yes')add('Split zoning','City mapping shows multiple zoning districts crossing the selected tax parcel. The address-point zoning must not be treated as the zoning of the entire site or tree.');
+   if(form.dataset.parcelTaxClass==='commercial')add('Property classification','The City parcel is assessed Commercial. Zoning R-1 does not establish that the building is a qualifying residence.');
    add('Other property rules',chapter);
    add('Next step',$('permitNext')?.textContent?.trim()||'Confirm the applicable review requirements.');
    foot.textContent='These are screening findings, not City authorization. Review unresolved details and the supporting sources below.';
