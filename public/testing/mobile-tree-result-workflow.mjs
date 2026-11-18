@@ -1,3 +1,4 @@
+import {buildBriefForestryEmail,readForestryEmailFacts,BRIEF_EMAIL_VERSION} from './mobile-tree-brief-email.mjs';
 /* Result handoff v0.2.3. No permit rules, GIS lookups, storage or email sending.
  * Capture displayed findings after screening. Keep them out of the user's plan
  * textarea, replace them on re-screening, and invalidate drafts when facts change.
@@ -87,7 +88,6 @@ export function installResultWorkflow(doc, getWorkQualifications) {
   const record=create('textarea','',details);record.id='screeningRecord';record.readOnly=true;record.rows=16;
   const actionStatus=create('p','',panel);actionStatus.id='screeningRecordStatus';actionStatus.className='status';actionStatus.setAttribute('role','status');
   output.insertBefore(panel,transfer.parentElement);
-  // Repair the legacy select markup so its options can actually retain the handoff.
   const location=byId('location');
   const locationOptions=['Unknown / boundary not verified','Public street right-of-way — reported, not verified',
     'Private property — reported, not verified','City park — reported, not verified','Other City property — reported, not verified'];
@@ -107,7 +107,6 @@ export function installResultWorkflow(doc, getWorkQualifications) {
     if(had)status.textContent='Answers changed. Check requirements again before using or emailing this result. Your work notes have been kept.';
   };
   form.addEventListener('input',invalidate);form.addEventListener('change',invalidate);
-  // Original rendering is synchronous; capture once all existing listeners finish.
   form.addEventListener('submit',()=>{
     const token=++generation;disableDraft();
     win.setTimeout(()=>{
@@ -128,7 +127,6 @@ export function installResultWorkflow(doc, getWorkQualifications) {
     },0);
   });
   const current = () => snapshot && snapshot.fingerprint===fingerprint() && !output.classList.contains('hidden');
-  // Replace the legacy append-to-scope listener rather than leaving contradictory summaries.
   transfer.addEventListener('click',e=>{
     e.preventDefault();e.stopImmediatePropagation();
     if(!current()){invalidate();status.textContent='Check requirements again before transferring the result.';return;}
@@ -144,7 +142,7 @@ export function installResultWorkflow(doc, getWorkQualifications) {
     } finally {transferring=false;}
     linkedFingerprint=snapshot.fingerprint;
     disableDraft();
-    status.textContent='Tree details copied. Add your location, objectives and work notes below, then prepare the email. Both findings and worker requirements will be attached separately.';
+    status.textContent='Tree details copied. Add your location, objectives and work notes below, then prepare the email. The email will be a short request; the complete screening record stays separate.';
     byId('workCard')?.scrollIntoView({behavior:'smooth',block:'start'});
   },true);
   const workChanged = e => {
@@ -154,20 +152,23 @@ export function installResultWorkflow(doc, getWorkQualifications) {
     }
   };
   workForm.addEventListener('input',workChanged);workForm.addEventListener('change',workChanged);
-  // Append outside the scope field: the legacy scope formatter is length-limited.
+  // Compose concise correspondence; the complete record remains separate.
   workForm.addEventListener('submit',()=>{
     const version=++draftGeneration;const used=current()&&linkedFingerprint===snapshot.fingerprint?snapshot:null;
     win.setTimeout(()=>{
       if(version!==draftGeneration||byId('draftArea')?.classList.contains('hidden'))return;
       const body=byId('emailBody');if(!body)return;
-      body.value=replaceScreeningSummary(body.value,used?formatScreeningSummary(used):'');
+      const brief=buildBriefForestryEmail(readForestryEmailFacts(doc,!!used));
+      body.value=brief.body;
+      byId('emailSubject').value=brief.subject;
+      body.dataset.format='brief-'+BRIEF_EMAIL_VERSION;
+      const help=byId('emailReviewHelp');if(help)help.textContent='Review this short request and add missing location or contact details. The complete screening record stays separate; save and attach it only when useful. No files are attached or sent automatically.';
       preparedSnapshot=used;
-      body.dispatchEvent(event('input')); // Refresh the encoded mailto with the full text.
+      body.dispatchEvent(event('input'));
       byId('openEmail')?.removeAttribute('aria-disabled');
-      if(used)byId('draftStatus').textContent='Both findings and worker requirements are included. Review the draft; attach photos separately. For this long message use Copy draft or Save text rather than risking a shortened email link.';
+      byId('draftStatus').textContent='Short email prepared. The full screening record remains separate. Review before sending; nothing has been sent.';
     },0);
   });
-  // Fail closed on a stale visible draft, including programmatic form changes.
   for(const id of ['openEmail','copyEmail','saveEmail'])byId(id)?.addEventListener('click',e=>{
     if(byId('draftArea')?.classList.contains('hidden')||(preparedSnapshot&&(!current()||preparedSnapshot!==snapshot))){
       e.preventDefault();e.stopImmediatePropagation();disableDraft();status.textContent='Prepare a fresh email from the current answers.';
@@ -184,5 +185,6 @@ export function installResultWorkflow(doc, getWorkQualifications) {
     const a=create('a','',doc.body);a.href=url;a.download='tree251-screening-'+snapshot.createdAt.replace(/[:.]/g,'-')+'.txt';a.click();a.remove();
     win.setTimeout(()=>win.URL.revokeObjectURL(url),1000);actionStatus.textContent='A text-file save was requested. This is a screening record, not a permit.';
   });
+  const footer=doc.querySelector('footer');if(footer)create('span',' · Brief Forestry email '+BRIEF_EMAIL_VERSION,footer);
   return true;
 }
