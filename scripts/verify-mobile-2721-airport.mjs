@@ -41,3 +41,22 @@ for(let i=0;i<offsets.length;i++){
  console.log('CONTEXT_SAMPLE',i,JSON.stringify({pt,results:o}));
  }catch(e){console.log('CONTEXT_SAMPLE_ERROR',i,String(e))}
 }
+
+const polygonData=await query(base+'Parcel_Details_MS/MapServer/0','parcel = \'R022909301000006.01\' && objectid = 6542385',{returnGeometry:'true'});
+if(polygonData.features.length===1){
+ const poly=polygonData.features[0].geometry;
+ const zoneParts=await query(base+'Portal_Operational_Layers/PLAN_ZONE_APP_MS/MapServer/10','1=1',{geometry:JSON.stringify(poly),geometryType:'esriGeometryPolygon',inSR:'4326',spatialRel:'esriSpatialRelIntersects',outFields:'objectid,district_code,district_name',returnGeometry:'false'});
+ console.log('PARCEL_ZONING_INTERSECTS',JSON.stringify(zoneParts.features.map(z=>z.attributes)));
+ const rings=poly.rings||[];
+ const points=rings.flat();
+ const bounds={xmin:Math.min(...points.map(q=>q[0])),xmax:Math.max(...points.map(q=>q[0])),ymin:Math.min(...points.map(q=>q[1])),ymax:Math.max(...points.map(q=>q[1]))};
+ console.log('PARCEL_BOUNDING_BOX',JSON.stringify(bounds));
+ const inside=(lon,lat)=>{let a=false;for(const ring of rings){for(let i=0,j=ring.length-1;i<ring.length;j=i++){const v=ring[i],w=ring[j];if((v[1]>lat)!==(w[1]>lat)&&lon<(w[0]-v[0])*(lat-v[1])/(w[1]-v[1])+v[0])a=!a;}}return a;};
+ let samples=[];
+ for(let i=1;i<=5;i++)for(let j=1;j<=5;j++){const x=bounds.xmin+(bounds.xmax-bounds.xmin)*i/6,y=bounds.ymin+(bounds.ymax-bounds.ymin)*j/6;if(inside(x,y))samples.push([x,y]);}
+ samples=samples.slice(0,18);
+ const zoning=base+'Portal_Operational_Layers/PLAN_ZONE_APP_MS/MapServer/10';
+ const results=await Promise.all(samples.map(async([x,y])=>{
+  try{const d=await query(zoning,'1=1',{geometry:x+','+y,geometryType:'esriGeometryPoint',inSR:'4326',returnGeometry:'false',outFields:'district_code'});return {x,y,code:d.features.map(f=>f.attributes.district_code)}}catch(e){return {x,y,error:String(e)}}}));
+ console.log('PARCEL_INTERIOR_ZONING_SAMPLES',JSON.stringify(results));
+}
