@@ -80,6 +80,10 @@ export function screenPermit(input = {}) {
   if (a.historic === 'yes' && species.heritage === true && dbh !== null && dbh >= 8) return required('The reported heritage species is at least 8 inches DBH in a locally designated historic district.');
   if (a.property === 'commercial' && species.heritage === true && dbh !== null && dbh >= 18) return required('The reported commercial-site heritage tree meets the 18-inch threshold outside a local historic district and would also meet the lower threshold inside one.');
   if (a.property === 'undeveloped' && species.live && dbh !== null && dbh >= 18) return required('A live oak of at least 18 inches DBH on undeveloped residential property meets the permit threshold; historic designation would not remove that requirement.');
+  if (a.property === 'developed' && a.taxClass === 'commercial') return unresolved(
+    'The City parcel record classifies this property as Commercial, while the selected answer describes a habitable house or duplex. Zoning and tax classification are different from actual use. Confirm the site use before applying the developed-residential exemption; it cannot be granted on zoning alone.',
+    ['Confirm commercial versus residential property use and any special approval history']
+  );
   if (a.extra === 'present') return unresolved('An additional restriction, adjacent public-tree impact, or construction/ground-disturbance activity is present or has not been ruled out.',['Full work scope and other site restrictions'],['private','public']);
   if (!['developed','undeveloped','commercial'].includes(a.property)) return unresolved('The qualifying residential exemption must not be applied automatically to multifamily, mixed-use, or unclassified sites.',['Applicable property classification']);
   // Ordinary R-1/R-2 residential visitors are not expected to certify that
