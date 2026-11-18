@@ -1,6 +1,7 @@
 import {installResultWorkflow} from './mobile-tree-result-workflow.mjs';
 import {installPlainLanguage} from './mobile-tree-plain-language.mjs';
 import {installEmailAccess} from './mobile-tree-email-access.mjs';
+import {installAddressFacts} from './mobile-tree-address-answers.mjs';
 import {installFinalResult} from './mobile-tree-final-result.mjs';
 /* Work qualifications are independent of permit outcomes and species exemptions.
  * Sources checked 2026-11-13: adopted Chapter 65, Article IX(3), (4)(a)-(c),
@@ -110,6 +111,7 @@ if(typeof document !== 'undefined'){
   installResultWorkflow(document,getWorkQualifications);
   installPlainLanguage(document);
   installEmailAccess(document);
+  installAddressFacts(document);
   installFinalResult(document);
   // Load mapping independently: a map-library problem must not disable screening.
   import('./mobile-tree-address-map.mjs').then(({installAddressMap})=>installAddressMap(document)).catch(()=>{
