@@ -33,7 +33,7 @@ try{
  // These are controlled site facts, not a fresh cadastral or GIS verification.
  await set({scCity:'inside',scLocation:'row',scHistoric:'no',scDbh:'24',digFeet:'10',digPurpose:'utility',digStage:'not-started',digHandling:'cut',digMethod:'machinery',digArea:'row'});
  await run();
- const next=await page.textContent('#digQuickResultRows>div:last-child');
+ const next=await page.textContent('#digQuickResultRows>div:last-child>p');
  check('Cut-through headline retained',(await page.textContent('#diggingResult>h3')).includes('Change the proposed root-cutting method'));
  check('Forestry routing not replaced by method warning',next.includes('Do not cut through')&&next.includes('Urban Forestry'));
  check('Engineering ROW route visible',next.includes('Engineering right-of-way authorization'));
