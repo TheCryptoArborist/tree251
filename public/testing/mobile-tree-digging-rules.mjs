@@ -53,7 +53,8 @@ export function screenDigging(a={}){
  // Zoning, property use, a habitable dwelling, heritage status and plan status
  // do not switch OFF excavation/root protection anywhere inside Mobile.
  // A different unidentified tree still needs its own jurisdiction check.
- const scope=outside?'outside':knownCity&&!differentTree?'covered':'unresolved';
+ // An address or tree outside Mobile cannot establish jurisdiction for a different tree.
+ const scope=differentTree?'unresolved':outside?'outside':knownCity?'covered':'unresolved';
  // Administrative routing is separate from citywide root-protection screening.
  const knownApprovalIssue=publicTree||a.plan==='yes'||a.historic==='yes'||
   ['commercial','undeveloped'].includes(a.property)||a.taxClass==='commercial'||a.splitZoned===true;
