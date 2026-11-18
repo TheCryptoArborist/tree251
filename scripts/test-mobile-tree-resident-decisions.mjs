@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {screenPermit} from '../public/testing/mobile-tree-permit-rules.mjs';
-import {engineeringReview,staffPlanReview} from '../public/testing/mobile-tree-property-policy.mjs';
+import {engineeringReview,staffPlanReview,mappedProperty,reconcileParcelZones} from '../public/testing/mobile-tree-property-policy.mjs';
 
 const base={jurisdiction:'inside',location:'private',work:'removal',property:'developed',
   zoning:'r1r2',historic:'no',species:'liveoak',dbh:'40',limb:'',plan:'unknown',
@@ -37,4 +37,36 @@ test('Ordinary residential Chapter 64 status is distinct from Chapter 65',()=>{
 test('A land-disturbance permit never equals tree-removal permission',()=>{
  const r=staffPlanReview({city:'inside',location:'private',property:'commercial',zoning:'other',development:'yes',landDisturbance:'issued',plan:'unknown'});
  assert.match(r.projectNote,/not treated as tree-removal approval/i);
+});
+
+test('R-1 tax-assessed commercial parcel cannot inherit the developed residential exemption',()=>{
+ assert.equal(screenPermit({...base,property:'developed',taxClass:'commercial'}).code,'VERIFY');
+ const review=staffPlanReview({city:'inside',location:'private',zoning:'r1r2',taxClass:'commercial',property:'developed',overlay:'none',development:'no',plan:'unknown'});
+ assert.notEqual(review.code,'STANDARD_EXCLUSION');
+});
+test('Actual commercial use is screened as commercial even if the zoning is R-1',()=>{
+ const s=screenPermit({...base,property:'commercial',taxClass:'commercial',dbh:'18',species:'liveoak',plan:'no'});
+ assert.equal(s.code,'PERMIT');
+});
+test('City tax classification and full-parcel zoning are independent facts',()=>{
+ const facts={
+  zoning:{state:'inside',matches:[{attributes:{district_code:'R-1',district_name:'Single-Family Residential',sub_district_name:'Suburban',overlay:'N/A'}}]},
+  overlays:{state:'none',matches:[]},
+  parcel:{state:'boundary',matches:[{attributes:{parcel:'R022909301000006.01',classcode_desc:'Commercial',undeveloped:'No'}}]}
+ };
+ const p=mappedProperty(facts);
+ assert.equal(p.taxClass,'commercial');
+ assert.equal(p.zoning,'r1r2');
+ const verified=reconcileParcelZones(p,{propertyStatus:'ok',zoningStatus:'ok',
+  zoningDistricts:[{code:'R-1',name:'Single-Family Residential'},{code:'B-1',name:'Buffer Business'}]});
+ assert.equal(verified.splitZoned,true);
+ assert.equal(verified.taxClass,'commercial');
+ assert.equal(verified.zoning,'unknown');
+ assert.match(verified.zoneText,/R-1.*B-1/);
+});
+test('Single-zoned parcel is not incorrectly tagged as split-zoned',()=>{
+ const original={zoning:'r1r2',taxClass:'residential',splitZoned:false};
+ const actual=reconcileParcelZones(original,{propertyStatus:'ok',zoningStatus:'ok',zoningDistricts:[{code:'R-1',name:'Single-Family Residential'}]});
+ assert.equal(actual.zoning,'r1r2');
+ assert.equal(actual.splitZoned,false);
 });
