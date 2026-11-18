@@ -17,7 +17,7 @@ export function installTaskTabs(doc){
  const list=make('div','',nav);list.id='treeTaskTablist';list.setAttribute('role','tablist');list.setAttribute('aria-labelledby',title.id);
  const definitions=[
   {key:'tree-work',id:'treeWorkTab',panel:'treeWorkPanel',label:'Tree work',sub:'Pruning, removal or planting',heading:'Check tree-work permits',text:'Find the approval route for pruning, removal, planting or other tree work. A job that also disturbs roots can include the digging check without starting over.'},
-  {key:'digging',id:'diggingTab',panel:'diggingTaskPanel',label:'Digging near trees',sub:'Utilities, trenches and root disturbance',heading:'Check work near tree roots',text:'Start here for digging, utility installation, sidewalks, driveways or other ground work—even when the tree will remain. Review root protections and the applicable approval route; distance alone is not permission to dig.'}
+  {key:'digging',id:'diggingTab',panel:'diggingTaskPanel',label:'Digging near trees',sub:'Utilities, trenches and root disturbance',heading:'Check work near tree roots',text:'Use the property lookup, then start with five practical questions. Get the initial finding before adding a detailed work plan. Distance alone is not permission to dig.'}
  ];
  const buttons=new Map(),panels=new Map();
  for(const d of definitions){
@@ -30,10 +30,7 @@ export function installTaskTabs(doc){
  const stateNote=make('p','Your address, map pin and measurements are shared. After changing the work type, run the check again.',nav);stateNote.className='help';
  const announce=make('p','',nav);announce.id='taskChangeStatus';announce.className='help';announce.setAttribute('aria-live','polite');
  const flow=make('div','');flow.id='treeTaskSharedFlow';
- // Attach the destination before moving the existing form, so getElementById
- // continues to find its controls during initialization.
  panels.get('tree-work').append(flow);
- // Keep IDs and live DOM nodes unchanged, including Leaflet and email edits.
  for(const id of ['propertyMapCard','permitCard','emailCard','workCard']){const n=$(id);if(n)flow.append(n);}
  const activityBox=work.parentElement;activityBox.dataset.taskField='activity';
  const companion=$('digAlso')?.closest('div.full');if(companion)companion.dataset.taskField='companion';
@@ -52,6 +49,8 @@ export function installTaskTabs(doc){
  '#treeTaskTabs .task-intro{padding:8px 3px 0}',
  '#treeTaskTabs .task-intro p{color:var(--muted);font-size:15px}',
  '#treeTaskTabs[data-active-task="digging"] [data-task-field="activity"],#treeTaskTabs[data-active-task="digging"] [data-task-field="companion"],#treeTaskTabs[data-active-task="digging"] [data-task-field="limb"],#treeTaskTabs[data-active-task="digging"] [data-task-field="storm"]{display:none!important}',
+ '#treeTaskTabs[data-active-task="digging"]:not([data-digging-email="open"]) #emailCard,#treeTaskTabs[data-active-task="digging"]:not([data-digging-email="open"]) #workCard{display:none!important}',
+ '#treeTaskTabs[data-active-task="digging"] #permitReady{display:none!important}',
  '#taskChangeStatus:empty{display:none}',
  '@media(max-width:480px){#treeTaskTablist{gap:8px}#treeTaskTablist [role="tab"]{padding:12px 10px}#treeTaskTablist strong{font-size:16px}#treeTaskTablist span{font-size:12px}}',
  '@media print{#treeTaskTablist,#treeTaskTabs .task-choice,#treeTaskTabs .task-intro{display:none}}'
@@ -61,10 +60,11 @@ export function installTaskTabs(doc){
  const isDigging=()=>['root','roots'].includes(work.value);
  const emit=n=>{n.dispatchEvent(new win.Event('input',{bubbles:true}));n.dispatchEvent(new win.Event('change',{bubbles:true}));};
  function updateText(){
-  const digging=active==='digging';
-  const h=$('permitTitle');if(h)h.textContent=digging?'Tell us about the tree and the excavation':'Tell us about the tree work';
-  const intro=permit.querySelector('.stephead .muted');if(intro)intro.textContent=digging?'Use the shared property lookup, then describe the trunk size, digging distance and how roots will be handled. You do not need to complete a removal application first.':'Confirm the property details, choose the tree work and check the applicable requirements. Include digging if it is part of the same job.';
-  const submit=$('screenNow');if(submit)submit.textContent=digging?'Check digging and root requirements':'Check tree-work requirements';
+  const digging=active==='digging',quick=!!form.dataset.quickDiggingVersion;
+  const h=$('permitTitle');if(h)h.textContent=digging?(quick?'Quick check before digging':'Tell us about the tree and the excavation'):'Tell us about the tree work';
+  const intro=permit.querySelector('.stephead .muted');if(intro)intro.textContent=digging?(quick?'Answer the five practical questions below. Leave unknown measurements blank; add a work plan only when needed.':'Use the shared property lookup, then describe the trunk size, digging distance and how roots will be handled. You do not need to complete a removal application first.'):'Confirm the property details, choose the tree work and check the applicable requirements. Include digging if it is part of the same job.';
+  const submit=$('screenNow');if(submit)submit.textContent=digging?(quick?'Check whether tree review is needed':'Check digging and root requirements'):'Check tree-work requirements';
+  if(digging&&quick){const label=doc.querySelector('label[for="scLocation"]');if(label)label.textContent='1. Where does the tree trunk meet the ground?';}
   const heading=doc.querySelector('.hero h1');if(heading)heading.textContent='Check tree work or digging near a tree.';
   const lead=doc.querySelector('.hero .lead');if(lead)lead.textContent='Choose the task below. Use City map information and a few details about the tree to check the relevant requirements.';
  }
@@ -72,6 +72,7 @@ export function installTaskTabs(doc){
   if(!panels.has(next))return;
   const changed=active!==next;
   if(changed&&next==='digging'&&!isDigging())savedTreeWork=work.value||'removal';
+  if(changed)root.dataset.diggingEmail='closed';
   active=next;root.dataset.activeTask=next;form.dataset.taskTab=next;
   panels.get(next).append(flow);
   for(const d of definitions){const on=d.key===next;panels.get(d.key).hidden=!on;buttons.get(d.key).setAttribute('aria-selected',String(on));buttons.get(d.key).tabIndex=on?0:-1;}
@@ -79,7 +80,6 @@ export function installTaskTabs(doc){
    const target=next==='digging'?'root':savedTreeWork;
    if(work.value!==target){changing=true;try{work.value=target;emit(work);}finally{changing=false;}}
   }
-  // A stale or invalid pruning-only measurement must not block a root check.
   if(limb){
    if(next==='digging'){
     if(savedLimbDisabled===null)savedLimbDisabled=limb.disabled;
@@ -89,8 +89,7 @@ export function installTaskTabs(doc){
   updateText();
   if(fromWork&&next==='digging'&&doc.activeElement===work)buttons.get(next).focus();
   if(changed&&!initial)announce.textContent=next==='digging'?'Digging check selected. Property and measurement entries are kept; run this check for the changed work scope.':'Tree-work check selected. Property and measurement entries are kept; run this check for the changed work scope.';
-  if(url){try{win.history.replaceState(win.history.state,'','#'+next);}catch{/* File previews may not support history changes. */}}
-  // Moving a rendered map preserves its state but may change available width.
+  if(url){try{win.history.replaceState(win.history.state,'','#'+next);}catch{}}
   win.requestAnimationFrame(()=>win.dispatchEvent(new win.Event('resize')));
  }
  for(const d of definitions){
@@ -101,7 +100,6 @@ export function installTaskTabs(doc){
    else if(e.key==='ArrowLeft')target=keys[(index-1+keys.length)%keys.length];
    else if(e.key==='Home')target=keys[0];else if(e.key==='End')target=keys.at(-1);
    if(target){e.preventDefault();buttons.get(target).focus();}
-   // Enter/Space use native button activation (manual-activation tabs).
   });
  }
  work.addEventListener('change',()=>{
@@ -109,11 +107,15 @@ export function installTaskTabs(doc){
   if(!isDigging())savedTreeWork=work.value||'removal';
   activate(isDigging()?'digging':'tree-work',{fromWork:true});
  });
+ // Expose the existing editor before its normal click handler prepares and
+ // focuses the draft. No second form or automatic email is introduced.
+ doc.addEventListener('click',e=>{
+  if(active==='digging'&&e.target.closest?.('#reviewForestryEmail,#sendToEmail'))root.dataset.diggingEmail='open';
+ },true);
+ doc.addEventListener('input',e=>{if(e.target.id==='propertyMapAddress')root.dataset.diggingEmail='closed';});
  win.addEventListener('hashchange',()=>{
   const key=win.location.hash.slice(1);if(panels.has(key))activate(key,{url:false});
  });
- // Mapping loads asynchronously and inserts its card immediately before the
- // same permitCard. No clone, new lookup, or address reset is needed.
  let mapSeen=false;
  const observer=new win.MutationObserver(()=>{
   if(mapSeen||!$('propertyMapCard'))return;mapSeen=true;
@@ -123,8 +125,6 @@ export function installTaskTabs(doc){
  if($('propertyMapCard')){mapSeen=true;}else observer.observe(doc.body,{childList:true,subtree:true});
  const requested=win.location.hash.slice(1);
  activate(panels.has(requested)?requested:isDigging()?'digging':'tree-work',{url:false,initial:true});
- // The original questionnaire enables controls later in the same module load.
- // Reapply the digging-only constraint after that initialization completes.
  win.setTimeout(()=>{if(active==='digging'&&limb)limb.disabled=true;updateText();},0);
  const footer=doc.querySelector('footer');if(footer)make('span',' · Task tabs '+TASK_TABS_VERSION,footer);
  return true;
