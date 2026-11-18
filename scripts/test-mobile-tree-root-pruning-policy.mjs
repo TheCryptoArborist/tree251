@@ -27,11 +27,11 @@ for(const stage of ['damaged','exposed'])test('Urgent root status overrides the 
 test('Distance beyond screening range never exempts destructive root cutting',()=>{
  const {s,r,p}=evaluate({distanceFeet:'70',rootHandling:'cut'});assert.equal(r.code,'OUTSIDE_SCREENING_RANGE');assert.match(s.root,/does not clear root cutting/);assert.match(s.city,/critical root zone/);assert.equal(p.criticalRootZoneEstablished,false);assert.equal(s.authorizationGranted,false);
 });
-test('Unknown private-site applicability stays conditional and does not mandate email',()=>{
- const {s,p}=evaluate({location:'private',property:'unknown',rootHandling:'cut'});assert.equal(s.pending,true);assert.equal(s.readyForCity,false);assert.match(s.city,/If Chapter 65 applies/);assert.equal(p.violationDetermined,false);
+test('Unknown private use does not bypass citywide root rules or automatically mandate email',()=>{
+ const {s,p}=evaluate({location:'private',property:'unknown',rootHandling:'cut'});assert.equal(s.pending,false);assert.equal(s.readyForCity,false);assert.match(s.city,/citywide/);assert.equal(p.violationDetermined,false);
 });
-test('Ordinary residential exception keeps statutory duty separate from advice',()=>{
- const {r,s,p}=evaluate({location:'private',property:'developed',historic:'no',zoning:'r1r2',taxClass:'residential',overlay:'none',plan:'no',otherTrees:'no',rootHandling:'cut'});assert.equal(r.scope,'residential-exception');assert.match(s.city,/application exception/);assert.equal(p.ordinanceRelevant,false);assert.equal(s.readyForCity,false);assert.match(s.next,/protective advice/);
+test('Ordinary residential pruning/removal exception does not exempt root work',()=>{
+ const {r,s,p}=evaluate({location:'private',property:'developed',historic:'no',zoning:'r1r2',taxClass:'residential',overlay:'none',plan:'no',otherTrees:'no',rootHandling:'cut'});assert.equal(r.scope,'covered');assert.match(s.city,/citywide/);assert.equal(p.ordinanceRelevant,true);assert.equal(s.readyForCity,false);assert.match(s.next,/Do not cut through roots/);assert.match(s.title,/Change the proposed root-cutting method/);
 });
 test('Outside-City check cannot impose Mobile applicability',()=>{
  const {s,p}=evaluate({city:'outside',rootHandling:'stop'});assert.equal(p.ordinanceRelevant,false);assert.equal(s.readyForCity,false);assert.match(s.city,/outside the City/);
