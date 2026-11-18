@@ -84,9 +84,14 @@ jobs:
             assert.match(await page.textContent('#udcOverlayRecord'),/NOT been ruled out/);assertions++;
             eq(await page.locator('#scProperty option[value="commercial"]').count(),0);
             eq(await page.locator('#scProperty option[value="undeveloped"]').count(),1);
-            eq(await page.locator('#udcPlan option[value="no"]').count(),0);
+            eq(await page.locator('#udcPlan option[value="no"]').count(),1);
             for(const id of ['udcRequiredTree','udcCredit','udcBuffer']){eq(await page.locator('#'+id).isVisible(),false);eq(await page.inputValue('#'+id),'unknown');}
             await page.click('#applyMapAnswers');eq(await page.inputValue('#udcZoning'),'r1r2');
+            // No plan is a legitimate resident answer, but must never be tagged as GIS confirmed.
+            await page.selectOption('#udcPlan','no');
+            eq(await page.inputValue('#udcPlan'),'no');
+            assert.match(await page.textContent('#udcPlanPlainHelp'),/City map|approved|plan/i);assertions++;
+            await page.selectOption('#udcPlan','unknown');
             // Move the tree near the parcel edge; property zoning must not turn into a citizen question.
             const box=await page.locator('#propertyTreeMap').boundingBox();
             await page.locator('#propertyTreeMap').click({position:{x:box.width/2+20,y:box.height/2-18}});
