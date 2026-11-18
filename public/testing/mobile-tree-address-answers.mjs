@@ -68,10 +68,17 @@ export function installAddressFacts(doc){
   note.textContent='Map results and parcel flags are not a survey, proof of habitability, or confirmation of an approved plan. City data may need verification near boundaries.';
   const geo=$('mapFilledQuestions');
   if(confirmed&&!manual){
+   let allMapped=true;
    for(const id of ['scCity','scHistoric']){
-    const n=$(id);if(n)n.parentElement.hidden=n.selectedOptions?.[0]?.textContent?.includes('City map suggestion')||false;
+    const n=$(id);
+    if(!n)continue;
+    const verified=(n.value!=='unknown')&&!!n.selectedOptions?.[0]?.textContent?.includes('City map suggestion');
+    n.parentElement.hidden=verified;
+    if(!verified)allMapped=false;
    }
-   if(geo)geo.open=false;
+   // Keep unresolved location questions visible; do not conceal them inside
+   // a collapsed group merely because the user selected a tree pin.
+   if(geo)geo.open=!allMapped;
   }else if(!confirmed){
    for(const id of ['scCity','scHistoric']){const n=$(id);if(n)n.parentElement.hidden=false;}
   }
