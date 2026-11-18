@@ -1,5 +1,5 @@
 /* Display-only outcome summary. Does not alter permit rules. */
-export const RESULT_VERSION='0.4.3';
+export const RESULT_VERSION='0.4.4';
 export function installFinalResult(doc){
  const $=id=>doc.getElementById(id),form=$('permitForm'),out=$('permitOutput'),old=$('permitOutcome');
  if(!form||!out||!old||$('simplePermitAnswer'))return false;
