@@ -76,7 +76,7 @@ export function installQuickDigging(doc){
  const chapter=$('chapter64'),chapterAnchor=doc.createComment('quick-digging-chapter-home');if(chapter)chapter.before(chapterAnchor);
  const move=(id,destination)=>{const a=anchors.get(id);if(a&&a.box.parentElement!==destination)destination.append(a.box);};
  const label=(id,text)=>{const a=labels.get(id);if(a)a.node.textContent=text;};
- const help=(id,text)=>{const a=helps.get(id);if(a)a.node.textContent=a.text;};
+ const help=(id,text)=>{const a=helps.get(id);if(a)a.node.textContent=text;};
  const originalLegend=section.querySelector('legend')?.textContent;
  const intros=[...section.querySelectorAll(':scope > p.help')].map(n=>({node:n,text:n.textContent}));
  let mode=false,epoch=0,last=null,editingDetails=false;
