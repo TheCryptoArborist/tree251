@@ -3,8 +3,8 @@
  * A missing planning record is never evidence that no approved plan exists.
  */
 export const RESIDENT_VERSION='0.4.0';
-export const ENGINEERING_SOURCE='https://www.cityofmobile.gov/public-works/engineering-department/';
-export const ROW_LANDSCAPE_SOURCE='https://www.cityofmobile.gov/pdf/ROWAPPLICATION.pdf';
+export const ENGINEERING_SOURCE='https://www.buildmobile.org/forms-and-applications/';
+export const ROW_LANDSCAPE_SOURCE='https://www.buildmobile.org/pdf/Major-Minor%20ROW%20Permit%20Application%20-%206-1-19.pdf';
 const text=v=>String(v??'').trim();
 const upper=v=>text(v).toUpperCase();
 const attrs=f=>f?.attributes||{};
