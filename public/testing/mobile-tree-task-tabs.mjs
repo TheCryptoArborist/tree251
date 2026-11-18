@@ -55,6 +55,11 @@ export function installTaskTabs(doc){
  ].join('');
  let active=null,changing=false,savedTreeWork=['root','roots'].includes(work.value)?'removal':work.value;
  let savedLimbDisabled=null;
+ // Existing asynchronous control initializers must not re-enable an input
+ // belonging only to the inactive task and trigger hidden-field validation.
+ if(limb)new win.MutationObserver(()=>{
+  if(active==='digging'&&!limb.disabled)limb.disabled=true;
+ }).observe(limb,{attributes:true,attributeFilter:['disabled']});
  const isDigging=()=>['root','roots'].includes(work.value);
  const emit=n=>{n.dispatchEvent(new win.Event('input',{bubbles:true}));n.dispatchEvent(new win.Event('change',{bubbles:true}));};
  function updateText(){
@@ -84,6 +89,7 @@ export function installTaskTabs(doc){
    }else if(savedLimbDisabled!==null){limb.disabled=savedLimbDisabled;savedLimbDisabled=null;}
   }
   updateText();
+  if(fromWork&&next==='digging'&&doc.activeElement===work)buttons.get(next).focus();
   if(changed&&!initial)announce.textContent=next==='digging'?'Digging check selected. Property and measurement entries are kept; run this check for the changed work scope.':'Tree-work check selected. Property and measurement entries are kept; run this check for the changed work scope.';
   if(url){try{win.history.replaceState(win.history.state,'','#'+next);}catch{/* File previews may not support history changes. */}}
   // Moving a rendered map preserves its state but may change available width.
