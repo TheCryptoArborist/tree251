@@ -23,6 +23,11 @@ export function installResidentWorkflow(doc,interpret) {
     for(const d of field.parentElement.querySelectorAll('details.plain-explanation'))d.hidden=true;
   }
   const styles=make('style','',doc.head);styles.textContent='.resident-record-control[hidden]{display:none!important}#residentRecordsState,#residentPlanHelp,#residentEngineering,#residentProjectSummary{overflow-wrap:anywhere}.resident-staff-list{padding-left:22px;font-size:14px}#residentPlanHelp{margin:12px 0}#residentLDFields[hidden]{display:none!important}';
+  // This catch-all legal question was too vague for the public. Keep an
+  // unresolved internal value and display a limitation in the result rather
+  // than expecting a homeowner to certify that no other restrictions exist.
+  const extra=el('scExtra');
+  if(extra){extra.value='unknown';extra.parentElement.hidden=true;}
   const chapter=el('chapter64');
   const heading=chapter?.querySelector('legend');if(heading)heading.textContent='Project details and records City staff may need to check';
   const intro=chapter?.querySelector(':scope > p.help');if(intro)intro.textContent='You are not expected to find or interpret an approved landscape plan. For an applicable site, the prepared email asks City staff to retrieve the plan and check this tree.';
