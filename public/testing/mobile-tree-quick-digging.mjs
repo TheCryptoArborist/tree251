@@ -32,7 +32,7 @@ export function quickDiggingSummary(a,r=screenDigging(a)){
  return {title:r.title,root,city,next,pending,readyForCity,missing,authorizationGranted:false};
 }
 export function quickDiggingRecord(a,r,s=quickDiggingSummary(a,r)){
- const record=diggingRecord(a,r).split('\n').filter(line=>!line.startsWith('REQUEST:')&&!line.startsWith('No automatic City review request')&&!line.startsWith('Still needed:')).join('\n');
+ const record=diggingRecord(a,r).split('\n').filter(line=>!(s.pending&&line===r.coordination)&&!line.startsWith('REQUEST:')&&!line.startsWith('No automatic City review request')&&!line.startsWith('Still needed:')).join('\n');
  return record+'\n\nQUICK CHECK — '+QUICK_DIGGING_VERSION+'\nRoot-protection finding: '+s.root+'\nCity requirements: '+s.city+'\nNext action: '+s.next+'\n'+(s.pending?'CITY STATUS UNRESOLVED: Confirm the missing site facts; this is not a finding that a City permit or staff referral is required.':s.readyForCity?'REQUEST: Please review the proposed excavation and applicable root-protection requirements.':'No automatic City review request is made by this result.')+'\nOptional work-plan entries not supplied remain unknown; they have not been accepted as No or verified.';
 }
 export function installQuickDigging(doc){
@@ -189,6 +189,8 @@ export function installQuickDigging(doc){
  '#digQuickExplanation{font-size:14px}',
  '@media(max-width:680px){#digQuickCore{gap:18px}#digQuickResultRows h4{font-size:15px}}'
  ].join('');
+ const submit=$('screenNow');
+ if(submit)new win.MutationObserver(()=>{if(primary()&&submit.textContent!=='Check whether tree review is needed')submit.textContent='Check whether tree review is needed';}).observe(submit,{childList:true,characterData:true,subtree:true});
  form.dataset.quickDiggingVersion=QUICK_DIGGING_VERSION;
  sync();win.setTimeout(sync,20);
  const footer=doc.querySelector('footer');if(footer)make('span',' · Quick digging '+QUICK_DIGGING_VERSION,footer);
