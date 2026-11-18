@@ -6,6 +6,7 @@ on:
       - 'public/testing/mobile-tree-permit-rules.mjs'
       - 'public/testing/mobile-tree-checker.html'
       - 'scripts/test-mobile-tree-resident-decisions.mjs'
+      - 'scripts/audit-mobile-landscape-layer.mjs'
       - 'public/testing/mobile-tree-resident-workflow.mjs'
       - 'public/testing/mobile-tree-map-data.mjs'
       - '.github/workflows/mobile-tree-resident-preview.yml'
@@ -20,6 +21,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Run resident decision regression tests
         run: node --test scripts/test-mobile-tree-resident-decisions.mjs
+      - name: Discover publicly exposed landscape-plan GIS layers
+        run: node scripts/audit-mobile-landscape-layer.mjs
       - name: Install isolated test browser package
         run: npm install --prefix "$RUNNER_TEMP/resident-check" --no-audit --no-fund playwright
       - name: Test existing hosted preview and public property data
