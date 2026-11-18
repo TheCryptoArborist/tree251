@@ -19,21 +19,21 @@ const checks=[],errors=[];const check=(name,ok)=>{checks.push({name,pass:!!ok});
 try{
  const page=await browser.newPage({viewport:{width:390,height:844}});page.on('pageerror',e=>errors.push(e.message));
  await page.goto(origin+'/testing/mobile-tree-checker.html#digging',{waitUntil:'domcontentloaded'});
- await page.waitForSelector('#permitForm[data-quick-digging="yes"]');await page.waitForTimeout(250);
+ await page.waitForSelector('#permitForm[data-quick-digging="yes"][data-resident-workflow]');await page.waitForSelector('#propertyMapAddress');await page.waitForTimeout(250);
  const set=values=>page.evaluate(vs=>{for(const [id,v] of Object.entries(vs)){const n=document.getElementById(id);if(!n)throw Error(id);if(n.type==='checkbox')n.checked=v;else n.value=String(v);n.dispatchEvent(new Event('input',{bubbles:true}));n.dispatchEvent(new Event('change',{bubbles:true}));}},values);
  const run=async()=>{await page.click('#screenNow');await page.waitForSelector('#permitOutput:not(.hidden)');await page.waitForTimeout(230);};
  const draft=async()=>{await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');await page.waitForFunction(()=>document.getElementById('emailBody').dataset.format==='brief-0.8.0');await page.waitForTimeout(80);return page.inputValue('#emailBody');};
- // Deliberately controlled site facts, not a fresh property/legal determination.
  await set({propertyAddress:'Example property',contactName:'Example Contractor',phone:'555-0100',email:'example@example.invalid'});
  await set({scCity:'inside',scLocation:'row',scHistoric:'no',scWork:'root',scSpecies:'liveoak',scDbh:'24',udcZoning:'unknown',udcOverlay:'none',udcPlan:'unknown',udcDevelopment:'no',digPurpose:'utility',digArea:'row',digFeet:'10',digDepth:'24',digWidth:'2',digLength:'20',digMeasured:'measured',digMethod:'machinery',digHandling:'cut',digStage:'not-started',digOtherTrees:'no',digStorage:'no',digArborist:'Example Arborist',digCredential:'TEST-NOT-VERIFIED',dig811:'pending'});
  await run();let body=await draft();const record=await page.inputValue('#screeningRecord');const words=body.split(/\s+/).length;
+ await mkdir('test-artifacts',{recursive:true});await writeFile('test-artifacts/example-brief-email.txt',body);await writeFile('test-artifacts/full-screening-record.txt',record);
+ console.log('BRIEF_RECORD_DIAGNOSTIC',JSON.stringify({words,recordWords:record.split(/\s+/).length,quick:record.includes('QUICK CHECK'),policy:record.includes('§65-8'),method:record.includes('CUT_THROUGH_PROPOSED'),notes:(await page.textContent('#permitNotes')).slice(-1600),errors}));
  check('Brief draft under 230 words with supplied optional facts',words<230);
  check('Internal report not appended',!['QUICK CHECK','REFERENCES','SCREENING SUMMARY','CUT_THROUGH_PROPOSED','§65'].some(x=>body.includes(x)));
  check('Complete record kept separately',['QUICK CHECK','§65-8','CUT_THROUGH_PROPOSED'].every(x=>record.includes(x)));
  check('Key project facts retained',['24 inches','10 feet','depth 24 inches','width 2 feet','length near the tree 20 feet','cuts through roots','public street right-of-way'].every(x=>body.includes(x)));
  check('Credential not misrepresented',body.includes('TEST-NOT-VERIFIED (not verified'));
  check('Mailto matches short draft',await page.evaluate(()=>decodeURIComponent(document.getElementById('openEmail').href.split('&body=')[1]))===body);
- await mkdir('test-artifacts',{recursive:true});await writeFile('test-artifacts/example-brief-email.txt',body);
  await page.fill('#emailBody',body+'\nPlease call after lunch.');body=await draft();check('Reopening preserves edits',body.endsWith('Please call after lunch.'));
  await page.fill('#digFeet','11');check('Fact change invalidates draft',!(await page.locator('#draftArea').isVisible()));
  await run();body=await draft();check('Rebuilt draft uses current distance',body.includes('11 feet')&&!body.includes('10 feet'));
