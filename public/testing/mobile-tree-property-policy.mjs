@@ -2,7 +2,7 @@
  * Property/address zoning is separate from the tree pin and actual site use.
  * A missing planning record is never evidence that no approved plan exists.
  */
-export const RESIDENT_VERSION='0.4.1';
+export const RESIDENT_VERSION='0.4.2';
 export const ENGINEERING_SOURCE='https://www.buildmobile.org/forms-and-applications/';
 export const ROW_LANDSCAPE_SOURCE='https://www.buildmobile.org/pdf/Major-Minor%20ROW%20Permit%20Application%20-%206-1-19.pdf';
 const text=v=>String(v??'').trim();
@@ -60,7 +60,7 @@ export function staffPlanReview(a={}) {
   if(a.city==='outside')return {...common,code:'OUTSIDE',title:'Outside this Mobile review',reason:'The reported location is outside Mobile.',next:'Check the applicable jurisdiction.'};
   if(a.city!=='inside')return {...common,reason:'First establish whether the tree is within Mobile. Zoning and plan applicability have not been established.'};
   if(a.location!=='private')return {...common,code:'PUBLIC_REVIEW',title:construction?'Project and public-tree approvals must be coordinated':'Public-tree approval route applies',reason:construction?common.reason:'The proposed work is on public land or its location is uncertain. Private-site landscape obligations have not been inferred.',next:construction?common.next:'Follow the public-tree approval and work-qualification findings. Any related development or landscape plan must be checked separately.'};
-  if(a.zoning==='r1r2'&&a.property==='developed'&&a.development==='no'&&a.plan!=='yes'&&a.overlay==='none')return {...common,code:'STANDARD_EXCLUSION',title:'Ordinary R-1/R-2 landscaping rule does not apply',reason:'For the reported house/duplex site, ordinary Chapter 64 section 3-7 landscaping requirements exclude R-1/R-2 zoning. This does not confirm that the property has no earlier special approval or tree-protection condition.',next:'The tree-permit finding remains separate. Any known previous approval or changed project scope must still be reviewed.'};
+  if(a.zoning==='r1r2'&&a.property==='developed'&&!construction&&a.plan!=='yes'&&a.overlay==='none')return {...common,code:'STANDARD_EXCLUSION',title:'No standard Chapter 64 landscaping review indicated for this home',reason:'The property is reported as a house or duplex with a habitable structure in R-1/R-2 zoning, outside mapped special districts. Ordinary Chapter 64 section 3-7 landscaping requirements do not apply in the same way as covered development sites. No separate plan review is triggered solely because an owner does not know whether an older plan exists.',next:'For ordinary tree pruning or removal, follow the separate Chapter 65 result. No Urban Forestry email is necessary solely to confirm this standard residential landscape exclusion. If the job is part of construction or an approved plan is known, review those conditions separately.'};
   if(a.plan==='yes')return {...common,title:'Known approved plan — staff must check this tree',reason:'An approved plan is reported. Staff must check the tree against the required planting locations and retention/credit requirements on that plan. The resident is not expected to interpret the drawing.'};
   if(construction)return {...common,title:'Check tree approval separately from the land-disturbance permit'};
   return common;
