@@ -75,6 +75,7 @@ jobs:
             await page.waitForFunction(()=>document.getElementById('udcZoning').value==='r1r2',{},{timeout:50000});
             await page.waitForSelector('#applyMapAnswers:not([disabled])',{timeout:45000});
             eq(await page.inputValue('#udcOverlay'),'none');
+            eq(await page.locator('#scExtra').isVisible(),false,'Do not ask visitors to certify unknown legal restrictions');
             eq(await page.locator('#udcZoning').isVisible(),false);eq(await page.locator('#udcOverlay').isVisible(),false);
             assert.match(await page.textContent('#udcZoningRecord'),/R-1.*Single-Family/);assertions++;
             assert.match(await page.textContent('#udcOverlayRecord'),/NOT been ruled out/);assertions++;
@@ -88,7 +89,17 @@ jobs:
             await page.locator('#propertyTreeMap').click({position:{x:box.width/2+20,y:box.height/2-18}});
             await page.waitForSelector('#applyMapAnswers:not([disabled])',{timeout:45000});await page.click('#applyMapAnswers');
             eq(await page.inputValue('#udcZoning'),'r1r2');
-            await page.selectOption('#scLocation','row');await page.selectOption('#scWork','pruning');await page.selectOption('#scSpecies','liveoak');await page.fill('#scLimb','7');
+            // Ordinary residential visitors are not required to find hidden plan records.
+            await page.selectOption('#scLocation','private');
+            await page.selectOption('#scProperty','developed');
+            await page.selectOption('#scWork','removal');
+            await page.selectOption('#scSpecies','liveoak');
+            await page.fill('#scDbh','20');
+            await page.selectOption('#udcDevelopment','no');
+            await page.click('#screenNow');
+            await page.waitForSelector('#permitOutput:not(.hidden)');
+            assert.match(await page.textContent('#permitOutcome'),/No Chapter 65/i);assertions++;
+            await page.selectOption('#scLocation','row');await page.selectOption('#scWork','pruning');await page.fill('#scLimb','7');
             await page.click('#screenNow');await page.waitForSelector('#workerQualifications:not(.hidden)');
             assert.match(await page.textContent('#permitOutcome'),/Commission/);assertions++;
             assert.match(await page.textContent('#workerQualifications'),/ISA Certified Arborist/);assertions++;
