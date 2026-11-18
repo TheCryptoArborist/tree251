@@ -30,6 +30,9 @@ export function installTaskTabs(doc){
  const stateNote=make('p','Your address, map pin and measurements are shared. After changing the work type, run the check again.',nav);stateNote.className='help';
  const announce=make('p','',nav);announce.id='taskChangeStatus';announce.className='help';announce.setAttribute('aria-live','polite');
  const flow=make('div','');flow.id='treeTaskSharedFlow';
+ // Attach the destination before moving the existing form, so getElementById
+ // continues to find its controls during initialization.
+ panels.get('tree-work').append(flow);
  // Keep IDs and live DOM nodes unchanged, including Leaflet and email edits.
  for(const id of ['propertyMapCard','permitCard','emailCard','workCard']){const n=$(id);if(n)flow.append(n);}
  const activityBox=work.parentElement;activityBox.dataset.taskField='activity';
@@ -55,11 +58,6 @@ export function installTaskTabs(doc){
  ].join('');
  let active=null,changing=false,savedTreeWork=['root','roots'].includes(work.value)?'removal':work.value;
  let savedLimbDisabled=null;
- // Existing asynchronous control initializers must not re-enable an input
- // belonging only to the inactive task and trigger hidden-field validation.
- if(limb)new win.MutationObserver(()=>{
-  if(active==='digging'&&!limb.disabled)limb.disabled=true;
- }).observe(limb,{attributes:true,attributeFilter:['disabled']});
  const isDigging=()=>['root','roots'].includes(work.value);
  const emit=n=>{n.dispatchEvent(new win.Event('input',{bubbles:true}));n.dispatchEvent(new win.Event('change',{bubbles:true}));};
  function updateText(){
