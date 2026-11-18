@@ -50,11 +50,10 @@ const socialLinks = [
 
 export default function PaymentPage() {
   return (
-    <main style={{ maxWidth: 540, margin: "auto", padding: "clamp(32px, 8vw, 80px) 20px" }}>
-      <p>Peter Toler · The Arborist</p>
-      <h1 style={{ fontSize: "clamp(2rem, 7vw, 3rem)", lineHeight: 1.1, margin: "12px 0" }}>Pay for services</h1>
-      <p>Choose a payment method below, then enter the amount due for your service.</p>
-      <div style={{ display: "grid", gap: 12, marginTop: 24 }}>
+    <main style={{ maxWidth: 540, margin: "auto", padding: "18px 20px 100px", backgroundColor: "#071510", color: "#f2faf5" }}>
+      <h1 style={{ fontSize: "clamp(2rem, 7vw, 3rem)", lineHeight: 1.1, margin: "0 0 6px", color: "#ffffff", fontWeight: 700 }}>Pay for services</h1>
+      <p style={{ color: "#d4e6db" }}>Choose how to pay, then enter the amount due.</p>
+      <div style={{ display: "grid", gap: 12, marginTop: 14 }}>
         {options.map(({ name, detail, href, color, logoPath }) => (
           <a key={name} href={href} style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", background: "#174836", color: "white", borderRadius: 12, textDecoration: "none" }}>
             <span aria-hidden="true" style={{ width: 46, height: 46, flexShrink: 0, display: "grid", placeItems: "center", background: "white", borderRadius: 10 }}>
