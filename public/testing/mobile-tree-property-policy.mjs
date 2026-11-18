@@ -14,9 +14,24 @@ export function mappedProperty(facts={}) {
   const matches=z?.matches||[];
   const codes=unique(matches.map(f=>upper(attrs(f).district_code)));
   const names=unique(matches.map(f=>text(attrs(f).district_name)));
+  const parcelMatches=facts.parcel?.matches||[];
+  const parcel=parcelMatches.length===1?attrs(parcelMatches[0]):null;
+  const parcelFlag=upper(parcel?.undeveloped);
+  const parcelId=text(parcel?.parcel);
+  const classDescription=text(parcel?.classcode_desc);
+  const parcelPhrase=parcelFlag==='NO'?'This parcel is listed as NOT undeveloped (a developed-parcel indicator).':
+    parcelFlag==='YES'?'This parcel is listed as undeveloped.':
+    parcelFlag==='TBD'?'The City has not determined whether this parcel is undeveloped.':
+    'The developed/vacant status is not available.';
+  const parcelDescription=parcel?
+    'City parcel record'+(parcelId?' '+parcelId:'')+': '+parcelPhrase+
+      (classDescription?' Tax classification: '+classDescription+'.':'')+
+      ' These records do not verify that a house or duplex is habitable, that the tree is on private land, or that an approved landscaping plan exists. Please confirm the actual building and tree location.':
+    'The City did not return one unambiguous parcel record at the address point; confirm the property before selecting a building type.';
   const answer={code:codes.join(' / '),name:names.join(' / '),zoning:'unknown',overlay:'unknown',
     zoneText:codes.length?codes.join(' / ')+' — '+names.join(' / '):'Zoning could not be established from these records.',
     overlayText:'Mapped special-area status needs verification.',
+    parcelDescription,parcelFlag,parcelId,
     caution:'',source:z?.source||'',fetchedAt:z?.fetchedAt||'',priorApprovals:'not_verified'};
   // Do not guess zoning from land use, imagery, a nearby feature or a partial response.
   if(z?.state!=='inside'||codes.length!==1){
