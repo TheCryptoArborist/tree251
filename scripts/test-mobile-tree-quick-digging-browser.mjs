@@ -61,8 +61,9 @@ try{
  eq(await page.locator('#permitOutput').isVisible(),false,'Adding optional details invalidates previous finding');
  await run();await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');
  eq(await page.locator('#emailCard').isVisible(),true);eq(await page.locator('#workCard').isVisible(),true);
- matches(await page.inputValue('#emailBody'),/Depth \(in\): 24/);matches(await page.inputValue('#emailBody'),/QUICK CHECK/);
- matches(await page.inputValue('#emailBody'),/CUT_THROUGH_PROPOSED/);matches(await page.inputValue('#emailBody'),/§65-8/);
+ matches(await page.inputValue('#emailBody'),/depth 24 inches/);matches(await page.inputValue('#screeningRecord'),/QUICK CHECK/);
+ matches(await page.inputValue('#screeningRecord'),/CUT_THROUGH_PROPOSED/);matches(await page.inputValue('#screeningRecord'),/§65-8/);
+ eq((await page.inputValue('#emailBody')).includes('QUICK CHECK'),false,'Complete report stays separate from short email');
  await page.selectOption('#digHandling','expose');await page.selectOption('#digMethod','hand');await run();
  eq(await page.getAttribute('#diggingResult','data-root-method'),'SELECTIVE_PROPOSED_UNVERIFIED');
  matches(await page.textContent('#digQuickResultRows'),/not approval/);

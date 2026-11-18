@@ -94,7 +94,7 @@ try{
  matches(await page.textContent('#diggingResult'),/not a finding that a violation/);
  matches(await page.inputValue('#screeningRecord'),/Nearest excavation distance \(ft\): 10/);
  await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');
- matches(await page.inputValue('#emailBody'),/DIGGING \/ UTILITY WORK NEAR A TREE/);
+ matches(await page.inputValue('#emailBody'),/digging \/ utility work near a tree/i);
  await page.click('#treeWorkTab');
  eq(await page.inputValue('#scWork'),'removal');
  eq(await page.locator('#permitOutput').isVisible(),false);

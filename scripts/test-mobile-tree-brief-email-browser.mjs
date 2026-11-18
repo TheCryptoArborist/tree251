@@ -23,7 +23,9 @@ try{
  const set=values=>page.evaluate(vs=>{for(const [id,v] of Object.entries(vs)){const n=document.getElementById(id);if(!n)throw Error(id);if(n.type==='checkbox')n.checked=v;else n.value=String(v);n.dispatchEvent(new Event('input',{bubbles:true}));n.dispatchEvent(new Event('change',{bubbles:true}));}},values);
  const run=async()=>{await page.click('#screenNow');await page.waitForSelector('#permitOutput:not(.hidden)');await page.waitForTimeout(230);};
  const draft=async()=>{await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');await page.waitForFunction(()=>document.getElementById('emailBody').dataset.format==='brief-0.8.0');await page.waitForTimeout(80);return page.inputValue('#emailBody');};
- await set({propertyAddress:'Example property',contactName:'Example Contractor',phone:'555-0100',email:'example@example.invalid'});
+ // Set a controlled email address without dispatching a synthetic GIS-selection event.
+ await page.evaluate(()=>{document.getElementById('propertyAddress').value='Example property';});
+ await set({contactName:'Example Contractor',phone:'555-0100',email:'example@example.invalid'});
  await set({scCity:'inside',scLocation:'row',scHistoric:'no',scWork:'root',scSpecies:'liveoak',scDbh:'24',udcZoning:'unknown',udcOverlay:'none',udcPlan:'unknown',udcDevelopment:'no',digPurpose:'utility',digArea:'row',digFeet:'10',digDepth:'24',digWidth:'2',digLength:'20',digMeasured:'measured',digMethod:'machinery',digHandling:'cut',digStage:'not-started',digOtherTrees:'no',digStorage:'no',digArborist:'Example Arborist',digCredential:'TEST-NOT-VERIFIED',dig811:'pending'});
  await run();let body=await draft();const record=await page.inputValue('#screeningRecord');const words=body.split(/\s+/).length;
  await mkdir('test-artifacts',{recursive:true});await writeFile('test-artifacts/example-brief-email.txt',body);await writeFile('test-artifacts/full-screening-record.txt',record);

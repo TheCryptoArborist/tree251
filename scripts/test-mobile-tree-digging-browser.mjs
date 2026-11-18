@@ -53,7 +53,7 @@ try{
  matches(await page.inputValue('#screeningRecord'),/NOT been verified/);
  await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');
  const body=await page.inputValue('#emailBody');
- for(const re of [/DIGGING \/ UTILITY WORK NEAR A TREE/,/Nearest excavation distance \(ft\): 10/,/Width \(ft\): 2/,/Length near tree \(ft\): 20/,/Root handling: cut/,/Please review the proposed excavation/,/TEST-NOT-VERIFIED/])matches(body,re);
+ for(const re of [/digging \/ utility work near a tree/i,/Nearest digging edge: 10 feet/,/width 2 feet/,/length near the tree 20 feet/,/cuts through roots as digging proceeds/,/Please advise what root-protection measures/,/TEST-NOT-VERIFIED/])matches(body,re);
  await page.fill('#digFeet','40');
  eq(await page.locator('#permitOutput').isVisible(),false);eq(await page.locator('#draftArea').isVisible(),false);
  await set({digMethod:'boring',digHandling:'expose'});await run();
@@ -68,7 +68,7 @@ try{
  matches(await page.textContent('#diggingResult'),/citywide/);
  matches(await page.textContent('#forestryEmailCTA'),/Optional: Ask/);
  await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');
- const homeBody=await page.inputValue('#emailBody');matches(homeBody,/DIGGING \/ UTILITY/);
+ const homeBody=await page.inputValue('#emailBody');matches(homeBody,/digging \/ utility/i);
  eq(homeBody.includes('[Requested records and project review]'),false,'Citywide root protection is not an automatic staff-plan request');
  await set({scWork:'pruning',digAlso:true,scLimb:'2'});await run();
  eq(await page.getAttribute('#simplePermitAnswer','data-outcome'),'tree-permit-with-root-advice');

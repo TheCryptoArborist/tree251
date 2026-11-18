@@ -40,7 +40,8 @@ try{
  check('Saved record retains full next action',(await page.inputValue('#screeningRecord')).includes(next));
  await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');
  const email=await page.inputValue('#emailBody');
- check('Email retains method and Engineering routing',email.includes('CUT_THROUGH_PROPOSED')&&email.includes('Engineering right-of-way authorization'));
+ check('Short email retains method and ROW location',email.includes('cuts through roots as digging proceeds')&&email.includes('Digging location: public street right-of-way'));
+ check('Full policy report is not pasted into email',!email.includes('QUICK CHECK'));
  await page.fill('#digFeet','11');
  check('Changed distance invalidates result',!(await page.locator('#permitOutput').isVisible()));
  check('Changed distance invalidates draft',!(await page.locator('#draftArea').isVisible()));
