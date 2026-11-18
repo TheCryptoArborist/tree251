@@ -177,3 +177,30 @@ try{
   }catch(e){console.log('CITY_MAP_REFERENCED_UNAVAILABLE',d.itemId,String(e))}
  }
 }catch(e){console.log('CITY_MAP_EXPERIENCE_UNAVAILABLE',String(e))}
+
+
+// Larger public "City Map" app config may exceed audit helper's 1 MB cap.
+// Inspect its size and named layers only, without printing the full config.
+try{
+ const url='https://www.arcgis.com/sharing/rest/content/items/9393644bb39343a59d613453e98edadf/data?f=json';
+ const r=await fetch(url,{signal:AbortSignal.timeout(15000),headers:{Accept:'application/json'}});
+ const raw=await r.text();
+ console.log('CITY_MAP_CONFIG_RESPONSE',r.status,raw.length,raw.slice(0,120));
+ if(r.ok&&raw.trim().startsWith('{')){
+  const c=JSON.parse(raw);
+  const ds=Object.entries(c.dataSources||{}).map(([key,d])=>({key,id:d.itemId||'',name:d.sourceLabel||d.label||'',type:d.type}));
+  console.log('CITY_MAP_DATASOURCE_NAMES',JSON.stringify(ds.slice(0,100)));
+  const hits=[...raw.matchAll(/.{0,90}(?:landscape.?plan|landscap(?:e|ing)|tree.?plan|approved.?plan|tree.?preserv).{0,140}/ig)].slice(0,50).map(x=>x[0].slice(0,260));
+  console.log('CITY_MAP_LANDSCAPE_REFERENCES',JSON.stringify(hits));
+  const webIds=ds.filter(x=>x.type==='WEB_MAP'&&x.id).slice(0,16);
+  for(const wm of webIds){
+   try{
+    const uri='https://www.arcgis.com/sharing/rest/content/items/'+wm.id+'/data?f=json';
+    const resp=await fetch(uri,{signal:AbortSignal.timeout(12000)});
+    const data=JSON.parse(await resp.text());
+    const layers=[...(data.operationalLayers||[]),...(data.tables||[])];
+    console.log('CITY_MAP_WEBMAP_LAYERS',wm.name,JSON.stringify(layers.slice(0,130).map(x=>({title:x.title,url:String(x.url||'').split('?')[0]}))));
+   }catch(e){console.log('CITY_MAP_WEBMAP_UNAVAILABLE',wm.name,String(e))}
+  }
+ }
+}catch(e){console.log('CITY_MAP_DEEP_UNAVAILABLE',String(e))}
