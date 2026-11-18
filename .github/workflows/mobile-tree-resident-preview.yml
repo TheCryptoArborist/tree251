@@ -3,6 +3,9 @@ on:
   pull_request:
     paths:
       - 'public/testing/mobile-tree-property-policy.mjs'
+      - 'public/testing/mobile-tree-permit-rules.mjs'
+      - 'public/testing/mobile-tree-checker.html'
+      - 'scripts/test-mobile-tree-resident-decisions.mjs'
       - 'public/testing/mobile-tree-resident-workflow.mjs'
       - 'public/testing/mobile-tree-map-data.mjs'
       - '.github/workflows/mobile-tree-resident-preview.yml'
@@ -13,6 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
+      - name: Check independently sourced permit and development decision routes
+        uses: actions/checkout@v4
+      - name: Run resident decision regression tests
+        run: node --test scripts/test-mobile-tree-resident-decisions.mjs
       - name: Install isolated test browser package
         run: npm install --prefix "$RUNNER_TEMP/resident-check" --no-audit --no-fund playwright
       - name: Test existing hosted preview and public property data
