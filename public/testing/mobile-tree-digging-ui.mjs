@@ -119,12 +119,7 @@ export function installDigging(doc){
    $('permitOutcome').textContent=r.title;$('permitReason').textContent=r.legal;
    $('permitMissing').textContent=r.missing.length?'Still needed: '+r.missing.join('; '):'';
    $('permitNext').textContent=r.coordination+' '+r.engineering;
-   if(r.scope==='residential-exception'){
-    $('udcOutcome').textContent='No standard Chapter 64 landscaping review indicated for this home';
-    $('udcReason').textContent='The reported habitable single-/two-family site is R-1/R-2, outside the identified special districts, with no known approved plan affecting the work. This is separate from excavation safety and any Engineering approval.';
-    $('udcMissing').textContent='';$('udcNext').textContent=r.engineering;
-    $('udcNotes').textContent='An unknown historical plan alone is not treated as a mandatory staff referral for this reported ordinary residence. No site approval, utility ticket or contractor credential has been verified.';
-   }
+   // Chapter 64 landscape applicability is a separate result and cannot exempt root work.
   }
   // Run after the existing 40 ms presentation pass, without changing its
   // pruning/removal finding. A no-tree-permit result is not digging clearance.
@@ -140,7 +135,7 @@ export function installDigging(doc){
    }
    const cta=$('forestryEmailCTA'),heading=$('forestryEmailCTATitle'),button=$('reviewForestryEmail');
    const optional=!r.cityReview&&(primary()||$('permitOutcome')?.textContent.startsWith('No Chapter 65'));
-   if(cta){cta.classList.toggle('optional-email',optional);const p=cta.querySelector('p:not(.help)');if(p)p.textContent=optional?'Arborist advice and utility locating remain separate. No automatic Urban Forestry referral is made for this reported residential exception.':'Review an email containing the excavation measurements, method and root-protection questions. Nothing is sent automatically.';}
+   if(cta){cta.classList.toggle('optional-email',optional);const p=cta.querySelector('p:not(.help)');if(p)p.textContent=optional?'Arborist advice and utility locating remain separate. Citywide root protection is not waived; a City email is not automatic.':'Review an email containing the excavation measurements, method and root-protection questions. Nothing is sent automatically.';}
    if(heading)heading.textContent=optional?'Optional: Ask about the digging plan':'Ask Urban Forestry to review the digging plan';
    if(button){button.textContent=optional?'Ask a digging question (optional)':'Review my digging-plan email';button.classList.toggle('secondary',optional);}
   },80);
@@ -148,9 +143,9 @@ export function installDigging(doc){
  doc.addEventListener('submit',e=>{
   if(e.target===form){const token=++epoch;last=null;panel.hidden=true;out.dataset.diggingPrimary='no';win.queueMicrotask(()=>render(token));}
   if(e.target===$('workForm'))win.queueMicrotask(()=>{
-   // Remove only the legacy module's generated staff-plan request for a root-
-   // only ordinary home result. Keep user notes and the new root record intact.
-   if(!last||!primary()||last.result.scope!=='residential-exception')return;
+   // A citywide root-protection check is not automatically a City application.
+   // Remove only a generated staff-plan request when no specific referral was identified.
+   if(!last||!primary()||last.result.cityReview)return;
    const body=$('emailBody');if(!body)return;const start='[Requested records and project review]',end='[/Requested records and project review]';
    const i=body.value.indexOf(start),j=body.value.indexOf(end,i);
    if(i>=0&&j>=i){body.value=(body.value.slice(0,i)+body.value.slice(j+end.length)).trim();body.dispatchEvent(new win.Event('input',{bubbles:true}));}
