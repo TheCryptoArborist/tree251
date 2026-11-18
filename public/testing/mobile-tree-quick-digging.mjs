@@ -4,7 +4,7 @@ import {rootPruningConclusion,ROOT_PRUNING_SOURCES} from './mobile-tree-root-pru
  * Omitted inputs remain unknown. No new exemption, safe radius, authorization,
  * automatic violation finding, credential verification or network request.
  */
-export const QUICK_DIGGING_VERSION='0.7.2';
+export const QUICK_DIGGING_VERSION='0.7.3';
 export function quickDiggingSummary(a,r=screenDigging(a)){
  if(!r.active)return null;
  const pending=r.scope==='unresolved'||r.approvalRouteUnresolved===true;
@@ -29,9 +29,12 @@ export function quickDiggingSummary(a,r=screenDigging(a)){
  else if(r.range.band==='unknown')next='Supply the missing measurements, or have an ISA Certified Arborist assess the proposed work. Do not guess a safe digging distance.';
  else if(r.range.band==='beyond')next='Do not treat this distance result as excavation approval. Confirm the applicable site requirements and stop for root evaluation if roots are encountered.';
  else next='Have an ISA Certified Arborist review the excavation route before digging or cutting roots.';
- if(r.cityReview&&!['DAMAGE_REPORTED','ROOTS_EXPOSED'].includes(r.code))next+=' Coordinate the root-protection and approval route with Urban Forestry.';
  const urgent=['DAMAGE_REPORTED','ROOTS_EXPOSED'].includes(r.code);
  if(!urgent&&['cut','expose','stop'].includes(a.rootHandling))next=rootRule.action+(pending?' '+missing:'');
+ // Method advice must not replace the independently indicated approval route.
+ if(r.cityReview&&!urgent)next+=' Coordinate the root-protection and approval route with Urban Forestry.';
+ // The excavation can occupy the public ROW even when the trunk is on private land.
+ if(a.excavationArea==='row'&&r.scope==='covered')next+=' '+r.engineering;
  const title=!urgent&&r.scope==='covered'&&a.rootHandling==='cut'?'Change the proposed root-cutting method':r.title;
  const readyForCity=r.cityReview===true;
  return {title,root,city,next,pending,readyForCity,missing,rootRule,authorizationGranted:false};
@@ -73,7 +76,7 @@ export function installQuickDigging(doc){
  const chapter=$('chapter64'),chapterAnchor=doc.createComment('quick-digging-chapter-home');if(chapter)chapter.before(chapterAnchor);
  const move=(id,destination)=>{const a=anchors.get(id);if(a&&a.box.parentElement!==destination)destination.append(a.box);};
  const label=(id,text)=>{const a=labels.get(id);if(a)a.node.textContent=text;};
- const help=(id,text)=>{const a=helps.get(id);if(a)a.node.textContent=text;};
+ const help=(id,text)=>{const a=helps.get(id);if(a)a.node.textContent=a.text;};
  const originalLegend=section.querySelector('legend')?.textContent;
  const intros=[...section.querySelectorAll(':scope > p.help')].map(n=>({node:n,text:n.textContent}));
  let mode=false,epoch=0,last=null,editingDetails=false;
