@@ -5,7 +5,7 @@ import {createRequire} from 'node:module';
 const require=createRequire(process.env.BROWSER_DEPS+'/package.json');
 const {chromium}=require('playwright');
 const origin=process.env.PREVIEW_ORIGIN||'https://deploy-preview-9--tree251.netlify.app';
-const paths=['public/testing/mobile-tree-quick-digging.mjs','public/testing/mobile-tree-worker-qualifications.mjs'];
+const paths=['public/testing/mobile-tree-quick-digging.mjs','public/testing/mobile-tree-worker-qualifications.mjs','public/testing/mobile-tree-task-tabs.mjs'];
 const expected=await Promise.all(paths.map(p=>readFile(p,'utf8')));
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));let ready=false;
 for(let i=0;i<45;i++){
@@ -24,18 +24,16 @@ try{
  const run=async()=>{await page.click('#screenNow');await page.waitForSelector('#diggingResult[data-quick-version="0.7.0"]:not([hidden])');await page.waitForTimeout(230);};
  eq(await page.locator('#digQuickCore input:visible,#digQuickCore select:visible').count(),5,'Five core controls visible, not a 20-field work plan');
  for(const id of ['scLocation','digPurpose','scDbh','digFeet','digStage'])eq(await page.locator('#'+id).isVisible(),true,id+' visible');
- for(const id of ['scProperty','scSpecies','udcPlan','digDepth','digWidth','digLength','digArborist','digCredential','dig811'])eq(await page.locator('#'+id).isVisible(),false,id+' deferred');
+ for(const id of ['scProperty','scSpecies','udcPlan','digDepth','digWidth','digLength','digArborist','digCredential','dig811','emailCard','workCard'])eq(await page.locator('#'+id).isVisible(),false,id+' deferred');
  matches(await page.textContent('#screenNow'),/Check whether tree review is needed/);
  await mkdir('test-artifacts/screenshots',{recursive:true});
  await page.locator('#diggingFields').screenshot({path:'test-artifacts/screenshots/quick-digging-form-mobile.png'});
- // Immediate warning must not depend on dimensions or clicking submit.
  await page.selectOption('#digStage','damaged');
  eq(await page.locator('#digQuickImmediate').isVisible(),true);
  matches(await page.textContent('#digQuickImmediate'),/Pause excavation/);
  eq(await page.inputValue('#scDbh'),'');eq(await page.inputValue('#digFeet'),'');
  await set({scCity:'inside',scLocation:'row',scHistoric:'no',digPurpose:'utility'});await run();
  eq(await page.getAttribute('#diggingResult','data-outcome'),'DAMAGE_REPORTED');
- // Five practical answers suffice for a first concern finding. Other answers remain unknown.
  await page.selectOption('#digStage','not-started');await page.fill('#scDbh','24');await page.fill('#digFeet','10');await run();
  eq(await page.getAttribute('#diggingResult','data-outcome'),'CLOSE_EXCAVATION');
  eq(await page.locator('#digQuickResultRows>div').count(),3);
@@ -48,10 +46,10 @@ try{
  await page.selectOption('#digMethod','machinery');await page.selectOption('#digHandling','cut');await page.fill('#digDepth','24');await page.fill('#digWidth','2');
  eq(await page.locator('#permitOutput').isVisible(),false,'Adding optional details invalidates previous finding');
  await run();await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');
+ eq(await page.locator('#emailCard').isVisible(),true);eq(await page.locator('#workCard').isVisible(),true);
  matches(await page.inputValue('#emailBody'),/Depth \(in\): 24/);matches(await page.inputValue('#emailBody'),/QUICK CHECK/);
  await page.fill('#digFeet','40');eq(await page.locator('#draftArea').isVisible(),false);
  await run();eq(await page.getAttribute('#diggingResult','data-outcome'),'OUTSIDE_SCREENING_RANGE');matches(await page.textContent('#digQuickResultRows'),/does not clear/);
- // Private unknown property requires facts, not a fabricated residential exemption or mandatory email.
  await page.selectOption('#scLocation','private');await run();
  matches(await page.textContent('#digQuickResultRows'),/City requirements are not yet determined/);
  matches(await page.textContent('#forestryEmailCTA'),/email is optional/);
@@ -62,7 +60,6 @@ try{
  await set({scProperty:'developed',udcZoning:'r1r2',udcOverlay:'none',udcPlan:'no',digOtherTrees:'no'});await run();
  eq(await page.getAttribute('#diggingResult','data-scope'),'residential-exception');
  matches(await page.textContent('#digQuickResultRows'),/application exception/);
- // Switching task must keep the same nodes/values and restore the original tree-work form.
  await page.click('#treeWorkTab');eq(await page.locator('#digQuickCore').isVisible(),false);
  eq(await page.locator('#scProperty').isVisible(),true);eq(await page.locator('#scSpecies').isVisible(),true);
  eq(await page.inputValue('#scDbh'),'24');eq(await page.inputValue('#digFeet'),'40');
@@ -77,6 +74,7 @@ try{
  const ids=await page.locator('[id]').evaluateAll(ns=>ns.map(n=>n.id));eq(new Set(ids).size,ids.length,'No duplicated controls');
  for(const width of [320,390,820,1200]){await page.setViewportSize({width,height:900});eq(await page.evaluate(()=>document.body.scrollWidth<=innerWidth+2),true,'No horizontal overflow '+width);}
  await page.fill('#propertyMapAddress','Different address');eq(await page.inputValue('#digFeet'),'');eq(await page.locator('#diggingResult').isVisible(),false);
+ eq(await page.locator('#emailCard').isVisible(),false);eq(await page.locator('#workCard').isVisible(),false);
  assert.deepEqual(errors,[]);assertions++;
  console.log('QUICK_DIGGING_BROWSER_PASS',JSON.stringify({assertions,fiveCoreQuestions:true,immediateDamageWarning:true,unknownNotNo:true,optionalDetailHandoff:true,phoneViewport:true,physicalIPhone:false,controlledLocationFacts:true,noEmailSent:true}));
 }catch(e){if(page){await mkdir('test-artifacts/screenshots',{recursive:true});await page.screenshot({path:'test-artifacts/screenshots/quick-digging-failure.png',fullPage:true}).catch(()=>{});}throw e;}finally{await browser.close();}
