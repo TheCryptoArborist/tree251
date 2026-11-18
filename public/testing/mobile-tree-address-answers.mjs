@@ -50,6 +50,19 @@ export function installAddressFacts(doc){
   rows('Property zoning',safeText('udcZoningRecord'));
   rows('Mapped special areas',safeText('udcOverlayRecord'));
   rows('Parcel / development',safeText('residentParcelStatus'));
+  const ci=latestContext?.facts?.cityProperty,park=latestContext?.facts?.park,planning=latestContext?.facts?.planning;
+  const mapMatch=f=>f?.matches?.length||0;
+  const near=f=>f?.nearby?.length||0;
+  const places=(ci?.state==='unavailable'||park?.state==='unavailable')?'Some City-property or park map records were unavailable. Public/private ownership remains unverified.':
+    mapMatch(ci)||mapMatch(park)?'A City-property or park map polygon intersects the selected point. Confirm the legal boundary and City authorization before work.':
+    near(ci)||near(park)?'Near a mapped public-property or park boundary; ownership is uncertain.':
+    'No City-property or park polygon was returned at the selected point. This does NOT establish private ownership.';
+  rows('City land / parks',confirmed?places:'Position the actual tree before checking mapped City property or parks.');
+  const planCount=mapMatch(planning);
+  rows('Public planning cases',!confirmed?'Check the tree point first.':
+    planning?.state==='unavailable'?'This public planning layer was unavailable.':
+    planCount?planCount+' public planning case(s) mapped at this point; the approved site or landscape plan must still be examined.':
+    'No public planning case was matched at this point; this does NOT prove that no approved landscape plan exists.');
   rows('Approved landscape plan','Not verified by the currently connected public GIS services. If you know the status, choose Yes or No below; otherwise choose I don’t know.');
   rows('Tree ownership / ROW','Not determined from the house address or parcel line alone. Confirm where the trunk meets the ground.');
   note.textContent='Map results and parcel flags are not a survey, proof of habitability, or confirmation of an approved plan. City data may need verification near boundaries.';
