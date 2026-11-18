@@ -6,7 +6,7 @@ import {QUICK_DIGGING_VERSION} from '../public/testing/mobile-tree-quick-digging
 const require=createRequire(process.env.BROWSER_DEPS+'/package.json');
 const {chromium}=require('playwright');
 const origin=process.env.PREVIEW_ORIGIN||'https://deploy-preview-9--tree251.netlify.app';
-const paths=['public/testing/mobile-tree-quick-digging.mjs','public/testing/mobile-tree-worker-qualifications.mjs','public/testing/mobile-tree-task-tabs.mjs','public/testing/mobile-tree-root-pruning-policy.mjs'];
+const paths=['public/testing/mobile-tree-quick-digging.mjs','public/testing/mobile-tree-worker-qualifications.mjs','public/testing/mobile-tree-task-tabs.mjs','public/testing/mobile-tree-root-pruning-policy.mjs','public/testing/mobile-tree-digging-rules.mjs','public/testing/mobile-tree-digging-ui.mjs'];
 const expected=await Promise.all(paths.map(p=>readFile(p,'utf8')));
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));let ready=false;
 for(let i=0;i<45;i++){
@@ -73,16 +73,21 @@ try{
  await page.fill('#digFeet','40');eq(await page.locator('#draftArea').isVisible(),false);
  await run();eq(await page.getAttribute('#diggingResult','data-outcome'),'OUTSIDE_SCREENING_RANGE');matches(await page.textContent('#digQuickResultRows'),/does not clear/);
  await page.selectOption('#scLocation','private');await run();
- matches(await page.textContent('#digQuickResultRows'),/City requirements are not yet determined/);
- matches(await page.textContent('#digQuickResultRows'),/If Chapter 65 applies/);
- matches(await page.textContent('#forestryEmailCTA'),/email is optional/);
+ matches(await page.textContent('#digQuickResultRows'),/citywide/);
+ matches(await page.textContent('#digQuickResultRows'),/Selective root pruning must be supervised/);
+ matches(await page.textContent('#forestryEmailCTA'),/No City email is automatically required/);
  const pendingRecord=await page.inputValue('#screeningRecord');
- matches(pendingRecord,/CITY STATUS UNRESOLVED/);
+ matches(pendingRecord,/citywide/);
  eq(pendingRecord.includes('Send the proposed excavation and root-handling plan to Urban Forestry'),false);
+ // Unknown jurisdiction still requires a fact check, not an exemption.
+ await set({scCity:'unknown'});await run();
  await page.click('#digQuickConfirm');eq(await page.locator('#scProperty').isVisible(),true);
- await set({scProperty:'developed',udcZoning:'r1r2',udcOverlay:'none',udcPlan:'no',digOtherTrees:'no'});await run();
- eq(await page.getAttribute('#diggingResult','data-scope'),'residential-exception');
- matches(await page.textContent('#digQuickResultRows'),/application exception/);
+ await set({scCity:'inside',scProperty:'developed',udcZoning:'r1r2',udcOverlay:'none',udcPlan:'no',digOtherTrees:'no'});await run();
+ eq(await page.getAttribute('#diggingResult','data-scope'),'covered');
+ matches(await page.textContent('#digQuickResultRows'),/citywide/);
+ matches(await page.textContent('#digQuickResultRows'),/non-selective root pruning.*prohibited/s);
+ matches(await page.textContent('#digQuickResultRows'),/Selective root pruning must be supervised/);
+ eq((await page.inputValue('#screeningRecord')).includes('qualifies for the existing Chapter 65 application exception'),false);
  await page.click('#treeWorkTab');eq(await page.locator('#digQuickCore').isVisible(),false);
  eq(await page.locator('#digQuickRootMethod').isVisible(),false);
  eq(await page.locator('#scProperty').isVisible(),true);eq(await page.locator('#scSpecies').isVisible(),true);
@@ -101,5 +106,5 @@ try{
  eq(await page.locator('#digQuickRootMethod').isVisible(),false);
  eq(await page.locator('#emailCard').isVisible(),false);eq(await page.locator('#workCard').isVisible(),false);
  assert.deepEqual(errors,[]);assertions++;
- console.log('QUICK_DIGGING_BROWSER_PASS',JSON.stringify({assertions,fiveCoreQuestions:true,chapter65RootMethods:true,conditionalMethodFollowup:true,immediateDamageWarning:true,unknownNotNo:true,optionalDetailHandoff:true,phoneViewport:true,physicalIPhone:false,controlledLocationFacts:true,noEmailSent:true}));
+ console.log('QUICK_DIGGING_BROWSER_PASS',JSON.stringify({assertions,fiveCoreQuestions:true,chapter65RootMethods:true,citywideDigging:true,residentialRootExemption:false,conditionalMethodFollowup:true,immediateDamageWarning:true,unknownNotNo:true,optionalDetailHandoff:true,phoneViewport:true,physicalIPhone:false,controlledLocationFacts:true,noEmailSent:true}));
 }catch(e){if(page){await mkdir('test-artifacts/screenshots',{recursive:true});await page.screenshot({path:'test-artifacts/screenshots/quick-digging-failure.png',fullPage:true}).catch(()=>{});}throw e;}finally{await browser.close();}
