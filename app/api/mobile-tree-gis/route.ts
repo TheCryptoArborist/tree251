@@ -40,7 +40,7 @@ async function query(url:string,params:Record<string,string>,fields:string) {
     const raw=await response.text();if(raw.length>4000000)throw new Error('SIZE');
     const data=JSON.parse(raw) as FeatureSet;
     if(data.error||!Array.isArray(data.features)||data.exceededTransferLimit)throw new Error('INCOMPLETE');
-    if(data.features.length && (data.spatialReference?.latestWkid??data.spatialReference?.wkid)!==4326)throw new Error('COORDINATES');
+    if(data.features.length && params.returnGeometry!=='false' && (data.spatialReference?.latestWkid??data.spatialReference?.wkid)!==4326)throw new Error('COORDINATES');
     return {features:data.features.map(f=>({attributes:normalizedAttributes(f.attributes,fields),geometry:f.geometry})),spatialReference:{wkid:4326}};
   } finally {clearTimeout(timeout);}
 }
