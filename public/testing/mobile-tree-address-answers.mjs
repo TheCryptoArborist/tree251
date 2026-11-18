@@ -84,6 +84,9 @@ export function installAddressFacts(doc){
  };
  const obs=new win.MutationObserver(()=>{if(attach())obs.disconnect();});
  if(!attach())obs.observe(doc.body,{childList:true,subtree:true});
+ // Property lookup finishes independently of the tree-point query.
+ // React to its ready/unavailable transition, not just the initial map click.
+ new win.MutationObserver(render).observe(form,{attributes:true,attributeFilter:['data-property-records']});
  const zone=$('udcZoningRecord');
  if(zone)new win.MutationObserver(render).observe(zone,{characterData:true,childList:true,subtree:true});
  for(const e of ['change','input'])form.addEventListener(e,ev=>{
