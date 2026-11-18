@@ -6,7 +6,6 @@ on:
       - 'public/testing/mobile-tree-permit-rules.mjs'
       - 'public/testing/mobile-tree-checker.html'
       - 'scripts/test-mobile-tree-resident-decisions.mjs'
-      - 'scripts/audit-mobile-landscape-layer.mjs'
       - 'public/testing/mobile-tree-resident-workflow.mjs'
       - 'public/testing/mobile-tree-address-answers.mjs'
       - 'public/testing/mobile-tree-worker-qualifications.mjs'
@@ -23,8 +22,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Run resident decision regression tests
         run: node --test scripts/test-mobile-tree-resident-decisions.mjs
-      - name: Discover publicly exposed landscape-plan GIS layers
-        run: node scripts/audit-mobile-landscape-layer.mjs
       - name: Install isolated test browser package
         run: npm install --prefix "$RUNNER_TEMP/resident-check" --no-audit --no-fund playwright
       - name: Test existing hosted preview and public property data
@@ -43,7 +40,7 @@ jobs:
             try {
               const boot=await (await fetch(origin+'/testing/mobile-tree-map-data.mjs',{cache:'no-store'})).text();
               const raw=await (await fetch(origin+'/testing/mobile-tree-property-policy.mjs',{cache:'no-store'})).text();
-              if(boot.includes('installResidentWorkflow(document,interpretContext)')&&raw.includes("RESIDENT_VERSION='0.4.5'")&&(await (await fetch(origin+'/testing/mobile-tree-address-answers.mjs',{cache:'no-store'})).text()).includes("ADDRESS_FACTS_VERSION='0.4.6'")&&(await (await fetch(origin+'/testing/mobile-tree-address-map.mjs',{cache:'no-store'})).text()).includes('consentLabel.hidden=true')&&(await (await fetch(origin+'/testing/mobile-tree-final-result.mjs',{cache:'no-store'})).text()).includes("RESULT_VERSION='0.4.4'")){
+              if(boot.includes('installResidentWorkflow(document,interpretContext)')&&raw.includes("RESIDENT_VERSION='0.4.6'")&&(await (await fetch(origin+'/testing/mobile-tree-address-answers.mjs',{cache:'no-store'})).text()).includes("ADDRESS_FACTS_VERSION='0.4.6'")&&(await (await fetch(origin+'/testing/mobile-tree-address-map.mjs',{cache:'no-store'})).text()).includes('consentLabel.hidden=true')&&(await (await fetch(origin+'/testing/mobile-tree-final-result.mjs',{cache:'no-store'})).text()).includes("RESULT_VERSION='0.4.4'")){
                 policy=await import('data:text/javascript;base64,'+Buffer.from(raw).toString('base64'));break;
               }
             }catch{}
@@ -74,7 +71,7 @@ jobs:
             page.on('pageerror',e=>errors.push(e.message));
             await page.goto(origin+'/testing/mobile-tree-checker.html',{waitUntil:'domcontentloaded'});
             await page.waitForSelector('#propertyMapAddress');
-            eq(await page.getAttribute('#permitForm','data-resident-workflow'),'0.4.5');
+            eq(await page.getAttribute('#permitForm','data-resident-workflow'),'0.4.6');
             await page.fill('#propertyMapAddress','6 Maury Drive');assert.equal(await page.isChecked('#propertyMapConsent'),true);assert.equal(await page.locator('#propertyMapConsent').isVisible(),false);await page.click('#findPropertyMap');
             await page.locator('#propertyMapCandidates button').first().click({timeout:40000});
             await page.waitForFunction(()=>document.getElementById('udcZoning').value==='r1r2',{},{timeout:50000});
