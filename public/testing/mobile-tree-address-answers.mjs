@@ -113,6 +113,7 @@ export function installAddressFacts(doc){
   if(['scCity','scHistoric'].includes(ev.target?.id)&&confirmed){
    const selected=ev.target.selectedOptions?.[0]?.textContent||'';
    if(!selected.includes('City map suggestion'))manual=true;
+   win.setTimeout(render,0);
   }
  });
  const foot=doc.querySelector('footer');if(foot)make('span',' · Address answers '+ADDRESS_FACTS_VERSION,foot);
