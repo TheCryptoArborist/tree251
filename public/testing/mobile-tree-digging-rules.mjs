@@ -7,6 +7,17 @@
  * is inferred from DBH measured at 4.5 feet.
  */
 export const DIGGING_VERSION='0.5.0';
+// Project expert clarification (former City Urban Forester), 2026-11-18:
+// screen excavation/root protection citywide, including occupied R-1/R-2 lots.
+// This is the project's scope interpretation, not a verbatim ordinance quote.
+// The published general application exception in Article I(2) remains an
+// explicit legal-source review item; do not erase it or declare adjudicated law.
+export const DIGGING_SCOPE_VERSION='0.7.2';
+export const DIGGING_SCOPE_BASIS=Object.freeze({
+ type:'project-expert-interpretation',date:'2026-11-18',
+ interpretation:'Citywide digging/root-protection screening; no occupied-residential bypass.',
+ sourceReview:'Read Article I(2) together with Articles VIII and X; statutory scope interpretation requires regulatory acceptance before production.'
+});
 export const DIGGING_SOURCES=Object.freeze([
  {label:'Chapter 65: application and critical root zone definition (pages 2–4)',url:'https://mcclibraryfunctions.azurewebsites.us/api/ordinanceDownload/11265/1073837/pdf#page=2'},
  {label:'Chapter 65: construction root protection, section 65-8 (page 9)',url:'https://mcclibraryfunctions.azurewebsites.us/api/ordinanceDownload/11265/1073837/pdf#page=9'},
@@ -38,14 +49,18 @@ export function screenDigging(a={}){
  const knownCity=a.city==='inside';
  const publicTree=['row','park','city','city-property'].includes(a.location)&&target==='same';
  const differentTree=target!=='same';
- const coveredSite=['commercial','undeveloped'].includes(a.property)||a.historic==='yes'||a.plan==='yes';
- const household=knownCity&&target==='same'&&a.location==='private'&&a.property==='developed'&&a.historic==='no'&&a.zoning==='r1r2'&&a.taxClass!=='commercial'&&a.splitZoned!==true&&a.overlay==='none'&&a.plan!=='yes'&&a.otherTrees==='no';
  const outside=a.city==='outside';
- const applicable=knownCity&&!differentTree&&(publicTree||coveredSite)&&!household;
- const scope=outside?'outside':household?'residential-exception':applicable?'covered':'unresolved';
+ // Zoning, property use, a habitable dwelling, heritage status and plan status
+ // do not switch OFF excavation/root protection anywhere inside Mobile.
+ // A different unidentified tree still needs its own jurisdiction check.
+ const scope=outside?'outside':knownCity&&!differentTree?'covered':'unresolved';
+ // Administrative routing is separate from citywide root-protection screening.
+ const knownApprovalIssue=publicTree||a.plan==='yes'||a.historic==='yes'||
+  ['commercial','undeveloped'].includes(a.property)||a.taxClass==='commercial'||a.splitZoned===true;
+ const approvalRouteUnresolved=scope==='covered'&&!['private','row','park','city','city-property'].includes(a.location);
  const damaged=a.stage==='damaged', exposed=a.stage==='exposed';
  const indiscriminate=a.rootHandling==='cut';
- const cityReview=!outside&&!household;
+ const cityReview=scope==='covered'&&knownApprovalIssue;
  let title,code;
  if(damaged){code='DAMAGE_REPORTED';title='Stop digging near the damaged roots and get an arborist assessment';}
  else if(exposed){code='ROOTS_EXPOSED';title='Pause at exposed roots before continuing';}
@@ -61,13 +76,11 @@ export function screenDigging(a={}){
   if(range.band==='possible')proximity+=' That is between the lower and upper ends of the range.';
   if(range.band==='beyond')proximity+=' Roots can still be affected beyond this estimate.';
  }
- const legal=scope==='residential-exception'
-  ? 'For the reported ordinary private house/duplex lot outside a local historic district, the Chapter 65 application exception is indicated. This is not permission to injure roots or confirmation that no Engineering, ownership or project requirements apply.'
-  :scope==='outside'
+ const legal=scope==='outside'
    ? 'This tool makes no City of Mobile determination outside the city. Check the applicable jurisdiction; the root-protection advice still matters.'
    :scope==='covered'
-    ? 'Chapter 65 root protection must be considered for this public tree or covered site. On covered construction or improvements, section 65-8 prohibits non-selective root pruning in the critical root zone and requires ISA Certified Arborist supervision for selective root pruning. Confirm the applicable authorization before work.'
-    : 'The affected tree or site is not sufficiently established to decide Chapter 65 applicability. Identify the affected tree and location; do not apply an ordinary-house exemption to a public, neighboring, or unidentified tree.';
+    ? 'This checker applies the Chapter 65 digging/root-protection check citywide, including private R-1/R-2 lots with habitable homes. Under section 65-8, non-selective root pruning in the critical root zone of a tree retained during construction or improvements is prohibited; selective root pruning requires ISA Certified Arborist supervision. A separate approval route must be evaluated for the actual project.'
+    : 'Confirm the jurisdiction of the affected tree. Once it is established as inside Mobile, the digging/root-protection check is not bypassed because of residential zoning or a habitable home.';
  let handling=indiscriminate
   ? 'Do not plan to cut or tear whatever roots lie in the trench. Expose and evaluate individual roots with an ISA Certified Arborist before deciding what may be cut. On covered sites, the described method may conflict with sections 65-8 and 65-10; this is not a finding that a violation has occurred.'
   :a.rootHandling==='expose'
@@ -77,11 +90,16 @@ export function screenDigging(a={}){
  else if(exposed)handling='Protect the exposed roots from further work and have the method reviewed before proceeding. '+handling;
  const coordination=cityReview
   ? 'Send the proposed excavation and root-handling plan to Urban Forestry to establish the tree-protection and approval route. The checker does not issue a tree permit or choose a Tree Commission application solely from this distance.'
-  : 'Arborist advice remains recommended; an Urban Forestry email is not automatically required by this residential screening result. Separate approvals may still apply.';
+  :scope==='outside'
+   ? 'Check the applicable local authority. This tool does not apply Mobile requirements outside the city.'
+   :scope==='unresolved'
+    ? 'Confirm the affected tree and its jurisdiction first. Unknown facts alone do not establish a City permit or mandatory email.'
+    : 'Comply with the root-protection and supervision requirements. A City permit or email is not automatically required solely because the citywide digging check applies; separate project approvals remain to be determined.';
  const engineering=a.excavationArea==='row'
   ? 'The excavation is reported in the public street area. Check Engineering right-of-way authorization independently of where the tree stands.'
   : 'Confirm any applicable Engineering or land-disturbance approval for the full work scope. A utility or construction permit is not automatically tree-root authorization.';
  const notes=[
+  'Scope basis: citywide digging screening follows the project owner’s clarification as a former City Urban Forester (18 November 2026). This is recorded separately from the published Article I(2) general residential exception, not quoted as a statutory amendment.',
   'Screening estimate only: this is not a surveyed critical root zone, legal setback, approved root cut, or risk assessment. Species tolerance, tree age and health influence the appropriate root zone.',
   'The outside-trunk-edge distance is the tool’s field-measurement convention, not an ordinance-specified measuring point. Depth, width and length describe the project; this version does not use them to calculate permission or stability.',
   'ISA credentials, professional findings and any City authorization have NOT been verified. A tree-service name is not proof of arborist supervision.',
@@ -101,11 +119,11 @@ export function screenDigging(a={}){
  for(const [key,label] of [['purpose','work purpose'],['excavationArea','excavation location'],['method','digging method'],['rootHandling','plan for encountered roots'],['stage','whether work or root damage has already occurred']])if(!a[key]||a[key]==='unknown')missing.push(label);
  const dimensions={depthInches:num(a.depthInches),widthFeet:num(a.widthFeet),lengthFeet:num(a.lengthFeet)};
  const locate='Contact Alabama 811 before excavation, allow the required notice period, and confirm utility-operator responses. A locate ticket does not authorize cutting tree roots. Reported locate status: '+(a.locate||'unknown')+' (not verified).';
- return {active:true,version:DIGGING_VERSION,code,title,scope,cityReview,range,proximity,legal,handling,coordination,engineering,locate,notes,missing,dimensions,authorizationGranted:false,violationDetermined:false};
+ return {active:true,version:DIGGING_VERSION,scopeVersion:DIGGING_SCOPE_VERSION,scopeBasis:DIGGING_SCOPE_BASIS,code,title,scope,cityReview,approvalRouteUnresolved,range,proximity,legal,handling,coordination,engineering,locate,notes,missing,dimensions,authorizationGranted:false,violationDetermined:false};
 }
 export function diggingRecord(a,r){
  if(!r?.active)return '';
  const text=v=>String(v??'').replace(/[\r\n]+/g,' ').trim().slice(0,180)||'Not supplied';
  const inputs=[['Purpose',a.purpose],['Tree being checked',a.target],['Tree location',a.location],['Excavation location',a.excavationArea],['Trunk diameter (in)',a.target==='same'?a.dbh:a.otherDbh],['Nearest excavation distance (ft)',a.distanceFeet],['Additional distance (in)',a.distanceInches],['Distance source',a.measurement],['Depth (in)',a.depthInches],['Width (ft)',a.widthFeet],['Length near tree (ft)',a.lengthFeet],['Digging method',a.method],['Root handling',a.rootHandling],['Work/damage status',a.stage],['Other affected trees',a.otherTrees],['Equipment/soil near roots',a.storage],['Named supervising arborist',a.arborist],['ISA credential (unverified)',a.credential],['811 status (unverified)',a.locate]];
- return ['DIGGING / UTILITY WORK NEAR A TREE — '+DIGGING_VERSION,...inputs.map(([k,v])=>k+': '+text(v)),r.title,r.proximity,r.legal,r.handling,r.coordination,r.engineering,r.locate,...r.notes,'Still needed: '+(r.missing.join('; ')||'No listed input gaps; professional review/authorization are still not verified.'),r.cityReview?'REQUEST: Please review the proposed excavation, root-protection method, supervision and applicable City approvals.':'No automatic City review request is made for the reported residential exception; optional clarification only.',...DIGGING_SOURCES.map(s=>s.label+': '+s.url)].join('\n');
+ return ['DIGGING / UTILITY WORK NEAR A TREE — '+DIGGING_VERSION,...inputs.map(([k,v])=>k+': '+text(v)),r.title,r.proximity,r.legal,r.handling,r.coordination,r.engineering,r.locate,...r.notes,'Still needed: '+(r.missing.join('; ')||'No listed input gaps; professional review/authorization are still not verified.'),r.cityReview?'REQUEST: Please review the proposed excavation, root-protection method, supervision and applicable City approvals.':'The citywide root-protection check is separate from permit routing. No automatic City email is requested by this result; additional project approvals remain unverified.',...DIGGING_SOURCES.map(s=>s.label+': '+s.url)].join('\n');
 }
