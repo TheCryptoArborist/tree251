@@ -96,7 +96,7 @@ jobs:
             eq(await page.locator('#udcZoning').isVisible(),false);eq(await page.locator('#udcOverlay').isVisible(),false);
             assert.match(await page.textContent('#udcZoningRecord'),/R-1.*Single-Family/);assertions++;
             assert.match(await page.textContent('#udcOverlayRecord'),/NOT been ruled out/);assertions++;
-            eq(await page.locator('#scProperty option[value="commercial"]').count(),0);
+            eq(await page.locator('#scProperty option[value="commercial"]').count(),1); // R-1 zoning must never hide commercial actual use
             eq(await page.locator('#scProperty option[value="undeveloped"]').count(),1);
             eq(await page.locator('#udcPlan option[value="no"]').count(),1);
             for(const id of ['udcRequiredTree','udcCredit','udcBuffer']){eq(await page.locator('#'+id).isVisible(),false);eq(await page.inputValue('#'+id),'unknown');}
