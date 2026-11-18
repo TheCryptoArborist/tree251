@@ -2,7 +2,7 @@
  * Property/address zoning is separate from the tree pin and actual site use.
  * A missing planning record is never evidence that no approved plan exists.
  */
-export const RESIDENT_VERSION='0.4.2';
+export const RESIDENT_VERSION='0.4.6';
 export const ENGINEERING_SOURCE='https://www.buildmobile.org/forms-and-applications/';
 export const ROW_LANDSCAPE_SOURCE='https://www.buildmobile.org/pdf/Major-Minor%20ROW%20Permit%20Application%20-%206-1-19.pdf';
 const text=v=>String(v??'').trim();
