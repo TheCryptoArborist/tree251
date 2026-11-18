@@ -152,9 +152,9 @@ jobs:
             assert.match(await page.textContent('#permitOutcome'),/permit required/i);assertions++;
             assert.match(await page.textContent('#udcOutcome'),/separately from the land-disturbance/);assertions++;
             await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');
-            const body=await page.inputValue('#emailBody');assert.match(body,/Please retrieve the approved site\/landscape plan/);assertions++;
+            const body=await page.inputValue('#emailBody');assert.match(body,/approved landscaping plan affects this tree/);assertions++;
             assert.match(body,/TEST-REVIEW-ONLY/);assertions++;
-            assert.match(body,/not treated as tree-removal approval/);assertions++;
+            assert.match(await page.inputValue('#screeningRecord'),/not treated as tree-removal approval/);assertions++;
             for(const width of [390,820,1200]){await page.setViewportSize({width,height:844});eq(await page.evaluate(()=>document.body.scrollWidth<=innerWidth+2),true,'No horizontal overflow');}
             await page.fill('#propertyMapAddress','205 Government Street');eq(await page.inputValue('#udcZoning'),'unknown');eq(await page.locator('#permitOutput').isVisible(),false);eq(await page.locator('#draftArea').isVisible(),false);
             // Separate live address: R-1 at street point, but commercial
