@@ -42,7 +42,7 @@ for(let i=0;i<offsets.length;i++){
  }catch(e){console.log('CONTEXT_SAMPLE_ERROR',i,String(e))}
 }
 
-const polygonData=await query(base+'Parcel_Details_MS/MapServer/0','parcel = \'R022909301000006.01\' && objectid = 6542385',{returnGeometry:'true'});
+const polygonData=await query(base+'Parcel_Details_MS/MapServer/0','objectid = 6542385',{returnGeometry:'true'});
 if(polygonData.features.length===1){
  const poly=polygonData.features[0].geometry;
  const zoneParts=await query(base+'Portal_Operational_Layers/PLAN_ZONE_APP_MS/MapServer/10','1=1',{geometry:JSON.stringify(poly),geometryType:'esriGeometryPolygon',inSR:'4326',spatialRel:'esriSpatialRelIntersects',outFields:'objectid,district_code,district_name',returnGeometry:'false'});
