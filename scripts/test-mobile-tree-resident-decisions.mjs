@@ -32,7 +32,7 @@ test('Engineering planting result does not claim Tree Commission removal applica
 test('Ordinary residential Chapter 64 status is distinct from Chapter 65',()=>{
  const r=staffPlanReview({city:'inside',location:'private',property:'developed',zoning:'r1r2',overlay:'none',development:'no',plan:'unknown'});
  assert.equal(r.code,'STANDARD_EXCLUSION');
- assert.match(r.reason,/not confirm/i);
+ assert.match(r.reason,/R-1\/R-2 zoning/i);
 });
 test('A land-disturbance permit never equals tree-removal permission',()=>{
  const r=staffPlanReview({city:'inside',location:'private',property:'commercial',zoning:'other',development:'yes',landDisturbance:'issued',plan:'unknown'});
