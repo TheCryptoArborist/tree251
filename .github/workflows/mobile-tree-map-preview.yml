@@ -72,7 +72,7 @@ jobs:
             await page.click('#screenNow');await page.waitForSelector('#permitOutput:not(.hidden)');assert.match(await page.textContent('#permitOutcome'),/Commission/);
             await page.waitForSelector('#workerQualifications:not(.hidden)');assert.match(await page.textContent('#workerQualifications'),/ISA Certified Arborist/);
             await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');
-            const body=await page.inputValue('#emailBody');assert.match(body,/6 MAURY DR/);assert.match(body,/Map source:/);assert.match(body,/ISA Certified Arborist/);assert.match(body,/Zoning: R-1/);
+            const body=await page.inputValue('#emailBody');assert.match(body,/6 MAURY DR/);assert.match(body,/Largest branch proposed for cutting: 7 inches/);assert.doesNotMatch(body,/SCREENING SUMMARY/);const record=await page.inputValue('#screeningRecord');assert.match(record,/Map source:/);assert.match(record,/ISA Certified Arborist/);assert.match(record,/Zoning: R-1/);
             console.log('LIVE_INLINE_ANSWERS_PASS',JSON.stringify({zoningVisible:true,eightMapAnswers:true,optionalSourceLinks:true,propertyLookupCompleted:true,emailIncludesActualValues:true}));
             // Synthetic boundary covers BOTH the address reference and the tree point.
             // Clear prior property lookup, rather than incorrectly testing cached actual-property zoning against a tree-only fixture.
@@ -109,7 +109,7 @@ jobs:
             await page.route('**/api/mobile-tree-gis?*',route=>route.fulfill({status:502,contentType:'application/json',body:JSON.stringify({status:'unavailable',error:'Controlled test: City service unavailable.'})}));
             await page.click('#findPropertyMap');await page.waitForFunction(()=>document.getElementById('propertyMapStatus').textContent.includes('Controlled test'));assert.equal(await page.inputValue('#scCity'),'unknown');
             assert.deepEqual(errors,[]);
-            console.log('HOSTED_BROWSER_PASS',JSON.stringify({checkedAt:new Date().toISOString(),browser:'Chrome, not physical iPhone',realAddressAndLayers:true,realImageryLoaded:true,inlineAnswers:true,controlledBoundaryRegression:true,permitResult:true,workerQualifications:true,emailContainsMapValues:true,changedAddressInvalidates:true,controlledOutageStaysUnknown:true,pageErrors:errors}));
+            console.log('HOSTED_BROWSER_PASS',JSON.stringify({checkedAt:new Date().toISOString(),browser:'Chrome, not physical iPhone',realAddressAndLayers:true,realImageryLoaded:true,inlineAnswers:true,controlledBoundaryRegression:true,permitResult:true,workerQualifications:true,separateRecordContainsMapValues:true,changedAddressInvalidates:true,controlledOutageStaysUnknown:true,pageErrors:errors}));
           } finally {await browser.close();}
           NODE
           node "$RUNNER_TEMP/tree-map-check/check.mjs"
