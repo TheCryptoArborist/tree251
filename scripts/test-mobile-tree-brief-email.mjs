@@ -1,0 +1,28 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {buildBriefForestryEmail,removeGeneratedNotes} from '../public/testing/mobile-tree-brief-email.mjs';
+const base={address:'Example property',work:'root',location:'row',species:'Live oak',dbh:'24',purpose:'utility',distanceFeet:'10',target:'same',stage:'not-started',name:'Example Contractor',phone:'555-0100'};
+const body=patch=>buildBriefForestryEmail({...base,...patch}).body;
+test('Ordinary digging draft is under 200 words without an internal report',()=>{
+ const s=body({});assert.ok(s.split(/\s+/).length<200);assert.match(s,/24 inches/);assert.match(s,/10 feet/);
+ for(const text of ['SCREENING SUMMARY','QUICK CHECK','REFERENCES','§65','authorizationGranted','Not supplied'])assert.equal(s.includes(text),false);
+});
+test('Damage is prominent and no claim of stopped work is invented',()=>{const r=buildBriefForestryEmail({...base,stage:'damaged'});assert.match(r.subject,/Root damage/);assert.match(r.body,/reportedly been cut or torn/);assert.doesNotMatch(r.body,/I have stopped|Work has not started/);});
+test('Exposed roots stay in the short draft',()=>assert.match(body({stage:'exposed'}),/reportedly exposed/));
+test('Root handling is ordinary language rather than a policy code',()=>{const s=body({rootHandling:'cut',method:'machinery'});assert.match(s,/cuts through roots as digging proceeds/);assert.match(s,/machinery/);assert.doesNotMatch(s,/CUT_THROUGH_PROPOSED/);});
+test('Selective method is only a proposed plan, never verified',()=>{const s=body({rootHandling:'expose',arborist:'Example Arborist',credential:'TEST-123'});assert.match(s,/proposed plan/);assert.match(s,/TEST-123.*not verified/);});
+test('Unknown optional dimensions and credentials are omitted',()=>{const s=body({depthInches:'',widthFeet:'',arborist:'',credential:''});assert.doesNotMatch(s,/Excavation:|Proposed arborist:/);});
+test('Zero distance is preserved rather than omitted',()=>assert.match(body({distanceFeet:'0'}),/Nearest digging edge: 0 feet/));
+test('Additional inches remain in the distance',()=>assert.match(body({distanceFeet:'10',distanceInches:'6'}),/10.5 feet/));
+test('Missing distance is not converted to zero',()=>assert.doesNotMatch(body({distanceFeet:'',distanceInches:''}),/Nearest digging edge:/));
+test('Excavation dimensions supplied by contractor remain available',()=>{const s=body({depthInches:'24',widthFeet:'2',lengthFeet:'20'});assert.match(s,/depth 24 inches; width 2 feet; length near the tree 20 feet/);});
+test('Estimated distance is not labelled as field measurement',()=>assert.match(body({measurement:'estimated'}),/\(estimate\)/));
+test('Another tree does not inherit first-tree measurements or location',()=>{const s=body({target:'other',otherDbh:'30'});assert.match(s,/different tree/);assert.match(s,/30 inches/);assert.doesNotMatch(s,/Tree location: public|Live oak|24 inches/);});
+test('Companion digging retains both proposed activities',()=>assert.match(body({work:'pruning',alsoDigging:true,limb:'7'}),/tree pruning with nearby digging/));
+test('Pruning branch diameter appears only for pruning',()=>{assert.match(body({work:'pruning',limb:'7'}),/Largest branch.*7 inches/);assert.doesNotMatch(body({work:'removal',limb:'7'}),/Largest branch/);});
+test('User-written notes are not truncated for brevity',()=>{const notes='Important project detail. '.repeat(100);assert.ok(body({notes}).includes(notes.trim()));});
+test('Only bounded generated blocks are removed from work notes',()=>{const s='Keep before\n--- BEGIN TREE251 SCREENING SUMMARY ---\nreport\n--- END TREE251 SCREENING SUMMARY ---\nKeep after';assert.equal(removeGeneratedNotes(s),'Keep before\n\nKeep after');assert.equal(removeGeneratedNotes('Keep --- BEGIN TREE251 SCREENING SUMMARY ---'),'Keep --- BEGIN TREE251 SCREENING SUMMARY ---');});
+test('No fabricated photos, attachments, approvals or ticket completion',()=>assert.doesNotMatch(body({}),/attached|approved|ticket complete|have stopped/i));
+test('Missing address/contact appear as editable placeholders',()=>{const r=buildBriefForestryEmail({});assert.match(r.body,/\[Property address/);assert.match(r.body,/\[Your name\]/);});
+test('Known plan issue is one targeted request, not a landscape checklist',()=>assert.match(body({planReview:true}),/Please also check whether an approved landscaping plan affects this tree/));
+test('Subject cannot contain injected newlines',()=>assert.equal(buildBriefForestryEmail({...base,address:'Test\r\nBcc: test'}).subject.includes('\n'),false));
