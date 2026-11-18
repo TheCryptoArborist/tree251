@@ -38,7 +38,7 @@ jobs:
             try {
               const boot=await (await fetch(origin+'/testing/mobile-tree-map-data.mjs',{cache:'no-store'})).text();
               const raw=await (await fetch(origin+'/testing/mobile-tree-property-policy.mjs',{cache:'no-store'})).text();
-              if(boot.includes('installResidentWorkflow(document,interpretContext)')&&raw.includes("RESIDENT_VERSION='0.4.0'")){
+              if(boot.includes('installResidentWorkflow(document,interpretContext)')&&raw.includes("RESIDENT_VERSION='0.4.1'")){
                 policy=await import('data:text/javascript;base64,'+Buffer.from(raw).toString('base64'));break;
               }
             }catch{}
@@ -69,7 +69,7 @@ jobs:
             page.on('pageerror',e=>errors.push(e.message));
             await page.goto(origin+'/testing/mobile-tree-checker.html',{waitUntil:'domcontentloaded'});
             await page.waitForSelector('#propertyMapAddress');
-            eq(await page.getAttribute('#permitForm','data-resident-workflow'),'0.4.0');
+            eq(await page.getAttribute('#permitForm','data-resident-workflow'),'0.4.1');
             await page.fill('#propertyMapAddress','6 Maury Drive');await page.check('#propertyMapConsent');await page.click('#findPropertyMap');
             await page.locator('#propertyMapCandidates button').first().click({timeout:40000});
             await page.waitForFunction(()=>document.getElementById('udcZoning').value==='r1r2',{},{timeout:50000});
