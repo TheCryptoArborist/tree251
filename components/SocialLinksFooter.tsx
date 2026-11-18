@@ -1,10 +1,13 @@
+import { googleBusinessProfileUrl, substackUrl } from "@/components/ConsultBranding";
 import { VisitorCounter } from "@/components/VisitorCounter";
 
 const socialLinks = [
   { label: "Instagram", href: ["https://www.instagram.com", "ptarborist"].join("/") },
   { label: "Facebook", href: ["https://www.facebook.com", "ptarborist"].join("/") },
   { label: "LinkedIn", href: ["https://www.linkedin.com/in", "ptarborist"].join("/") },
-  { label: "YouTube", href: ["https://www.youtube.com", "@TheArboristPT"].join("/") }
+  { label: "YouTube", href: ["https://www.youtube.com", "@TheArboristPT"].join("/") },
+  { label: "Google Business", href: googleBusinessProfileUrl },
+  { label: "Substack", href: substackUrl }
 ] as const;
 
 const buyMeACoffeeUrl = "https://www.buymeacoffee.com/arborist251";
