@@ -1,0 +1,84 @@
+name: One-time brief email test migration
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/brief-email-test-migration.yml'
+permissions:
+  contents: write
+concurrency:
+  group: brief-email-test-migration
+  cancel-in-progress: false
+jobs:
+  migrate-tests:
+    if: github.event.pull_request.head.repo.full_name == 'TheCryptoArborist/tree251' && github.event.pull_request.head.ref == 'feat/mobile-tree-checker-preview'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/mobile-tree-checker-preview
+      - name: Replace only the obsolete email assertions; preserve full-record assertions
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          changes={
+          'scripts/test-mobile-tree-brief-email-browser.mjs':[(
+          " await set({propertyAddress:'Example property',contactName:'Example Contractor',phone:'555-0100',email:'example@example.invalid'});",
+          " // Set a controlled email address without dispatching a synthetic GIS-selection event.\n await page.evaluate(()=>{document.getElementById('propertyAddress').value='Example property';});\n await set({contactName:'Example Contractor',phone:'555-0100',email:'example@example.invalid'});"
+          )],
+          'scripts/test-mobile-tree-digging-browser.mjs':[(
+          r" for(const re of [/DIGGING \/ UTILITY WORK NEAR A TREE/,/Nearest excavation distance \(ft\): 10/,/Width \(ft\): 2/,/Length near tree \(ft\): 20/,/Root handling: cut/,/Please review the proposed excavation/,/TEST-NOT-VERIFIED/])matches(body,re);",
+          r" for(const re of [/digging \/ utility work near a tree/i,/Nearest digging edge: 10 feet/,/width 2 feet/,/length near the tree 20 feet/,/cuts through roots as digging proceeds/,/Please advise what root-protection measures/,/TEST-NOT-VERIFIED/])matches(body,re);"
+          ),(
+          r"matches(homeBody,/DIGGING \/ UTILITY/);",
+          r"matches(homeBody,/digging \/ utility/i);"
+          )],
+          'scripts/test-mobile-tree-task-tabs.mjs':[(
+          r"matches(await page.inputValue('#emailBody'),/DIGGING \/ UTILITY WORK NEAR A TREE/);",
+          r"matches(await page.inputValue('#emailBody'),/digging \/ utility work near a tree/i);"
+          )],
+          'scripts/test-mobile-tree-quick-digging-browser.mjs':[(
+          r" matches(await page.inputValue('#emailBody'),/Depth \(in\): 24/);matches(await page.inputValue('#emailBody'),/QUICK CHECK/);",
+          r" matches(await page.inputValue('#emailBody'),/depth 24 inches/);matches(await page.inputValue('#screeningRecord'),/QUICK CHECK/);"
+          ),(
+          " matches(await page.inputValue('#emailBody'),/CUT_THROUGH_PROPOSED/);matches(await page.inputValue('#emailBody'),/§65-8/);",
+          " matches(await page.inputValue('#screeningRecord'),/CUT_THROUGH_PROPOSED/);matches(await page.inputValue('#screeningRecord'),/§65-8/);\n eq((await page.inputValue('#emailBody')).includes('QUICK CHECK'),false,'Complete report stays separate from short email');"
+          )],
+          'scripts/test-mobile-tree-digging-acceptance-browser.mjs':[(
+          " check('Email retains method and Engineering routing',email.includes('CUT_THROUGH_PROPOSED')&&email.includes('Engineering right-of-way authorization'));",
+          " check('Short email retains method and ROW location',email.includes('cuts through roots as digging proceeds')&&email.includes('Digging location: public street right-of-way'));\n check('Full policy report is not pasted into email',!email.includes('QUICK CHECK'));"
+          )],
+          '.github/workflows/mobile-tree-resident-preview.yml':[(
+          r"assert.match(body,/Please retrieve the approved site\/landscape plan/);",
+          r"assert.match(body,/approved landscaping plan affects this tree/);"
+          ),(
+          "assert.match(body,/not treated as tree-removal approval/);",
+          "assert.match(await page.inputValue('#screeningRecord'),/not treated as tree-removal approval/);"
+          )],
+          '.github/workflows/mobile-tree-map-preview.yml':[(
+          "const body=await page.inputValue('#emailBody');assert.match(body,/6 MAURY DR/);assert.match(body,/Map source:/);assert.match(body,/ISA Certified Arborist/);assert.match(body,/Zoning: R-1/);",
+          "const body=await page.inputValue('#emailBody');assert.match(body,/6 MAURY DR/);assert.match(body,/Largest branch proposed for cutting: 7 inches/);assert.doesNotMatch(body,/SCREENING SUMMARY/);const record=await page.inputValue('#screeningRecord');assert.match(record,/Map source:/);assert.match(record,/ISA Certified Arborist/);assert.match(record,/Zoning: R-1/);"
+          ),(
+          "emailContainsMapValues:true",
+          "separateRecordContainsMapValues:true"
+          )]
+          }
+          pending={}
+          for filename,pairs in changes.items():
+              p=Path(filename);text=p.read_text()
+              for old,new in pairs:
+                  if new in text and old not in text:continue
+                  if text.count(old)!=1:raise RuntimeError('Unexpected source; do not overwrite: '+filename+' '+repr(old))
+                  text=text.replace(old,new,1)
+              if text!=p.read_text():pending[filename]=text
+          for filename,text in pending.items():Path(filename).write_text(text)
+          print('Updated test expectations:',*pending.keys(),sep='\n')
+          PY
+          git diff --check
+          git diff --stat
+          if git diff --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/test-mobile-tree-brief-email-browser.mjs scripts/test-mobile-tree-digging-browser.mjs scripts/test-mobile-tree-task-tabs.mjs scripts/test-mobile-tree-quick-digging-browser.mjs scripts/test-mobile-tree-digging-acceptance-browser.mjs .github/workflows/mobile-tree-resident-preview.yml .github/workflows/mobile-tree-map-preview.yml
+          git commit -m 'Test short Forestry requests separately from complete screening records'
+          git push origin HEAD:feat/mobile-tree-checker-preview
