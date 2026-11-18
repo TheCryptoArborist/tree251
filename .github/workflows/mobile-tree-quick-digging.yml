@@ -3,8 +3,10 @@ on:
   pull_request:
     paths:
       - 'public/testing/mobile-tree-quick-digging.mjs'
+      - 'public/testing/mobile-tree-root-pruning-policy.mjs'
       - 'public/testing/mobile-tree-worker-qualifications.mjs'
       - 'scripts/test-mobile-tree-quick-digging*.mjs'
+      - 'scripts/test-mobile-tree-root-pruning-policy.mjs'
       - '.github/workflows/mobile-tree-quick-digging.yml'
 permissions:
   contents: read
@@ -21,12 +23,13 @@ jobs:
           cp scripts/test-mobile-tree-*.mjs test-artifacts/source/scripts/
       - name: Install isolated browser test dependency
         run: npm install --prefix "$RUNNER_TEMP/quick-digging-test" --no-audit --no-fund playwright
-      - name: Syntax and unchanged decision rules
+      - name: Syntax, source-based root-pruning rules and existing safeguards
         run: |
           node --check public/testing/mobile-tree-quick-digging.mjs
+          node --check public/testing/mobile-tree-root-pruning-policy.mjs
           node --check scripts/test-mobile-tree-quick-digging-browser.mjs
-          node --test scripts/test-mobile-tree-quick-digging.mjs scripts/test-mobile-tree-digging.mjs scripts/test-mobile-tree-resident-decisions.mjs
-      - name: Short form, immediate warning, saved record and email
+          node --test scripts/test-mobile-tree-root-pruning-policy.mjs scripts/test-mobile-tree-quick-digging.mjs scripts/test-mobile-tree-digging.mjs scripts/test-mobile-tree-resident-decisions.mjs
+      - name: Short form, visible Chapter 65 requirements, saved record and email
         if: always()
         env:
           PREVIEW_ORIGIN: https://deploy-preview-9--tree251.netlify.app
