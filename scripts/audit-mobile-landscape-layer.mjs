@@ -66,3 +66,64 @@ try{
   const records=await json(base+'/EG_Data_MS/MapServer/71/query?'+qp);
   console.log('PUBLIC_PERMITTING_FLAG_TYPES',JSON.stringify((records.features||[]).slice(0,75).map(f=>f.attributes)));
 }catch(e){console.log('PUBLIC_PERMITTING_FLAG_TYPES_UNAVAILABLE',String(e));}
+
+
+// Inspect the EXACT public ArcGIS Experience supplied by the site owner.
+// No authentication or attempts to access private services.
+const EXPERIENCE_ID='d8de938559b14c2aaf043a2e19142e15';
+const endpoints=[
+ ['experience_item','https://www.arcgis.com/sharing/rest/content/items/'+EXPERIENCE_ID+'?f=json'],
+ ['experience_item_data','https://www.arcgis.com/sharing/rest/content/items/'+EXPERIENCE_ID+'/data?f=json'],
+ ['experience_config','https://experience.arcgis.com/experience/'+EXPERIENCE_ID+'/config/config.json'],
+ ['experience_app_config','https://experience.arcgis.com/experience/'+EXPERIENCE_ID+'/config.json'],
+ ['experience_page','https://experience.arcgis.com/experience/'+EXPERIENCE_ID+'/page/Home']
+];
+const publicIds=new Set();
+function scan(obj,label){
+ const ds=obj?.dataSources;
+ if(ds&&typeof ds==='object'){
+  const nodes=Object.entries(ds).slice(0,250).map(([key,value])=>({
+   key,itemId:value?.itemId||value?.webMapId||'',type:value?.type||'',url:String(value?.url||'').split('?')[0].slice(0,250),
+   source:value?.rootDataSourceId||''
+  }));
+  console.log('EXPERIENCE_DATASOURCES',label,JSON.stringify(nodes));
+ }
+ const text=JSON.stringify(obj);
+ console.log('EXPERIENCE_JSON_SIZE',label,text.length);
+ const matches=[...text.matchAll(/.{0,110}(?:landscap|landscape.?plan|forestry|approved.?plan|tree.?plan|tree.?preserv).{0,170}/ig)]
+  .slice(0,50).map(x=>x[0].replace(/[^\x20-\x7e]/g,' '));
+ console.log('EXPERIENCE_MATCHES',label,JSON.stringify(matches));
+ for(const m of text.matchAll(/(?<![0-9a-f])[0-9a-f]{32}(?![0-9a-f])/ig))publicIds.add(m[0].toLowerCase());
+ if(typeof obj?.title==='string')console.log('EXPERIENCE_TITLE',label,obj.title,obj.type||'',obj.owner||'');
+}
+for(const [label,u] of endpoints){
+ try{
+  const response=await fetch(u,{signal:AbortSignal.timeout(15000),headers:{Accept:'application/json'}});
+  const raw=await response.text();
+  console.log('EXPERIENCE_FETCH',label,response.status,response.url.split('?')[0],raw.length,raw.slice(0,100).replace(/[\r\n]/g,' '));
+  if(response.ok&&raw.trim().startsWith('{')){
+   const parsed=JSON.parse(raw);
+   if(parsed.error)console.log('EXPERIENCE_ERROR',label,JSON.stringify(parsed.error).slice(0,300));
+   else scan(parsed,label);
+  }
+ }catch(err){console.log('EXPERIENCE_UNAVAILABLE',label,String(err).slice(0,200))}
+}
+console.log('EXPERIENCE_REFERENCED_ITEM_IDS',JSON.stringify([...publicIds].slice(0,80)));
+// Inspect the public web maps referenced by the Experience, not unrelated maps.
+let inspected=0;
+for(const id of publicIds){
+ if(id===EXPERIENCE_ID||inspected>=25)continue;inspected++;
+ try{
+  const meta=await json('https://www.arcgis.com/sharing/rest/content/items/'+id+'?f=json');
+  console.log('REFERENCED_ITEM',id,meta.title||'',meta.type||'',meta.access||'');
+  if(/web map|web scene/i.test(meta.type||'')){
+   const data=await json('https://www.arcgis.com/sharing/rest/content/items/'+id+'/data?f=json');
+   const layers=[...(data.operationalLayers||[]),...(data.tables||[])];
+   console.log('REFERENCED_MAP_LAYERS',id,JSON.stringify(layers.slice(0,150).map(l=>({
+     id:l.id,title:l.title,url:String(l.url||'').split('?')[0],itemId:l.itemId,
+     subLayerIds:l.layers?.map(x=>x.id),description:String(l.description||'').slice(0,100)
+   }))));
+   scan(data,'webmap_'+id);
+  }
+ }catch(e){console.log('REFERENCED_ITEM_UNAVAILABLE',id,String(e).slice(0,130))}
+}
