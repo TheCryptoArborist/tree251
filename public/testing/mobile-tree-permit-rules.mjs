@@ -3,10 +3,11 @@
  * No GIS, self-reported emergency, or entered credential can grant authorization.
  */
 import {getWorkQualifications} from './mobile-tree-worker-qualifications.mjs';
-export const RULE_VERSION = '0.2.2';
+export const RULE_VERSION = '0.4.1';
 export const REFERENCES = Object.freeze({
   private: {label:'City of Mobile: private-property trimming/removal guidance; Chapter 65 §§65-1, 65-2, 65-6',url:'https://www.cityofmobile.gov/public-works/tree-trimming-removal-permits/'},
   bylaws: {label:'Mobile Tree Commission bylaws, Article VII(f), adopted November 19, 2019',url:'https://www.buildmobile.org/pdf/MTC%20Adopted%20Nov%2019%202019%20BY%20LAWS.pdf'},
+  engineering: {label:'City Engineering right-of-way application (landscaping category)',url:'https://www.buildmobile.org/pdf/Major-Minor%20ROW%20Permit%20Application%20-%206-1-19.pdf'},
   public: {label:'Chapter 65 §§65-7–65-10: public trees, protection and contractor requirements',url:'https://www.cityofmobile.gov/public-works/urban-forestry-department/urban-forestry-rules-regulations-and-forms/'},
   expert: {label:'Project expert review: Peter, former Mobile Urban Forester (11 years), November 12, 2026. Four ROW removal exemptions and recommended pruning review; not a quotation from a published exemption list.',url:null}
 });
@@ -42,7 +43,7 @@ export function screenPermit(input = {}) {
   const limb = positive(a.limb);
   const notes = ['Preliminary screening based on your answers, not a City permit, ownership determination, or approval to start work.'];
   if (species.note) notes.push(species.note);
-  if (a.extra !== 'none') notes.push('Additional project restrictions or impacts have not been resolved. A stated approval pathway does not clear those separate requirements.');
+  if (a.extra !== 'none') notes.push('Additional project restrictions or impacts have not been verified. A City tree-permit result does not clear development, boundary or adjacent-tree requirements.');
   if (a.storm) notes.push('Storm damage is recorded as an unverified observation. A named ISA Certified Arborist’s credential and report must be verified before accepting professional findings. Neither damage nor a report automatically waives approval.');
   if (['row','park','city'].includes(a.location)) notes.push('Public-tree work qualifications remain separate: applicable ISA certification, licensing, bonding and other work requirements still apply.');
   const finish = (code,title,reason,next,refs,missing=[]) => ({code,title,reason,next,refs,missing,notes,version:RULE_VERSION,workQualifications:getWorkQualifications(a)});
@@ -52,11 +53,16 @@ export function screenPermit(input = {}) {
   if (!['private','row','park','city'].includes(a.location)) return unresolved('The approval process depends on the actual tree location, not just the nearest address.',['Private property, street right-of-way, or other City property'],['public']);
   if (!['removal','pruning','relocation','roots','clearing','planting'].includes(a.work)) return unresolved('Choose the proposed work to identify the applicable process.',['Proposed work']);
   if (['park','city'].includes(a.location)) return finish('PUBLIC','City authorization required — public property','A park or other City-owned tree outside the street ROW uses a different authorization process. A ROW species exemption does not authorize work here.','Ask Urban Forestry to identify the applicable City-property approval. For removal, the Council-resolution pathway and Urban Forester exception require case-specific handling.',['public']);
+  if (a.location === 'row' && a.work === 'planting') return finish('ROW_PLANTING',
+    'Engineering right-of-way permit needed for planting',
+    'The proposed new tree is in the City street right-of-way. The published Engineering application lists landscaping and irrigation as ROW-permit activities. Tree removal and planting use different approval pathways.',
+    'Before planting, use the Engineering right-of-way permit process and coordinate the proposed planting location and species with Urban Forestry. Check current Engineering application instructions; this screening is not approval.',
+    ['public','engineering']);
   if (!['removal','pruning'].includes(a.work)) return finish('SPECIAL','Project-specific review needed','Relocation, planting, root work, construction, and clearing are not ordinary pruning/removal screenings. Different protections and approvals can apply.','Describe the complete scope in the Forestry email. In particular, historic-district clearing/grubbing must not be treated as several small exempt removals.',['public','private']);
   if (a.location === 'row') {
     if (species.rowExempt) {
       if (a.work === 'pruning') return finish('RECOMMENDED','Administrative pruning review recommended','The four-species removal exemption is not being used as unrestricted pruning permission. Pruning is routed to Urban Forestry under the project’s expert-reviewed safety recommendation.','Email the proposed pruning plan to forestry@cityofmobile.gov before work. This recommendation is not represented as a newly established statutory permit requirement.',['expert','public']);
-      if (a.extra !== 'none') return unresolved('The reported species is exempt from Tree Commission approval for removal under the project’s expert-reviewed rule, but additional work or restrictions are unresolved. This is not blanket ROW clearance.',['Confirm removal-only scope and any other restrictions'],['expert','public']);
+      if (a.extra === 'present') return unresolved('The reported species is exempt from Tree Commission approval for removal under the project’s expert-reviewed rule, but additional work or restrictions are unresolved. This is not blanket ROW clearance.',['Confirm removal-only scope and any other restrictions'],['expert','public']);
       return finish('ROW_EXEMPT','Tree Commission approval not required for removal','The reported species is one of the four ROW removal exemptions supplied by the project’s former-Urban-Forester reviewer. The exemption is independent of the 3-inch DBH rule.','Confirm species and ROW location and use an appropriately qualified arborist. This answers the Commission-approval question only, not every possible ROW-work requirement.',['expert','public']);
     }
     if (a.species === 'unknown' || a.species === 'other' || !SPECIES[a.species]) return unresolved('Species identification is needed before the separate ROW species exemption can be evaluated.',['Tree species'],['expert','bylaws']);
@@ -74,9 +80,13 @@ export function screenPermit(input = {}) {
   if (a.historic === 'yes' && species.heritage === true && dbh !== null && dbh >= 8) return required('The reported heritage species is at least 8 inches DBH in a locally designated historic district.');
   if (a.property === 'commercial' && species.heritage === true && dbh !== null && dbh >= 18) return required('The reported commercial-site heritage tree meets the 18-inch threshold outside a local historic district and would also meet the lower threshold inside one.');
   if (a.property === 'undeveloped' && species.live && dbh !== null && dbh >= 18) return required('A live oak of at least 18 inches DBH on undeveloped residential property meets the permit threshold; historic designation would not remove that requirement.');
-  if (a.extra !== 'none') return unresolved('An additional restriction, adjacent public-tree impact, or construction/ground-disturbance activity is present or has not been ruled out.',['Full work scope and other site restrictions'],['private','public']);
+  if (a.extra === 'present') return unresolved('An additional restriction, adjacent public-tree impact, or construction/ground-disturbance activity is present or has not been ruled out.',['Full work scope and other site restrictions'],['private','public']);
   if (!['developed','undeveloped','commercial'].includes(a.property)) return unresolved('The qualifying residential exemption must not be applied automatically to multifamily, mixed-use, or unclassified sites.',['Applicable property classification']);
-  if (a.plan !== 'no') return unresolved('Approved tree or landscaping plan obligations have not been ruled out.',['Applicable plan and its conditions']);
+  // Ordinary R-1/R-2 residential visitors are not expected to certify that
+  // no historic development plan exists. Preserve that uncertainty as a
+  // separate Chapter 64 issue, not a fabricated Chapter 65 permit trigger.
+  const ordinaryResidential = a.zoning === 'r1r2' && ['developed','undeveloped'].includes(a.property);
+  if (a.plan !== 'no' && !(ordinaryResidential && a.plan === 'unknown')) return unresolved('Approved tree or landscaping plan obligations have not been ruled out.',['Applicable plan and its conditions']);
   if (!['yes','no'].includes(a.historic)) return unresolved('Historic-district status is unknown. It cannot be silently treated as outside a district.',['Locally designated historic-district status']);
   const noPermit = reason => finish('NO_IDENTIFIED','No Chapter 65 trimming/removal permit identified',reason,'This conditional result covers the reported individual-tree work only. It does not waive ownership consent, other permits, protections for adjacent trees, or project-specific conditions.',['private']);
   if (a.historic === 'no' && a.property === 'developed') return noPermit('You reported a single- or two-family lot with an existing habitable structure, outside a local historic district and outside the ROW, with no applicable plan or additional restriction.');
