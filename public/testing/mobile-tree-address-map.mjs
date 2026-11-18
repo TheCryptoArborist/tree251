@@ -29,7 +29,13 @@ export function installAddressMap(doc) {
   const address=make('input','',searchForm);address.id='propertyMapAddress';address.type='text';address.maxLength=120;address.placeholder='For example: 6 Maury Drive';address.autocomplete='street-address';address.required=true;
   const consentLabel=make('label','',searchForm);consentLabel.className='check';
   const consent=make('input','',consentLabel);consent.type='checkbox';consent.id='propertyMapConsent';
-  make('span','Use public City GIS records for this address and display the map. This sends the address to City services through this website; map images come from Esri and map software from unpkg. No contact details or photographs are sent.',consentLabel);
+  // GIS search is the default behavior. A lookup is initiated ONLY after the
+  // visitor submits an address, never on page load or while typing.
+  consent.checked=true;
+  consentLabel.hidden=true;consentLabel.style.display='none';
+  consent.tabIndex=-1;
+  const disclosure=make('p','Searching an address retrieves public records from City of Mobile GIS through this website. Map imagery is supplied by Esri. No email, contact details, or photographs are sent by this search.',searchForm);
+  disclosure.className='help';disclosure.id='propertyGISDisclosure';
   const actions=make('div','',searchForm);actions.className='actions';
   const find=make('button','Find property on map',actions);find.type='submit';find.id='findPropertyMap';
   const skip=make('button','Continue without a map',actions);skip.type='button';skip.className='secondary';
@@ -140,7 +146,7 @@ export function installAddressMap(doc) {
   }
   searchForm.addEventListener('submit',async e=>{
     e.preventDefault();cancel();workspace.hidden=true;candidates.replaceChildren();
-    if(!consent.checked){status.textContent='Allow the public map lookup, or continue without a map.';consent.focus();return;}
+    if(!consent.checked)consent.checked=true; // Normal explicit address search; no separate opt-in checkbox.
     controller=new win.AbortController();const token=epoch;find.disabled=true;status.textContent='Searching the City address records…';
     try{
       const data=await request({mode:'address',q:address.value.trim()},controller.signal);if(token!==epoch)return;
