@@ -1,4 +1,4 @@
-import {RESIDENT_VERSION,mappedProperty,propertyIsDifferent,staffPlanReview,engineeringReview} from './mobile-tree-property-policy.mjs';
+import {RESIDENT_VERSION,mappedProperty,reconcileParcelZones,propertyIsDifferent,staffPlanReview,engineeringReview} from './mobile-tree-property-policy.mjs';
 /* Presentation and record handoff. Chapter 65 species/size rules remain unchanged.
  * Property zoning and mapped designations are separate from tree position and actual use.
  * No contacts, photos, emails or permit submissions are sent. Manual typing is not a lookup.
@@ -64,7 +64,7 @@ export function installResidentWorkflow(doc,interpret) {
   const caseNumber=make('input','',caseWrap);caseNumber.id='residentLDNumber';caseNumber.maxLength=100;caseNumber.autocomplete='off';
   function propertyQuestions(){
     const field=el('scProperty');if(!field)return;
-    const mode=property?.zoning==='r1r2'&&!mismatch?'residential':'other';
+    const mode=property?.taxClass==='commercial'&&!mismatch?'commercial-record':property?.zoning==='r1r2'&&!mismatch?'residential':'other';
     // City parcel records can help with developed/vacant status. They do NOT
     // establish that a residence is habitable, or that a tree is private.
     let hint=el('residentParcelStatus');
@@ -77,15 +77,22 @@ export function installResidentWorkflow(doc,interpret) {
         : 'A City-approved plan may affect tree work on commercial or development sites. Answer Yes, No, or I don’t know based on what you actually know; the public GIS record does not verify plan absence.';
     }
     if(mode===propertyMode)return;propertyMode=mode;const before=field.value;
-    if(mode==='residential'){
-      label('scProperty','What is on this residential property now?');
-      replaceOptions(field,[['unknown',"I'm not sure"],['developed','A house or duplex that is fit to live in'],['undeveloped','A vacant home lot — no habitable house or duplex'],['multifamily','Something else: apartments, a business, church or mixed use']]);
+    if(mode==='commercial-record'){
+      label('scProperty','The City classifies this parcel as commercial. What is the actual building or site use?');
+      replaceOptions(field,[['unknown',"Please confirm the actual use"],['commercial','A business, store, office or other commercial property'],['developed','A habitable house or duplex'],['undeveloped','A vacant residential lot'],['multifamily','Apartments, mixed use or another type of site']]);
+    }else if(mode==='residential'){
+      label('scProperty','What is on this R-1/R-2 zoned property now?');
+      replaceOptions(field,[['unknown',"I'm not sure"],['developed','A house or duplex that is fit to live in'],['undeveloped','A vacant home lot — no habitable house or duplex'],['commercial','A business, office, store, church or other nonresidential property'],['multifamily','Apartments, mixed use or another situation']]);
     }else{
       label('scProperty','What is on the property now?');
       replaceOptions(field,[['unknown',"I'm not sure"],['developed','A house or duplex that is fit to live in'],['undeveloped','An undeveloped residential lot'],['commercial','A business or other nonresidential site (occupied or vacant)'],['multifamily','Apartments, mixed use or another situation']]);
     }
     if(before!==field.value)emit(field);
-    const info=field.parentElement.querySelector('p.help');if(info)info.textContent=mode==='residential'?'City records show residential zoning. Please confirm whether a habitable home actually exists; the zoning map cannot tell us that. Choose Something else if the actual use differs.':'Tell us the current condition and use. Zoning is not proof of a habitable building or of the actual use.';
+    const info=field.parentElement.querySelector('p.help');if(info)info.textContent=mode==='commercial-record'
+      ? 'City parcel records classify this property as Commercial. That is different from legal zoning; a property can be zoned R-1 and contain a commercial building. Confirm its actual use before relying on any residential tree-permit exemption.'
+      : mode==='residential'
+        ? 'R-1/R-2 is a zoning designation, not proof that this is a residence. Businesses and other uses can be on residentially zoned land. Choose the actual property use.'
+        : 'Confirm the actual building and property use. A tax record or zoning category does not by itself establish legal use or habitability.';
   }
   function scopeQuestions(){
     const work=el('scWork')?.value;
@@ -98,6 +105,8 @@ export function installResidentWorkflow(doc,interpret) {
   function setValue(id,value){const n=el(id);if(!n||n.value===value)return;writing=true;try{n.value=value;emit(n);}finally{writing=false;}}
   function refreshRecords(){
     form.dataset.propertyRecords=loading?'loading':property?'ready':propertyError?'unavailable':'idle';
+    form.dataset.parcelTaxClass=property?.taxClass||'unknown';
+    form.dataset.splitZoned=property?.splitZoned?'yes':'no';
     const zone=el('udcZoningRecord'),overlay=el('udcOverlayRecord');
     if(!property){
       const msg=loading?'Looking up the selected property’s zoning and mapped districts…':propertyError||'Select the property address above. The checker retrieves zoning and mapped districts; you do not need to supply a code.';
@@ -110,7 +119,19 @@ export function installResidentWorkflow(doc,interpret) {
     }
     propertyQuestions();
   }
-  const clearProperty=()=>{revision++;controller?.abort();controller=null;property=null;propertyContext=null;treeContext=null;address='';loading=false;mismatch=false;propertyError='';refreshRecords();};
+  const clearProperty=()=>{
+    const hadSite=!!address||!!property||loading;
+    revision++;controller?.abort();controller=null;property=null;propertyContext=null;treeContext=null;address='';loading=false;mismatch=false;propertyError='';
+    // A different address cannot inherit the former property's use, plan or
+    // project decisions. Preserve the proposed work, not site-specific facts.
+    if(hadSite){
+      setValue('scProperty','unknown');setValue('udcPlan','unknown');setValue('udcDevelopment','unknown');
+      const status=el('residentLDStatus');if(status)status.value='unknown';
+      const permit=el('residentLDNumber');if(permit)permit.value='';
+    }
+    propertyMode='';
+    refreshRecords();
+  };
   async function loadProperty(value){
     value=String(value||'').trim();if(!value||!el('propertyMapConsent')?.checked){clearProperty();return;}
     if(value===address&&(property||loading))return;
@@ -122,11 +143,16 @@ export function installResidentWorkflow(doc,interpret) {
       const exact=found.features.filter(f=>norm(f.attributes?.address)===norm(value));
       if(exact.length!==1)throw Error('The property reference address could not be uniquely verified.');
       const p=exact[0].geometry;if(!p||!Number.isFinite(p.x)||!Number.isFinite(p.y))throw Error('Property coordinates unavailable');
-      // Fetch only the three property layers needed here; avoid waiting for unrelated planning/park services.
-      const parts=await Promise.all(['zoning','overlays','parcel'].map(layer=>request({mode:'context',lon:String(p.x),lat:String(p.y),layer})));
+      // A street-address point may sit in one zone on a parcel containing
+      // another. Also query the whole tax polygon for split-zoning.
+      const [parts,parcelZoning]=await Promise.all([
+        Promise.all(['zoning','overlays','parcel'].map(layer=>request({mode:'context',lon:String(p.x),lat:String(p.y),layer}))),
+        request({mode:'property',lon:String(p.x),lat:String(p.y)})
+      ]);
       if(token!==revision)return;
       const data={status:'ok',point:{lon:p.x,lat:p.y},fetchedAt:parts[0].fetchedAt,layers:Object.assign({},...parts.map(x=>x.layers))};
-      propertyContext=interpret(data,{emit:false});property=mappedProperty(propertyContext.facts);
+      propertyContext=interpret(data,{emit:false});
+      property=reconcileParcelZones(mappedProperty(propertyContext.facts),parcelZoning);
       mismatch=propertyIsDifferent(propertyContext.facts,treeContext?.facts);loading=false;
       sources.address=value;sources.point={lon:p.x,lat:p.y};sources.fetchedAt=data.fetchedAt;
       refreshRecords();
@@ -156,7 +182,7 @@ export function installResidentWorkflow(doc,interpret) {
   const observer=new win.MutationObserver(()=>{bindMap();if(mappingInstalled)observer.disconnect();});observer.observe(doc.body,{childList:true,subtree:true});bindMap();
   el('scWork')?.addEventListener('change',scopeQuestions);development?.addEventListener('change',scopeQuestions);scopeQuestions();propertyQuestions();
   const read=()=>({city:el('scCity')?.value,location:el('scLocation')?.value,work:el('scWork')?.value,property:el('scProperty')?.value,
-    zoning:el('udcZoning')?.value,overlay:el('udcOverlay')?.value,plan:el('udcPlan')?.value,development:development?.value,
+    zoning:el('udcZoning')?.value,overlay:el('udcOverlay')?.value,taxClass:form.dataset.parcelTaxClass||'unknown',plan:el('udcPlan')?.value,development:development?.value,
     landDisturbance:ld.value,caseNumber:caseNumber.value.trim()});
   const engineering=make('section','');engineering.id='residentEngineering';engineering.className='notice';engineering.hidden=true;
   el('udcResultSection')?.before(engineering);
@@ -170,7 +196,7 @@ export function installResidentWorkflow(doc,interpret) {
     if(review.projectNote)make('p',review.projectNote+(a.caseNumber?' Reference supplied: '+a.caseNumber+'.':''),notes);
     el('residentProjectSummary')?.remove();
     const summary=make('p','',el('permitNotes'));summary.id='residentProjectSummary';
-    summary.textContent=(property?'Property record: '+address+'; zoning '+property.zoneText+'; special districts '+property.overlayText+'; fetched '+sources.fetchedAt+'. This is an address-based map finding, not verified site use or plan history. ':'')+review.projectNote+(a.caseNumber?' Project reference: '+a.caseNumber+' (not verified).':'');
+    summary.textContent=(property?'Property record: '+address+'; zoning '+property.zoneText+'; parcel tax class '+property.taxClass+'; special districts '+property.overlayText+'; fetched '+sources.fetchedAt+'. This is an address-based map finding, not verified site use or plan history. ':'')+review.projectNote+(a.caseNumber?' Project reference: '+a.caseNumber+' (not verified).':'');
     engineering.replaceChildren();engineering.hidden=!eng;
     if(eng){
       make('h3',eng.title,engineering);make('p',eng.requirement,engineering);make('p',eng.note,engineering);
