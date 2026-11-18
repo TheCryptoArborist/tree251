@@ -171,8 +171,12 @@ jobs:
             eq(await page.inputValue('#scProperty'),'unknown');
             // Reporting a habitable residence in conflict with commercial
             // parcel records cannot create automatic no-permit clearance.
-            await page.selectOption('#scCity','inside');
-            await page.selectOption('#scHistoric','no');
+            // Use the tree pin to populate City and historic facts; those
+            // fields are intentionally hidden after a confident GIS match.
+            await page.waitForSelector('#applyMapAnswers:not([disabled])',{timeout:45000});
+            await page.click('#applyMapAnswers');
+            eq(await page.inputValue('#scCity'),'inside');
+            eq(await page.inputValue('#scHistoric'),'no');
             await page.selectOption('#scLocation','private');
             await page.selectOption('#scProperty','developed');
             await page.selectOption('#scWork','removal');
