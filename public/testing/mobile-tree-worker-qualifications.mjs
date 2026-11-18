@@ -3,6 +3,7 @@ import {installPlainLanguage} from './mobile-tree-plain-language.mjs';
 import {installEmailAccess} from './mobile-tree-email-access.mjs';
 import {installAddressFacts} from './mobile-tree-address-answers.mjs';
 import {installFinalResult} from './mobile-tree-final-result.mjs';
+import {installDigging} from './mobile-tree-digging-ui.mjs';
 /* Work qualifications are independent of permit outcomes and species exemptions.
  * Sources checked 2026-11-13: adopted Chapter 65, Article IX(3), (4)(a)-(c),
  * and City Urban Forestry FAQ. This screen never verifies a contractor.
@@ -113,6 +114,7 @@ if(typeof document !== 'undefined'){
   installEmailAccess(document);
   installAddressFacts(document);
   installFinalResult(document);
+  installDigging(document);
   // Load mapping independently: a map-library problem must not disable screening.
   import('./mobile-tree-address-map.mjs').then(({installAddressMap})=>installAddressMap(document)).catch(()=>{
     const n=document.createElement('p');n.className='notice';
