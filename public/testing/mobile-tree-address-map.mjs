@@ -36,9 +36,16 @@ export function installAddressMap(doc) {
   consent.tabIndex=-1;
   const disclosure=make('p','Searching an address retrieves public records from City of Mobile GIS through this website. Map imagery is supplied by Esri. No email, contact details, or photographs are sent by this search.',searchForm);
   disclosure.className='help';disclosure.id='propertyGISDisclosure';
-  const actions=make('div','',searchForm);actions.className='actions';
-  const find=make('button','Find property on map',actions);find.type='submit';find.id='findPropertyMap';
-  const skip=make('button','Continue without a map',actions);skip.type='button';skip.className='secondary';
+  // Explain the recommendation and fallback inside the buttons, where people
+  // decide which path to take. Keep the existing actions and submit semantics.
+  const actions=make('div','',searchForm);actions.className='actions map-choice-actions';actions.dataset.choiceGuidance='0.4.8';
+  const find=make('button','',actions);find.type='submit';find.id='findPropertyMap';find.className='map-choice';
+  make('strong','Look up my property — recommended',find).className='map-choice-title';
+  make('span','Start here. City records help fill in city limits, zoning and historic-district details.',find).className='map-choice-description';
+  const skip=make('button','',actions);skip.type='button';skip.id='skipPropertyMap';skip.className='secondary map-choice';
+  make('strong','Answer manually — only if the map is unavailable',skip).className='map-choice-title';
+  make('span','Use if the address is not found or the map will not load. You must supply missing location details; a definite permit answer may not be possible.',skip).className='map-choice-description';
+  const choiceStyles=make('style','',doc.head);choiceStyles.textContent='#propertyMapCard .map-choice-actions{display:flex;flex-direction:column;align-items:stretch;gap:12px;width:100%;max-width:680px}#propertyMapCard .map-choice{display:block;min-width:0;width:100%;min-height:48px;text-align:left;white-space:normal;line-height:1.45;padding:16px 18px;overflow-wrap:anywhere}#propertyMapCard .map-choice-title{display:block;font-size:16px;font-weight:750;line-height:1.35}#propertyMapCard .map-choice-description{display:block;margin-top:7px;font-size:14px;font-weight:400;line-height:1.5}#propertyMapCard .map-choice:focus-visible{outline:3px solid var(--green);outline-offset:4px}@media(max-width:480px){#propertyMapCard .map-choice{padding:14px}}';
   const status=make('p','',card);status.id='propertyMapStatus';status.className='status';status.setAttribute('role','status');
   const candidates=make('div','',card);candidates.id='propertyMapCandidates';candidates.className='candidates';
   const workspace=make('div','',card);workspace.hidden=true;workspace.id='propertyMapWorkspace';
@@ -174,6 +181,6 @@ export function installAddressMap(doc) {
     n.style.whiteSpace='pre-line';
     n.textContent='Map source: '+currentAddress+'; user-positioned tree pin '+point.lat.toFixed(6)+', '+point.lon.toFixed(6)+'. Preliminary GIS suggestions, not legal boundary verification. '+[...sources].map(([id,s])=>id+': '+s.source+' (fetched '+s.fetchedAt+')').join('; ')+'.\n'+shown+'\nTree ownership and approved-plan obligations were not determined by these map results.';
   });
-  const foot=doc.querySelector('footer');if(foot)make('span',' · Address and map '+MAP_FACTS_VERSION,foot);
+  const foot=doc.querySelector('footer');if(foot){make('span',' · Address and map '+MAP_FACTS_VERSION,foot);make('span',' · Map choice guidance 0.4.8',foot);}
   return true;
 }
