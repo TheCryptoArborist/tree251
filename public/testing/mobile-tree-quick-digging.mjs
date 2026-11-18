@@ -4,10 +4,10 @@ import {rootPruningConclusion,ROOT_PRUNING_SOURCES} from './mobile-tree-root-pru
  * Omitted inputs remain unknown. No new exemption, safe radius, authorization,
  * automatic violation finding, credential verification or network request.
  */
-export const QUICK_DIGGING_VERSION='0.7.1';
+export const QUICK_DIGGING_VERSION='0.7.2';
 export function quickDiggingSummary(a,r=screenDigging(a)){
  if(!r.active)return null;
- const pending=r.scope==='unresolved';
+ const pending=r.scope==='unresolved'||r.approvalRouteUnresolved===true;
  const rootRule=rootPruningConclusion(a,r);
  const d=r.range.distanceFeet,dbh=a.target==='same'?a.dbh:a.otherDbh;
  let root='Trunk size or excavation distance is missing or uncertain. No distance conclusion is available.';
@@ -19,22 +19,21 @@ export function quickDiggingSummary(a,r=screenDigging(a)){
  else if(a.target!=='same')missing='Locate the affected tree separately; the earlier tree pin cannot establish its property status.';
  else if(!['private','row','park','city','city-property'].includes(a.location))missing='Confirm whether the trunk is on private land, street right-of-way, or City land.';
  else missing='Confirm the property use and whether other trees or known plan conditions are involved.';
- let city=r.scope==='covered'?rootRule.constructionRule+'\n\n'+rootRule.abuseRule:
-  r.scope==='residential-exception'?'The reported ordinary private residence qualifies for the existing Chapter 65 application exception. Arborist advice and other digging approvals remain separate.':
+ let city=r.scope==='covered'?'The digging/root-protection check applies citywide, including private R-1/R-2 home lots. A pruning/removal permit exception is not used to bypass this check.\n\n'+rootRule.constructionRule+'\n\n'+rootRule.abuseRule:
   r.scope==='outside'?'This is outside the City of Mobile screening. Check the applicable jurisdiction.':
   'City requirements are not yet determined. '+missing+' Missing answers alone do not mean a City permit or email is required.';
- if(rootRule.ordinanceRelevant)city+='\n\n'+(pending?'If Chapter 65 applies: '+rootRule.constructionRule+'\n\n':'')+rootRule.finding;
+ if(rootRule.ordinanceRelevant)city+='\n\n'+(r.scope==='unresolved'?'If the affected tree is inside Mobile: '+rootRule.constructionRule+'\n\n':'')+rootRule.finding;
  let next;
  if(r.code==='DAMAGE_REPORTED')next='Pause excavation in the affected area and obtain a prompt ISA Certified Arborist assessment. Keep people and equipment away from any potentially unstable tree. Report public-tree damage to Urban Forestry.';
  else if(r.code==='ROOTS_EXPOSED')next='Protect exposed roots from further work and have an ISA Certified Arborist review the method before continuing.';
  else if(r.range.band==='unknown')next='Supply the missing measurements, or have an ISA Certified Arborist assess the proposed work. Do not guess a safe digging distance.';
  else if(r.range.band==='beyond')next='Do not treat this distance result as excavation approval. Confirm the applicable site requirements and stop for root evaluation if roots are encountered.';
  else next='Have an ISA Certified Arborist review the excavation route before digging or cutting roots.';
- if(r.scope==='covered'&&!['DAMAGE_REPORTED','ROOTS_EXPOSED'].includes(r.code))next+=' Coordinate the root-protection and approval route with Urban Forestry.';
+ if(r.cityReview&&!['DAMAGE_REPORTED','ROOTS_EXPOSED'].includes(r.code))next+=' Coordinate the root-protection and approval route with Urban Forestry.';
  const urgent=['DAMAGE_REPORTED','ROOTS_EXPOSED'].includes(r.code);
  if(!urgent&&['cut','expose','stop'].includes(a.rootHandling))next=rootRule.action+(pending?' '+missing:'');
  const title=!urgent&&r.scope==='covered'&&a.rootHandling==='cut'?'Change the proposed root-cutting method':r.title;
- const readyForCity=r.scope==='covered';
+ const readyForCity=r.cityReview===true;
  return {title,root,city,next,pending,readyForCity,missing,rootRule,authorizationGranted:false};
 }
 export function quickDiggingRecord(a,r,s=quickDiggingSummary(a,r)){
@@ -131,7 +130,7 @@ export function installQuickDigging(doc){
  function applyCTA(summary){
   if(!primary()||out.classList.contains('hidden'))return;
   const cta=$('forestryEmailCTA'),heading=$('forestryEmailCTATitle'),button=$('reviewForestryEmail');
-  if(cta){cta.classList.toggle('optional-email',!summary.readyForCity);const p=cta.querySelector('p:not(.help)');if(p)p.textContent=summary.pending?'First confirm the missing property facts. An email is optional—not an automatic requirement because an answer is unknown.':summary.readyForCity?'A review request can include your measurements. Add work-plan details only when ready; nothing is sent automatically.':'No automatic Urban Forestry email is required by this screening result. Arborist advice and other digging approvals are separate.';}
+  if(cta){cta.classList.toggle('optional-email',!summary.readyForCity);const p=cta.querySelector('p:not(.help)');if(p)p.textContent=summary.pending?'First confirm the missing property facts. An email is optional—not an automatic requirement because an answer is unknown.':summary.readyForCity?'A review request can include your measurements. Add work-plan details only when ready; nothing is sent automatically.':'Root-protection and ISA supervision requirements remain part of the citywide check. No City email is automatically required merely because the check applies; other project approvals remain separate.';}
   if(heading)heading.textContent=summary.readyForCity?'Request City review':'Optional: Ask a question';
   if(button){button.textContent=summary.readyForCity?'Review my digging-plan email':'Ask Urban Forestry (optional)';button.classList.toggle('secondary',!summary.readyForCity);}
  }
@@ -181,7 +180,7 @@ export function installQuickDigging(doc){
  doc.addEventListener('submit',e=>{
   if(e.target===form){const token=++epoch;win.queueMicrotask(()=>renderQuick(token));}
   if(e.target===$('workForm'))win.setTimeout(()=>{
-   if(!last||!primary()||!last.s.pending)return;
+   if(!last||!primary()||last.s.readyForCity)return;
    const body=$('emailBody');if(!body)return;
    const start='[Requested records and project review]',end='[/Requested records and project review]';
    const i=body.value.indexOf(start),j=body.value.indexOf(end,i);
