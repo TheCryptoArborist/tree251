@@ -32,7 +32,7 @@ jobs:
           const sleep=ms=>new Promise(r=>setTimeout(r,ms));
           let ready=false;
           for(let i=0;i<45;i++){
-            try {const s=await (await fetch(origin+'/testing/mobile-tree-resident-workflow.mjs',{cache:'no-store',signal:AbortSignal.timeout(10000)})).text();if(s.includes('form.dataset.propertyRecords=loading')){ready=true;break;}}catch{}
+            try {const s=await (await fetch(origin+'/testing/mobile-tree-address-map.mjs',{cache:'no-store',signal:AbortSignal.timeout(10000)})).text();if(s.includes('consentLabel.hidden=true')){ready=true;break;}}catch{}
             await sleep(4000);
           }
           assert.ok(ready,'Property-aware build has not reached the preview.');
