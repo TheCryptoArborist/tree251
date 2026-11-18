@@ -443,7 +443,7 @@ for (const field of el('permitForm').querySelectorAll('input,select')) {
 el('permitForm').addEventListener('submit',event=>{
  event.preventDefault();
  const d=Object.fromEntries(Object.entries(sc).map(([k,node])=>[k,node.type==='checkbox'?node.checked:node.value]));
- d.jurisdiction=d.city; d.zoning=el('udcZoning').value; if(d.location==='city-property')d.location='city'; if(d.work==='root')d.work='roots'; const r=screen(d); last.result=r;
+ d.jurisdiction=d.city; d.zoning=el('udcZoning').value; d.taxClass=el('permitForm').dataset.parcelTaxClass||'unknown'; if(d.location==='city-property')d.location='city'; if(d.work==='root')d.work='roots'; const r=screen(d); last.result=r;
  const udcData=Object.fromEntries(Object.entries(udcFields).map(([k,node])=>[k,node.value]));
  const u=screenUDC({...udcData,jurisdiction:d.jurisdiction,location:d.location});
  last.udc=u;
