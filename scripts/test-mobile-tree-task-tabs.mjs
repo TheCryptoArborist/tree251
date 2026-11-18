@@ -86,7 +86,7 @@ try{
  eq(await page.inputValue('#scDbh'),'24');
  eq(await page.evaluate(()=>window.__originalTaskMap===document.getElementById('propertyTreeMap')),true);
  eq(gisRequests,requestsBefore,'Tab switch does not rerun GIS');
- matches(await page.textContent('#screenNow'),/digging and root/);
+ matches(await page.textContent('#screenNow'),/Check whether tree review is needed/);
  await set({digPurpose:'utility',digArea:'row',digFeet:'10',digDepth:'24',digWidth:'2',digLength:'20',digMeasured:'measured',digMethod:'machinery',digHandling:'cut',digStage:'not-started',digOtherTrees:'no',digStorage:'no',dig811:'pending'});
  await run();await page.waitForSelector('#diggingResult:not([hidden])');
  eq(await page.getAttribute('#diggingResult','data-outcome'),'CLOSE_EXCAVATION');
@@ -111,10 +111,8 @@ try{
  matches(await page.textContent('#permitOutcome'),/Commission/);
  eq(await page.getAttribute('#diggingResult','data-outcome'),'DAMAGE_REPORTED');
  await page.uncheck('#digAlso');
- // Existing work dropdown remains a route into the digging tab as well.
  await page.selectOption('#scWork','root');eq(await page.getAttribute('#diggingTab','aria-selected'),'true');
  await page.click('#treeWorkTab');eq(await page.inputValue('#scWork'),'pruning');
- // Manual activation: arrow keys move focus; Enter selects the new task.
  await page.focus('#treeWorkTab');await page.keyboard.press('ArrowRight');
  eq(await page.evaluate(()=>document.activeElement.id),'diggingTab');
  eq(await page.getAttribute('#treeWorkTab','aria-selected'),'true');
@@ -131,7 +129,6 @@ try{
  await page.setViewportSize({width:390,height:844});await page.click('#diggingTab');await page.locator('#treeTaskTabs').scrollIntoViewIfNeeded();
  await page.evaluate(()=>window.scrollTo(0,0));await mkdir('test-artifacts',{recursive:true});
  await page.screenshot({path:'test-artifacts/task-tabs-mobile.png'});
- // A direct link must open root questions without first completing tree removal.
  const direct=await browser.newPage({viewport:{width:390,height:844}});direct.on('pageerror',e=>errors.push(e.message));
  await direct.goto(origin+'/testing/mobile-tree-checker.html#digging',{waitUntil:'domcontentloaded'});
  await direct.waitForSelector('#screenNow:not([disabled])');await direct.waitForSelector('#diggingFields:not([hidden])');
