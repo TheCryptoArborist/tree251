@@ -8,6 +8,8 @@ on:
       - 'scripts/test-mobile-tree-resident-decisions.mjs'
       - 'scripts/audit-mobile-landscape-layer.mjs'
       - 'public/testing/mobile-tree-resident-workflow.mjs'
+      - 'public/testing/mobile-tree-address-answers.mjs'
+      - 'public/testing/mobile-tree-worker-qualifications.mjs'
       - 'public/testing/mobile-tree-map-data.mjs'
       - '.github/workflows/mobile-tree-resident-preview.yml'
 permissions:
@@ -41,7 +43,7 @@ jobs:
             try {
               const boot=await (await fetch(origin+'/testing/mobile-tree-map-data.mjs',{cache:'no-store'})).text();
               const raw=await (await fetch(origin+'/testing/mobile-tree-property-policy.mjs',{cache:'no-store'})).text();
-              if(boot.includes('installResidentWorkflow(document,interpretContext)')&&raw.includes("RESIDENT_VERSION='0.4.5'")&&(await (await fetch(origin+'/testing/mobile-tree-address-map.mjs',{cache:'no-store'})).text()).includes('consentLabel.hidden=true')&&(await (await fetch(origin+'/testing/mobile-tree-final-result.mjs',{cache:'no-store'})).text()).includes("RESULT_VERSION='0.4.4'")){
+              if(boot.includes('installResidentWorkflow(document,interpretContext)')&&raw.includes("RESIDENT_VERSION='0.4.5'")&&(await (await fetch(origin+'/testing/mobile-tree-address-answers.mjs',{cache:'no-store'})).text()).includes("ADDRESS_FACTS_VERSION='0.4.6'")&&(await (await fetch(origin+'/testing/mobile-tree-address-map.mjs',{cache:'no-store'})).text()).includes('consentLabel.hidden=true')&&(await (await fetch(origin+'/testing/mobile-tree-final-result.mjs',{cache:'no-store'})).text()).includes("RESULT_VERSION='0.4.4'")){
                 policy=await import('data:text/javascript;base64,'+Buffer.from(raw).toString('base64'));break;
               }
             }catch{}
@@ -86,7 +88,19 @@ jobs:
             eq(await page.locator('#scProperty option[value="undeveloped"]').count(),1);
             eq(await page.locator('#udcPlan option[value="no"]').count(),1);
             for(const id of ['udcRequiredTree','udcCredit','udcBuffer']){eq(await page.locator('#'+id).isVisible(),false);eq(await page.inputValue('#'+id),'unknown');}
+            await page.waitForSelector('#residentGISAnswers:not([hidden])',{timeout:15000});
+            assert.match(await page.textContent('#residentGISRows'),/R-1.*Single-Family Residential/s);assertions++;
+            assert.match(await page.textContent('#residentGISRows'),/Parcel.*development/s);assertions++;
+            assert.match(await page.textContent('#residentGISRows'),/Approved landscape plan/);assertions++;
+            assert.match(await page.textContent('#residentGISAnswers'),/confirming the actual tree location/);assertions++;
             await page.click('#applyMapAnswers');eq(await page.inputValue('#udcZoning'),'r1r2');
+            await page.waitForFunction(()=>document.getElementById('residentGISAnswers').textContent.includes('Inside City of Mobile'),{},{timeout:12000});
+            assert.match(await page.textContent('#residentGISAnswers'),/Not in a locally designated district/);assertions++;
+            eq(await page.locator('#scCity').isVisible(),false);
+            eq(await page.locator('#scHistoric').isVisible(),false);
+            await page.click('#reviewGISAnswers');
+            eq(await page.locator('#scCity').isVisible(),true);eq(await page.locator('#scHistoric').isVisible(),true);
+
             // No plan is a legitimate resident answer, but must never be tagged as GIS confirmed.
             await page.selectOption('#udcPlan','no');
             eq(await page.inputValue('#udcPlan'),'no');
