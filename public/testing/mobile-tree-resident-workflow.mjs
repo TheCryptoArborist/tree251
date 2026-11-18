@@ -34,9 +34,16 @@ export function installResidentWorkflow(doc,interpret) {
   const five=el('udcQuestions');if(five)five.hidden=true;
   for(const id of ['udcRequiredTree','udcCredit','udcBuffer']){const n=el(id);if(n)n.value='unknown';}
   const plan=el('udcPlan');
-  if(plan){chapter.append(plan.parentElement);replaceOptions(plan,[['unknown',"I don't know"],['yes','Yes, I know the City approved a plan']]);
-    label('udcPlan','Do you already know of a City-approved plan for this property?');
-    const help=plan.parentElement.querySelector('p.help');if(help)help.textContent='It is fine not to know. You do not need to search City files or decide whether this tree appears on the plan.';
+  if(plan){
+    chapter.append(plan.parentElement);
+    replaceOptions(plan,[
+      ['unknown',"I don't know"],
+      ['yes','Yes — I know there is an approved plan'],
+      ['no','No — to my knowledge, there is no approved plan']
+    ]);
+    label('udcPlan','Is there a City-approved site or landscaping plan for this property?');
+    const help=plan.parentElement.querySelector('p.help');
+    if(help)help.textContent='Many ordinary house lots have no approved landscaping plan. Choose No if you know that is true for this property; otherwise choose I don’t know. This is your answer, not a GIS verification.';
     for(const d of plan.parentElement.querySelectorAll('details'))d.hidden=true;
   }
   const help=make('div','',chapter);help.id='residentPlanHelp';help.className='safe';
@@ -58,6 +65,17 @@ export function installResidentWorkflow(doc,interpret) {
   function propertyQuestions(){
     const field=el('scProperty');if(!field)return;
     const mode=property?.zoning==='r1r2'&&!mismatch?'residential':'other';
+    // City parcel records can help with developed/vacant status. They do NOT
+    // establish that a residence is habitable, or that a tree is private.
+    let hint=el('residentParcelStatus');
+    if(!hint){hint=make('p','',field.parentElement);hint.id='residentParcelStatus';hint.className='safe';}
+    hint.textContent=property?.parcelDescription||'Parcel development information has not been verified from the City map. Please tell us what is actually on the property.';
+    const planInfo=plan?.parentElement.querySelector('p.help');
+    if(planInfo){
+      planInfo.textContent=mode==='residential'
+        ? 'For an ordinary R-1/R-2 home, the standard Chapter 64 landscaping requirements generally do not apply. Many such lots have no approved landscape plan. Choose No if you know that applies here, or I don’t know; neither answer alone creates a permit requirement.'
+        : 'A City-approved plan may affect tree work on commercial or development sites. Answer Yes, No, or I don’t know based on what you actually know; the public GIS record does not verify plan absence.';
+    }
     if(mode===propertyMode)return;propertyMode=mode;const before=field.value;
     if(mode==='residential'){
       label('scProperty','What is on this residential property now?');
