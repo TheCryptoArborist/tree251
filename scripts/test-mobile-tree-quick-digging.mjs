@@ -9,12 +9,12 @@ test('Five-question public-tree case keeps existing close-distance outcome',()=>
  assert.equal(s.readyForCity,true);assert.equal(s.pending,false);
  assert.match(s.root,/24-inch.*10 feet/);assert.match(s.next,/ISA Certified Arborist/);
 });
-test('Unknown private property prompts facts rather than mandatory City email',()=>{
+test('Private property receives citywide root rules without automatic City email',()=>{
  const a={...base,location:'private'},r=screenDigging(a),s=quickDiggingSummary(a,r);
- assert.equal(s.pending,true);assert.equal(s.readyForCity,false);
- assert.match(s.city,/not yet determined/);assert.match(s.city,/Missing answers alone/);
+ assert.equal(s.pending,false);assert.equal(s.readyForCity,false);
+ assert.match(s.city,/citywide/);assert.match(s.city,/Selective root pruning must be supervised/);
  const record=quickDiggingRecord(a,r,s);
- assert.match(record,/CITY STATUS UNRESOLVED/);
+ assert.match(record,/citywide/);
  assert.equal(record.includes('Send the proposed excavation and root-handling plan to Urban Forestry'),false);
  assert.equal(record.includes('REQUEST: Please review'),false);
  assert.match(record,/Digging method: unknown/);
@@ -35,13 +35,13 @@ test('Outside screening range remains not authorized',()=>{
  const a={...base,distanceFeet:'70'},r=screenDigging(a),s=quickDiggingSummary(a,r);
  assert.equal(r.code,'OUTSIDE_SCREENING_RANGE');assert.match(s.root,/does not clear/);assert.equal(s.authorizationGranted,false);
 });
-test('Known residential exception stays distinct from arborist advice',()=>{
+test('Occupied R-1/R-2 lot is not a root-protection exception',()=>{
  const a={...base,location:'private',property:'developed',historic:'no',zoning:'r1r2',taxClass:'residential',splitZoned:false,overlay:'none',plan:'no',otherTrees:'no'},r=screenDigging(a),s=quickDiggingSummary(a,r);
- assert.equal(r.scope,'residential-exception');assert.equal(s.readyForCity,false);assert.equal(s.pending,false);assert.match(s.city,/exception/);
+ assert.equal(r.scope,'covered');assert.equal(s.readyForCity,false);assert.equal(s.pending,false);assert.match(s.city,/citywide/);assert.match(s.city,/non-selective root pruning/);
 });
 test('Commercial and split zoning cannot inherit a residence exception',()=>{
  const a={...base,location:'private',property:'developed',historic:'no',zoning:'r1r2',taxClass:'commercial',splitZoned:true,overlay:'none',plan:'no',otherTrees:'no'},r=screenDigging(a);
- assert.notEqual(r.scope,'residential-exception');assert.equal(quickDiggingSummary(a,r).pending,true);
+ assert.equal(r.scope,'covered');assert.equal(quickDiggingSummary(a,r).readyForCity,true);
 });
 test('Another tree is not assigned the original location',()=>{
  const a={...base,target:'other',otherDbh:'30'},r=screenDigging(a),s=quickDiggingSummary(a,r);
