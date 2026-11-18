@@ -127,3 +127,31 @@ for(const id of publicIds){
   }
  }catch(e){console.log('REFERENCED_ITEM_UNAVAILABLE',id,String(e).slice(0,130))}
 }
+
+
+// Public ArcGIS Online catalog search for City-created landscape/site-plan data.
+// This is discovery only, never a basis for a no-plan permit clearance.
+const searches=[
+ 'owner:gis_cityofmobile AND landscape',
+ 'owner:gis_cityofmobile AND (title:"site plan" OR title:"landscape")',
+ 'orgid:AcvBA1fcgucsFQvO AND landscape',
+ '(title:"Landscape Plan" OR title:"Landscape Plans") AND Mobile'
+];
+for(const q of searches){
+ try{
+  const url='https://www.arcgis.com/sharing/rest/search?'+new URLSearchParams({q,f:'json',num:'100'});
+  const d=await json(url);
+  console.log('LANDSCAPE_CATALOG_QUERY',q,'TOTAL',d.total||0,JSON.stringify((d.results||[]).slice(0,35).map(x=>({
+    id:x.id,title:x.title,type:x.type,owner:x.owner,access:x.access,
+    url:String(x.url||'').split('?')[0].slice(0,200)
+  }))));
+ }catch(e){console.log('LANDSCAPE_CATALOG_UNAVAILABLE',q,String(e).slice(0,180))}
+}
+// The experience itself includes feature-layer dataSources: inspect their
+// public definitions for a different name that hides landscape data.
+try{
+ const d=await json('https://www.arcgis.com/sharing/rest/content/items/'+EXPERIENCE_ID+'/data?f=json');
+ for(const [k,x] of Object.entries(d.dataSources||{})){
+  console.log('EXPERIENCE_DATASOURCE_DETAIL',k,JSON.stringify(x).slice(0,1100));
+ }
+}catch(e){console.log('EXPERIENCE_DATASOURCE_DETAIL_UNAVAILABLE',String(e))}
