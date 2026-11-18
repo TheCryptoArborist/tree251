@@ -155,3 +155,25 @@ try{
   console.log('EXPERIENCE_DATASOURCE_DETAIL',k,JSON.stringify(x).slice(0,1100));
  }
 }catch(e){console.log('EXPERIENCE_DATASOURCE_DETAIL_UNAVAILABLE',String(e))}
+
+
+// Follow the "City Map" application referenced in the Planning & Zoning
+// Experience's metadata, to determine whether landscape plans are on that map.
+const CITY_MAP_EXPERIENCE='9393644bb39343a59d613453e98edadf';
+try{
+ const meta=await json('https://www.arcgis.com/sharing/rest/content/items/'+CITY_MAP_EXPERIENCE+'?f=json');
+ console.log('CITY_MAP_EXPERIENCE_TITLE',meta.title||'',meta.type||'');
+ const config=await json('https://www.arcgis.com/sharing/rest/content/items/'+CITY_MAP_EXPERIENCE+'/data?f=json');
+ const nodes=Object.entries(config.dataSources||{}).map(([id,d])=>({id,type:d.type,itemId:d.itemId||'',name:d.sourceLabel||d.label||'',url:String(d.url||'').split('?')[0]}));
+ console.log('CITY_MAP_EXPERIENCE_DATASOURCES',JSON.stringify(nodes.slice(0,120)));
+ const raw=JSON.stringify(config);
+ const matches=[...raw.matchAll(/.{0,90}(?:landscap(?:e|ing)|tree.?plan|approved.?plan).{0,140}/ig)].slice(0,45).map(x=>x[0].slice(0,260));
+ console.log('CITY_MAP_EXPERIENCE_LANDSCAPE_REFERENCES',JSON.stringify(matches));
+ for(const d of nodes.filter(x=>x.type==='WEB_MAP'&&x.itemId).slice(0,15)){
+  try{
+   const cfg=await json('https://www.arcgis.com/sharing/rest/content/items/'+d.itemId+'/data?f=json');
+   const layers=[...(cfg.operationalLayers||[]),...(cfg.tables||[])];
+   console.log('CITY_MAP_REFERENCED_LAYERS',d.name,JSON.stringify(layers.map(x=>({title:x.title,url:String(x.url||'').split('?')[0]})).slice(0,120)));
+  }catch(e){console.log('CITY_MAP_REFERENCED_UNAVAILABLE',d.itemId,String(e))}
+ }
+}catch(e){console.log('CITY_MAP_EXPERIENCE_UNAVAILABLE',String(e))}
