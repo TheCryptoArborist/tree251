@@ -35,6 +35,11 @@ export function installFinalResult(doc){
  const val=id=>$(id)?.value||'unknown';
  function render(){
   if(out.classList.contains('hidden'))return;
+  // The address-map module loads asynchronously. If it creates the important
+  // Engineering planting alert inside our collapsed ordinance details, move
+  // it out so the required next action is never hidden.
+  const engineering=$('residentEngineering');
+  if(engineering&&details.contains(engineering))details.insertAdjacentElement('beforebegin',engineering);
   const p=old.textContent.trim(),chapter=$('udcOutcome')?.textContent?.trim()||'Not evaluated';
   const isHome=val('scCity')==='inside'&&val('scLocation')==='private'&&val('scHistoric')==='no'&&
    val('scProperty')==='developed'&&val('udcZoning')==='r1r2'&&val('udcOverlay')==='none'&&
