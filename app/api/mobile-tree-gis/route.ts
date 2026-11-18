@@ -13,7 +13,7 @@ const defs: Record<string, {url:string; fields:string}> = {
   historic:{url:OP+'7',fields:'objectid,name'},
   zoning:{url:ZONE+'10',fields:'objectid,district_code,district_name,sub_district_code,sub_district_name,overlay,rev_date'},
   overlays:{url:ZONE+'3',fields:'objectid,neighborhood_name,sub_dist,ordinance,adopt_date'},
-  parcel:{url:ROOT+'Parcel_Details_MS/MapServer/0',fields:'objectid,parcel,keyx,acreage,undeveloped'},
+  parcel:{url:ROOT+'Parcel_Details_MS/MapServer/0',fields:'objectid,parcel,keyx,acreage,undeveloped,classcode_desc'},
   cityProperty:{url:OP+'2',fields:'objectid,asset_name,status'},
   park:{url:OP+'10',fields:'objectid,name'},
   planning:{url:ROOT+'EG_Data_MS/MapServer/55',fields:'objectid,tmcaseno,fileno,mtg_date,request,decision,mod_type'}
