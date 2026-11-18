@@ -1,0 +1,17 @@
+name: Mobile public landscape layer metadata audit
+on:
+  push:
+    paths:
+      - 'scripts/audit-mobile-landscape-layer.mjs'
+      - '.github/workflows/mobile-landscape-layer-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - name: Examine public ArcGIS service names and fields
+        run: node scripts/audit-mobile-landscape-layer.mjs
