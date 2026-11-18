@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: feat/mobile-tree-checker-preview
-      - name: Replace only the obsolete email assertions; preserve full-record assertions
+      - name: Replace only obsolete email assertions and preserve complete-record assertions
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -47,20 +47,6 @@ jobs:
           'scripts/test-mobile-tree-digging-acceptance-browser.mjs':[(
           " check('Email retains method and Engineering routing',email.includes('CUT_THROUGH_PROPOSED')&&email.includes('Engineering right-of-way authorization'));",
           " check('Short email retains method and ROW location',email.includes('cuts through roots as digging proceeds')&&email.includes('Digging location: public street right-of-way'));\n check('Full policy report is not pasted into email',!email.includes('QUICK CHECK'));"
-          )],
-          '.github/workflows/mobile-tree-resident-preview.yml':[(
-          r"assert.match(body,/Please retrieve the approved site\/landscape plan/);",
-          r"assert.match(body,/approved landscaping plan affects this tree/);"
-          ),(
-          "assert.match(body,/not treated as tree-removal approval/);",
-          "assert.match(await page.inputValue('#screeningRecord'),/not treated as tree-removal approval/);"
-          )],
-          '.github/workflows/mobile-tree-map-preview.yml':[(
-          "const body=await page.inputValue('#emailBody');assert.match(body,/6 MAURY DR/);assert.match(body,/Map source:/);assert.match(body,/ISA Certified Arborist/);assert.match(body,/Zoning: R-1/);",
-          "const body=await page.inputValue('#emailBody');assert.match(body,/6 MAURY DR/);assert.match(body,/Largest branch proposed for cutting: 7 inches/);assert.doesNotMatch(body,/SCREENING SUMMARY/);const record=await page.inputValue('#screeningRecord');assert.match(record,/Map source:/);assert.match(record,/ISA Certified Arborist/);assert.match(record,/Zoning: R-1/);"
-          ),(
-          "emailContainsMapValues:true",
-          "separateRecordContainsMapValues:true"
           )]
           }
           pending={}
@@ -79,6 +65,6 @@ jobs:
           if git diff --quiet; then exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add scripts/test-mobile-tree-brief-email-browser.mjs scripts/test-mobile-tree-digging-browser.mjs scripts/test-mobile-tree-task-tabs.mjs scripts/test-mobile-tree-quick-digging-browser.mjs scripts/test-mobile-tree-digging-acceptance-browser.mjs .github/workflows/mobile-tree-resident-preview.yml .github/workflows/mobile-tree-map-preview.yml
+          git add scripts/test-mobile-tree-brief-email-browser.mjs scripts/test-mobile-tree-digging-browser.mjs scripts/test-mobile-tree-task-tabs.mjs scripts/test-mobile-tree-quick-digging-browser.mjs scripts/test-mobile-tree-digging-acceptance-browser.mjs
           git commit -m 'Test short Forestry requests separately from complete screening records'
           git push origin HEAD:feat/mobile-tree-checker-preview
