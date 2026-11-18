@@ -64,12 +64,12 @@ try{
  await set({digStage:'not-started',scDbh:'',digFeet:''});await run();eq(await page.getAttribute('#diggingResult','data-outcome'),'MEASUREMENTS_NEEDED');
  await set({scDbh:'24',digFeet:'0'});await run();eq(await page.getAttribute('#diggingResult','data-outcome'),'CLOSE_EXCAVATION');
  await set({scLocation:'private',scProperty:'developed',udcZoning:'r1r2',udcOverlay:'none',udcPlan:'no',digArea:'private',digFeet:'10',digHandling:'stop',digMethod:'hand'});await run();
- eq(await page.getAttribute('#diggingResult','data-scope'),'residential-exception');
- matches(await page.textContent('#diggingResult'),/application exception is indicated/);
+ eq(await page.getAttribute('#diggingResult','data-scope'),'covered');
+ matches(await page.textContent('#diggingResult'),/citywide/);
  matches(await page.textContent('#forestryEmailCTA'),/Optional: Ask/);
  await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');
  const homeBody=await page.inputValue('#emailBody');matches(homeBody,/DIGGING \/ UTILITY/);
- eq(homeBody.includes('[Requested records and project review]'),false,'Do not insert mandatory staff-plan request for root-only ordinary home');
+ eq(homeBody.includes('[Requested records and project review]'),false,'Citywide root protection is not an automatic staff-plan request');
  await set({scWork:'pruning',digAlso:true,scLimb:'2'});await run();
  eq(await page.getAttribute('#simplePermitAnswer','data-outcome'),'tree-permit-with-root-advice');
  matches(await page.textContent('#simplePermitAnswer'),/digging needs a separate check/);
