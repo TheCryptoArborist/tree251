@@ -1,12 +1,14 @@
 import {screenDigging,diggingRecord} from './mobile-tree-digging-rules.mjs';
+import {rootPruningConclusion,ROOT_PRUNING_SOURCES} from './mobile-tree-root-pruning-policy.mjs';
 /* Quick check is a presentation/workflow layer over the existing root rules.
  * Omitted inputs remain unknown. No new exemption, safe radius, authorization,
  * automatic violation finding, credential verification or network request.
  */
-export const QUICK_DIGGING_VERSION='0.7.0';
+export const QUICK_DIGGING_VERSION='0.7.1';
 export function quickDiggingSummary(a,r=screenDigging(a)){
  if(!r.active)return null;
  const pending=r.scope==='unresolved';
+ const rootRule=rootPruningConclusion(a,r);
  const d=r.range.distanceFeet,dbh=a.target==='same'?a.dbh:a.otherDbh;
  let root='Trunk size or excavation distance is missing or uncertain. No distance conclusion is available.';
  if(r.range.band!=='unknown')root=String(dbh)+'-inch trunk; digging '+Number(d.toFixed(2))+' feet away. '+({inner:'This is close enough to need arborist review before digging.',possible:'Important roots may be affected; have the route reviewed.',beyond:'Outside the estimated range, but this does not clear root cutting.'}[r.range.band]);
@@ -17,10 +19,11 @@ export function quickDiggingSummary(a,r=screenDigging(a)){
  else if(a.target!=='same')missing='Locate the affected tree separately; the earlier tree pin cannot establish its property status.';
  else if(!['private','row','park','city','city-property'].includes(a.location))missing='Confirm whether the trunk is on private land, street right-of-way, or City land.';
  else missing='Confirm the property use and whether other trees or known plan conditions are involved.';
- const city=r.scope==='covered'?'City root-protection requirements need to be addressed for this public tree or covered site. Coordinate the proposed root work with Urban Forestry.':
+ let city=r.scope==='covered'?rootRule.constructionRule+'\n\n'+rootRule.abuseRule:
   r.scope==='residential-exception'?'The reported ordinary private residence qualifies for the existing Chapter 65 application exception. Arborist advice and other digging approvals remain separate.':
   r.scope==='outside'?'This is outside the City of Mobile screening. Check the applicable jurisdiction.':
   'City requirements are not yet determined. '+missing+' Missing answers alone do not mean a City permit or email is required.';
+ if(rootRule.ordinanceRelevant)city+='\n\n'+(pending?'If Chapter 65 applies: '+rootRule.constructionRule+'\n\n':'')+rootRule.finding;
  let next;
  if(r.code==='DAMAGE_REPORTED')next='Pause excavation in the affected area and obtain a prompt ISA Certified Arborist assessment. Keep people and equipment away from any potentially unstable tree. Report public-tree damage to Urban Forestry.';
  else if(r.code==='ROOTS_EXPOSED')next='Protect exposed roots from further work and have an ISA Certified Arborist review the method before continuing.';
@@ -28,12 +31,15 @@ export function quickDiggingSummary(a,r=screenDigging(a)){
  else if(r.range.band==='beyond')next='Do not treat this distance result as excavation approval. Confirm the applicable site requirements and stop for root evaluation if roots are encountered.';
  else next='Have an ISA Certified Arborist review the excavation route before digging or cutting roots.';
  if(r.scope==='covered'&&!['DAMAGE_REPORTED','ROOTS_EXPOSED'].includes(r.code))next+=' Coordinate the root-protection and approval route with Urban Forestry.';
+ const urgent=['DAMAGE_REPORTED','ROOTS_EXPOSED'].includes(r.code);
+ if(!urgent&&['cut','expose','stop'].includes(a.rootHandling))next=rootRule.action+(pending?' '+missing:'');
+ const title=!urgent&&r.scope==='covered'&&a.rootHandling==='cut'?'Change the proposed root-cutting method':r.title;
  const readyForCity=r.scope==='covered';
- return {title:r.title,root,city,next,pending,readyForCity,missing,authorizationGranted:false};
+ return {title,root,city,next,pending,readyForCity,missing,rootRule,authorizationGranted:false};
 }
 export function quickDiggingRecord(a,r,s=quickDiggingSummary(a,r)){
  const record=diggingRecord(a,r).split('\n').filter(line=>!(s.pending&&line===r.coordination)&&!line.startsWith('REQUEST:')&&!line.startsWith('No automatic City review request')&&!line.startsWith('Still needed:')).join('\n');
- return record+'\n\nQUICK CHECK — '+QUICK_DIGGING_VERSION+'\nRoot-protection finding: '+s.root+'\nCity requirements: '+s.city+'\nNext action: '+s.next+'\n'+(s.pending?'CITY STATUS UNRESOLVED: Confirm the missing site facts; this is not a finding that a City permit or staff referral is required.':s.readyForCity?'REQUEST: Please review the proposed excavation and applicable root-protection requirements.':'No automatic City review request is made by this result.')+'\nOptional work-plan entries not supplied remain unknown; they have not been accepted as No or verified.';
+ return record+'\n\nROOT-PRUNING METHOD: '+s.rootRule.status+'\n'+s.rootRule.finding+'\n'+s.rootRule.selectiveDefinition+'\nMethod compliance, actual ISA supervision, the actual critical root zone, and authorization are NOT VERIFIED.\n'+ROOT_PRUNING_SOURCES.map(x=>x.label+': '+x.url).join('\n')+'\n\nQUICK CHECK — '+QUICK_DIGGING_VERSION+'\nRoot-protection finding: '+s.root+'\nCity requirements: '+s.city+'\nNext action: '+s.next+'\n'+(s.pending?'CITY STATUS UNRESOLVED: Confirm the missing site facts; this is not a finding that a City permit or staff referral is required.':s.readyForCity?'REQUEST: Please review the proposed excavation and applicable root-protection requirements.':'No automatic City review request is made by this result.')+'\nOptional work-plan entries not supplied remain unknown; they have not been accepted as No or verified.';
 }
 export function installQuickDigging(doc){
  const $=id=>doc.getElementById(id),win=doc.defaultView,form=$('permitForm'),section=$('diggingFields'),out=$('permitOutput');
@@ -49,6 +55,10 @@ export function installQuickDigging(doc){
  make('summary','Add work-plan details (optional)',more);
  make('p','Not needed for the initial distance check. Add these details when preparing an arborist or City review request; nothing is sent automatically.',more).className='help';
  const moreGrid=make('div','',more);moreGrid.className='grid';
+ const rootFollow=make('section','');rootFollow.id='digQuickRootMethod';rootFollow.hidden=true;more.before(rootFollow);
+ make('h3','One follow-up: what happens to the roots?',rootFollow);
+ make('p','This answer changes the root-pruning guidance. It is not a permit application, and choosing a method does not establish approval.',rootFollow).className='help';
+ const rootGrid=make('div','',rootFollow);rootGrid.className='grid';
  const follow=make('details','',section);follow.id='digQuickProperty';follow.hidden=true;
  make('summary','Confirm property details for the City requirements',follow);
  make('p','Only needed when the first result cannot establish which City rules apply. Use what you know; an unanswered item is not a No.',follow).className='help';
@@ -85,7 +95,8 @@ export function installQuickDigging(doc){
    move('digComplex',complex);anchors.get(val('digTarget')==='same'?'scDbh':'digOtherDbh')?.box.append(complex);
    for(const id of ['scProperty','scSpecies','digTarget','digOtherTrees','digArea'])move(id,followGrid);
    if(chapter&&chapter.parentElement!==follow)follow.append(chapter);
-   for(const id of ['digDepth','digWidth','digLength','digMethod','digHandling','digStorage','digArborist','digCredential','dig811'])move(id,moreGrid);
+   for(const id of ['digDepth','digWidth','digLength','digMethod','digStorage','digArborist','digCredential','dig811'])move(id,moreGrid);
+   move('digHandling',rootFollow.hidden?moreGrid:rootGrid);
    for(const id of ['scLocation','scDbh','digPurpose','digFeet','digStage'])if(anchors.get(id)?.box.parentElement===core)anchors.get(id).box.hidden=false;
    if(val('digTarget')!=='same')anchors.get('digOtherDbh').box.hidden=false;
    label('scLocation','1. Where does the tree trunk meet the ground?');
@@ -108,7 +119,7 @@ export function installQuickDigging(doc){
    if(chapter&&chapterAnchor.parentNode)chapterAnchor.after(chapter);
    for(const a of labels.values())a.node.textContent=a.text;
    for(const a of helps.values())a.node.textContent=a.text;
-   precision.remove();complex.remove();core.hidden=true;more.hidden=true;follow.hidden=true;
+   precision.remove();complex.remove();core.hidden=true;more.hidden=true;follow.hidden=true;rootFollow.hidden=true;
    if(originalGrid)originalGrid.hidden=false;
    if(section.querySelector('legend'))section.querySelector('legend').textContent=originalLegend;
    for(const a of intros){a.node.textContent=a.text;a.node.hidden=false;}
@@ -129,15 +140,24 @@ export function installQuickDigging(doc){
   const a=read(),r=screenDigging(a),s=quickDiggingSummary(a,r),panel=$('diggingResult');
   if(!s||!panel||panel.hidden)return;
   last={a,r,s,fingerprint:JSON.stringify(a)};
+  if(s.rootRule.followUpNeeded){rootFollow.hidden=false;move('digHandling',rootGrid);}
+  panel.dataset.rootMethod=s.rootRule.status;
   const original=[...panel.children];panel.replaceChildren();panel.dataset.quickVersion=QUICK_DIGGING_VERSION;
   make('h3',s.title,panel);
   const rows=make('div','',panel);rows.id='digQuickResultRows';
   for(const [heading,text] of [['Root-protection finding',s.root],['City requirements',s.city],['Next action',s.next]]){const row=make('div','',rows);make('h4',heading,row);make('p',text,row);}
   make('p','No distance alone authorizes digging or cutting roots. Contact Alabama 811 before excavation; utility locating and tree-root permission are separate.',panel).className='help';
   const actions=make('div','',panel);actions.className='actions';
+  if(s.rootRule.followUpNeeded){
+   const b=make('button','Answer the root-handling follow-up',actions);b.id='digQuickRootFollow';b.type='button';b.className='secondary';
+   b.addEventListener('click',()=>{rootFollow.hidden=false;move('digHandling',rootGrid);rootFollow.scrollIntoView({behavior:'smooth',block:'start'});$('digHandling')?.focus({preventScroll:true});});
+  }
   if(s.pending){const b=make('button','Confirm the missing property details',actions);b.id='digQuickConfirm';b.type='button';b.className='secondary';b.addEventListener('click',()=>openSection(follow,'scProperty'));}
   const detailButton=make('button','Prepare a detailed review request (optional)',actions);detailButton.id='digQuickPrepare';detailButton.type='button';detailButton.className='secondary';detailButton.addEventListener('click',()=>openSection(more,'digMethod'));
   const explanation=make('details','',panel);explanation.id='digQuickExplanation';make('summary','Calculation, root-handling advice and official sources',explanation);
+  make('p',s.rootRule.selectiveDefinition,explanation);
+  make('p','The ordinance defines Selective Root Pruning. The cut-through description in this form is a plain-language explanation, not a separately quoted ordinance definition of non-selective root pruning. Actual critical root zone and a violation are not determined from distance alone.',explanation);
+  for(const source of ROOT_PRUNING_SOURCES){const p=make('p','',explanation),link=make('a',source.label,p);link.href=source.url;link.target='_blank';link.rel='noopener noreferrer';}
   for(const node of original)if(node.tagName!=='H3')explanation.append(node);
   // Preserve all source facts and advice, but an unresolved scope is not a
   // determination that everyone must request City approval.
@@ -170,19 +190,20 @@ export function installQuickDigging(doc){
  });
  // Open a collapsed optional section if the visitor entered an invalid value.
  form.addEventListener('invalid',e=>{let n=e.target.parentElement;while(n&&n!==form){if(n.tagName==='DETAILS'){n.hidden=false;n.open=true;}n=n.parentElement;}},true);
- const reset=()=>{epoch++;last=null;editingDetails=false;follow.hidden=true;follow.open=false;more.open=false;precision.open=false;complex.open=false;rootAlert();};
+ const reset=()=>{epoch++;last=null;editingDetails=false;follow.hidden=true;follow.open=false;rootFollow.hidden=true;more.open=false;precision.open=false;complex.open=false;rootAlert();};
  let bound=false;const bind=()=>{if(bound||!$('propertyMapAddress'))return;bound=true;$('propertyMapAddress').addEventListener('input',reset);};
  const observer=new win.MutationObserver(()=>{bind();if(bound)observer.disconnect();});observer.observe(doc.body,{childList:true,subtree:true});bind();
  new win.MutationObserver(()=>win.queueMicrotask(sync)).observe(form,{attributes:true,attributeFilter:['data-task-tab']});
  const style=make('style','',doc.head);style.textContent=[
- '#digQuickCore[hidden],#digQuickDetails[hidden],#digQuickProperty[hidden],#digQuickImmediate[hidden]{display:none!important}',
+ '#digQuickCore[hidden],#digQuickDetails[hidden],#digQuickProperty[hidden],#digQuickImmediate[hidden],#digQuickRootMethod[hidden]{display:none!important}',
+ '#digQuickRootMethod{margin:18px 0;padding:14px;border:1px solid var(--amberline);border-radius:10px}#digQuickRootMethod .grid{grid-template-columns:1fr}',
  '#digQuickCore{grid-template-columns:1fr;gap:20px}',
  '#digQuickCore>div>label{font-size:16px}',
  '#digQuickCore .plain-explanation{display:none}',
  '#digQuickDistanceDetails,#digQuickTrunkDetails{border:0;margin:8px 0 0;padding:0}',
  '#digQuickDistanceDetails summary,#digQuickTrunkDetails summary{font-size:13px;min-height:40px;padding:8px 0}',
  '#digQuickDetails,#digQuickProperty{margin-top:18px;padding-top:14px}',
- '#digQuickResultRows h4{margin:12px 0 4px}#digQuickResultRows p{margin:0 0 8px}',
+ '#digQuickResultRows h4{margin:12px 0 4px}#digQuickResultRows p{margin:0 0 8px;white-space:pre-line}',
  '#digQuickImmediate{margin:0;padding:14px;font-weight:600}',
  '#permitForm[data-quick-digging="yes"] #diggingFields> .grid[hidden]{display:none!important}',
  '#permitForm[data-quick-digging="yes"] #diggingFields .dig-terms{display:none}',
