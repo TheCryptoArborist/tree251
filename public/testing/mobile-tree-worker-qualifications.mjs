@@ -5,6 +5,7 @@ import {installAddressFacts} from './mobile-tree-address-answers.mjs';
 import {installFinalResult} from './mobile-tree-final-result.mjs';
 import {installDigging} from './mobile-tree-digging-ui.mjs';
 import {installTaskTabs} from './mobile-tree-task-tabs.mjs';
+import {installStepNav} from './mobile-tree-step-navigation.mjs';
 import {installQuickDigging} from './mobile-tree-quick-digging.mjs';
 /* Work qualifications are independent of permit outcomes and species exemptions.
  * Sources checked 2026-11-13: adopted Chapter 65, Article IX(3), (4)(a)-(c),
@@ -120,7 +121,7 @@ if(typeof document !== 'undefined'){
   installQuickDigging(document);
   // Wait for the original questionnaire to enable its controls, then route
   // the same form into task panels without duplicating inputs or GIS state.
-  setTimeout(()=>installTaskTabs(document),0);
+  setTimeout(()=>{installTaskTabs(document);installStepNav(document);},0);
   // Load mapping independently: a map-library problem must not disable screening.
   import('./mobile-tree-address-map.mjs').then(({installAddressMap})=>installAddressMap(document)).catch(()=>{
     const n=document.createElement('p');n.className='notice';
