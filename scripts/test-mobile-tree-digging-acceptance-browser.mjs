@@ -23,6 +23,7 @@ try{
  const page=await browser.newPage({viewport:{width:390,height:844}});
  page.on('pageerror',e=>errors.push(e.message));
  await page.goto(origin+'/testing/mobile-tree-checker.html#digging',{waitUntil:'domcontentloaded'});
+ await page.waitForSelector('#stepContinueWork');await page.click('#stepContinueWork');
  await page.waitForSelector('#permitForm[data-quick-digging="yes"]');await page.waitForTimeout(250);
  const set=values=>page.evaluate(values=>{for(const [id,value] of Object.entries(values)){const n=document.getElementById(id);if(!n)throw Error('Missing '+id);if(n.type==='checkbox')n.checked=value;else n.value=String(value);n.dispatchEvent(new Event('input',{bubbles:true}));n.dispatchEvent(new Event('change',{bubbles:true}));}},values);
  const run=async()=>{await page.click('#screenNow');await page.waitForSelector('#diggingResult[data-quick-version="'+QUICK_DIGGING_VERSION+'"]:not([hidden])');await page.waitForTimeout(220);};
