@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {CITY_CONTACTS,CALLBACK_FORM_URL,buildCityInquiry,cityMailto,callbackSummary} from '../public/testing/mobile-tree-contact-paths.mjs';
+import {CITY_CONTACTS,CALLBACK_FORM_URL,buildCityInquiry,cityMailto,callbackSummary,readContactFacts} from '../public/testing/mobile-tree-contact-paths.mjs';
 const facts={address:'EXAMPLE PROPERTY — NOT A CLIENT RECORD',work:'Dig near a tree',workCode:'root',digging:true,treeLocation:'Private land — reported',groundLocation:'City ROW — reported',plan:'Unknown',disturbedArea:'1250',distance:'6',dbh:'24',name:'Example',landStatus:'Not applied for',treeFinding:'Arborist review before digging'};
 test('City contact addresses are .gov only',()=>{
  for(const route of Object.values(CITY_CONTACTS))for(const email of [route.to,route.cc].filter(Boolean))assert.match(email,/@cityofmobile\.gov$/);
@@ -40,4 +40,17 @@ test('Contact module does not perform background requests or store visitor data'
  const s=await readFile(new URL('../public/testing/mobile-tree-contact-paths.mjs',import.meta.url),'utf8');
  assert.doesNotMatch(s,/\bfetch\s*\(|XMLHttpRequest|sendBeacon|localStorage|sessionStorage|createElement\(['"]iframe/);
  assert.doesNotMatch(s,/@cityofmobile\.org/);assert.match(s,/rel='noopener noreferrer'/);assert.match(s,/readOnly=true/);
+});
+
+const fakeDoc=values=>({getElementById:id=>id in values?{value:values[id],tagName:'INPUT'}:null});
+test('Routine work does not inherit inactive digging answers',()=>{
+ const f=readContactFacts(fakeDoc({scWork:'pruning',rowGroundWork:'no',rowWorkArea:'OLD ROW',residentLDArea:'9000',residentLDStatus:'issued',residentLDNumber:'OLD-PERMIT',digFeet:'1',digStage:'damaged'}));
+ assert.equal(f.groundLocation,'');assert.equal(f.disturbedArea,'');assert.equal(f.landStatus,'');assert.equal(f.projectNumber,'');assert.equal(f.distance,'');assert.equal(f.stage,'');
+});
+test('A different affected tree never inherits original trunk facts',()=>{
+ const f=readContactFacts(fakeDoc({scWork:'root',digTarget:'other',scDbh:'24',digOtherDbh:'36',scLocation:'ROW',scSpecies:'liveoak'}));
+ assert.equal(f.dbh,'36');assert.match(f.treeLocation,/unverified/);assert.match(f.species,/Not identified/);
+});
+test('Planting uses the planting location and keeps reported area',()=>{
+ const f=readContactFacts(fakeDoc({scWork:'planting',scLocation:'ROW',residentLDArea:'25'}));assert.equal(f.groundLocation,'ROW');assert.equal(f.disturbedArea,'25');
 });

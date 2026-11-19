@@ -4,7 +4,7 @@
  * Existing Jotform intake is unchanged. Screening transfer is review/copy/paste,
  * never personal data in a URL or an unannounced third-party submission.
  */
-export const CONTACT_PATHS_VERSION='0.1.0';
+export const CONTACT_PATHS_VERSION='0.1.1';
 export const CALLBACK_FORM_URL='https://form.jotform.com/221198646412861';
 export const ENGINEERING_FORMS_URL='https://www.buildmobile.org/forms-and-applications/';
 export const CITY_CONTACTS=Object.freeze({
@@ -49,18 +49,23 @@ export function cityMailto(kind,subject,body){
 export function readContactFacts(doc){
  const el=id=>doc.getElementById(id),val=id=>el(id)?.value??'';
  const choice=id=>{const n=el(id);return n?.tagName==='SELECT'?n.selectedOptions[0]?.textContent||'':val(id);};
- const digging=['root','roots'].includes(val('scWork'))||el('digAlso')?.checked===true;
+ const workCode=val('scWork'),digging=['root','roots'].includes(workCode)||el('digAlso')?.checked===true;
+ const ground=digging||['planting','clearing','relocation'].includes(workCode)||val('rowGroundWork')==='yes'||val('udcDevelopment')==='yes';
+ const differentTree=digging&&!!val('digTarget')&&val('digTarget')!=='same';
  const text=id=>el(id)?.textContent?.trim()||'';
+ const quickRow=heading=>digging?[...(el('digQuickResultRows')?.children||[])].find(n=>n.querySelector('h4')?.textContent===heading)?.querySelector('p')?.textContent||'':'';
+ const publicHeading=id=>el(id)?.hidden?'':el(id)?.querySelector('h3')?.textContent||'';
  return {
   address:val('propertyMapAddress')||val('propertyAddress'),name:val('contactName'),
-  work:choice('scWork'),workCode:val('scWork'),digging,
-  treeLocation:choice('scLocation'),groundLocation:choice(digging?'digArea':'rowWorkArea'),
-  plan:choice('udcPlan'),disturbedArea:val('residentLDArea'),landStatus:choice('residentLDStatus'),projectNumber:val('residentLDNumber'),
-  species:choice('scSpecies'),dbh:val('scDbh'),distance:digging?val('digFeet'):'',stage:digging?val('digStage'):'',
+  work:choice('scWork'),workCode,digging,
+  treeLocation:differentTree?'Affected tree location unverified; original tree pin does not identify this tree':choice('scLocation'),
+  groundLocation:digging?choice('digArea'):workCode==='planting'?choice('scLocation'):val('rowGroundWork')==='yes'?choice('rowWorkArea'):'',
+  plan:choice('udcPlan'),disturbedArea:ground?val('residentLDArea'):'',landStatus:ground?choice('residentLDStatus'):'',projectNumber:ground?val('residentLDNumber'):'',
+  species:differentTree?'Not identified for the affected tree':choice('scSpecies'),dbh:val(differentTree?'digOtherDbh':'scDbh'),
+  distance:digging?val('digFeet'):'',stage:digging?val('digStage'):'',
   treeFinding:text('permitOutcome'),planFinding:text('udcOutcome'),
-  engineeringFinding:el('residentEngineering')?.hidden?'':el('residentEngineering')?.querySelector('h3')?.textContent||'',
-  landFinding:el('residentLandDisturbance')?.hidden?'':el('residentLandDisturbance')?.querySelector('h3')?.textContent||'',
-  record:val('screeningRecord')
+  engineeringFinding:quickRow('Engineering ROW permit')||publicHeading('residentEngineering'),
+  landFinding:(digging?el('digQuickLandDisturbance')?.querySelector('h4')?.textContent||'':'')||publicHeading('residentLandDisturbance')
  };
 }
 export function callbackSummary(facts={},timestamp=new Date().toISOString()){
