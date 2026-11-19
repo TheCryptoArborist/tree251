@@ -52,3 +52,12 @@ test('Outside Mobile is not City clearance',()=>{
  assert.match(s.city,/outside.*City of Mobile/);assert.equal(s.readyForCity,false);assert.equal(s.authorizationGranted,false);
 });
 test('Non-digging work is unchanged',()=>assert.equal(quickDiggingSummary({work:'pruning'}),null));
+
+test('Engineering ROW permit follows excavation rather than tree location',()=>{
+ const a={...base,location:'private',excavationArea:'row'},r=screenDigging(a),s=quickDiggingSummary(a,r);
+ assert.equal(s.engineeringRow.code,'ROW_PERMIT_REQUIRED');
+ assert.match(s.next,/Engineering right-of-way authorization/);
+ assert.equal(quickDiggingSummary({...base,excavationArea:'private'}).engineeringRow.code,'NO_ROW_TRIGGER');
+ assert.equal(quickDiggingSummary({...base,excavationArea:'unknown'}).engineeringRow.code,'ROW_LOCATION_UNKNOWN');
+ assert.match(quickDiggingRecord(a,r,s),/Engineering ROW permit:/);
+});
