@@ -37,7 +37,7 @@ try{
  eq(await page.inputValue('#scDbh'),'');eq(await page.inputValue('#digFeet'),'');
  await set({scCity:'inside',scLocation:'row',scHistoric:'no',digPurpose:'utility'});await run();
  eq(await page.getAttribute('#diggingResult','data-outcome'),'DAMAGE_REPORTED');
- await page.selectOption('#digStage','not-started');await page.fill('#scDbh','24');await page.fill('#digFeet','10');await run();
+ await page.click('#step-work');await page.selectOption('#digStage','not-started');await page.fill('#scDbh','24');await page.fill('#digFeet','10');await run();
  eq(await page.getAttribute('#diggingResult','data-outcome'),'CLOSE_EXCAVATION');
  eq(await page.locator('#digQuickResultRows>div').count(),3);
  matches(await page.textContent('#digQuickResultRows'),/24-inch.*10 feet/s);
@@ -47,7 +47,7 @@ try{
  matches(await page.textContent('#digQuickResultRows'),/§65-10.*Public Trees or Heritage Trees/s);
  matches(await page.textContent('#digQuickResultRows'),/Root handling has not been described/);
  eq(await page.getAttribute('#diggingResult','data-root-method'),'METHOD_NOT_REPORTED');
- eq(await page.locator('#digQuickRootMethod').isVisible(),true);
+ eq(await page.locator('#digQuickRootMethod').evaluate(el=>!el.hidden),true);
  eq(await page.locator('#digQuickRootMethod select').count(),1);
  eq(await page.inputValue('#digMethod'),'unknown');eq(await page.inputValue('#digHandling'),'unknown');
  matches(await page.inputValue('#screeningRecord'),/QUICK CHECK/);
@@ -65,16 +65,16 @@ try{
  matches(await page.inputValue('#emailBody'),/depth 24 inches/);matches(await page.inputValue('#screeningRecord'),/QUICK CHECK/);
  matches(await page.inputValue('#screeningRecord'),/CUT_THROUGH_PROPOSED/);matches(await page.inputValue('#screeningRecord'),/§65-8/);
  eq((await page.inputValue('#emailBody')).includes('QUICK CHECK'),false,'Complete report stays separate from short email');
- await page.selectOption('#digHandling','expose');await page.selectOption('#digMethod','hand');await run();
+ await page.click('#step-work');await page.selectOption('#digHandling','expose');await page.selectOption('#digMethod','hand');await run();
  eq(await page.getAttribute('#diggingResult','data-root-method'),'SELECTIVE_PROPOSED_UNVERIFIED');
  matches(await page.textContent('#digQuickResultRows'),/not approval/);
  matches(await page.textContent('#digQuickResultRows'),/supervising individual root pruning/);
- await page.selectOption('#digMethod','boring');await run();eq(await page.getAttribute('#diggingResult','data-root-method'),'EXPOSURE_METHOD_CONFLICT');
+ await page.click('#step-work');await page.selectOption('#digMethod','boring');await run();eq(await page.getAttribute('#diggingResult','data-root-method'),'EXPOSURE_METHOD_CONFLICT');
  matches(await page.textContent('#digQuickResultRows'),/not automatically a violation/);
- await page.selectOption('#digHandling','cut');await page.selectOption('#digMethod','machinery');
+ await page.click('#step-work');await page.selectOption('#digHandling','cut');await page.selectOption('#digMethod','machinery');
  await page.fill('#digFeet','40');eq(await page.locator('#draftArea').isVisible(),false);
  await run();eq(await page.getAttribute('#diggingResult','data-outcome'),'OUTSIDE_SCREENING_RANGE');matches(await page.textContent('#digQuickResultRows'),/does not clear/);
- await page.selectOption('#scLocation','private');await run();
+ await page.click('#step-work');await page.selectOption('#scLocation','private');await run();
  matches(await page.textContent('#digQuickResultRows'),/citywide/);
  matches(await page.textContent('#digQuickResultRows'),/Selective root pruning must be supervised/);
  matches(await page.textContent('#forestryEmailCTA'),/No City email is automatically required/);
@@ -99,12 +99,12 @@ try{
  await page.click('#diggingTab');eq(await page.inputValue('#scDbh'),'24');eq(await page.inputValue('#digDepth'),'24');
  await page.fill('#digFeet','');await page.fill('#scDbh','');await run();
  eq(await page.getAttribute('#diggingResult','data-outcome'),'MEASUREMENTS_NEEDED');
- await page.fill('#scDbh','24');await page.fill('#digFeet','10');
+ await page.click('#step-work');await page.fill('#scDbh','24');await page.fill('#digFeet','10');
  await page.locator('#digQuickTrunkDetails summary').click();await page.selectOption('#digComplex','yes');await run();
  eq(await page.getAttribute('#diggingResult','data-outcome'),'MEASUREMENTS_NEEDED');
  const ids=await page.locator('[id]').evaluateAll(ns=>ns.map(n=>n.id));eq(new Set(ids).size,ids.length,'No duplicated controls');
  for(const width of [320,390,820,1200]){await page.setViewportSize({width,height:900});eq(await page.evaluate(()=>document.body.scrollWidth<=innerWidth+2),true,'No horizontal overflow '+width);}
- await page.fill('#propertyMapAddress','Different address');eq(await page.inputValue('#digFeet'),'');eq(await page.locator('#diggingResult').isVisible(),false);
+ await page.click('#step-property');await page.fill('#propertyMapAddress','Different address');eq(await page.inputValue('#digFeet'),'');eq(await page.locator('#diggingResult').isVisible(),false);
  eq(await page.locator('#digQuickRootMethod').isVisible(),false);
  eq(await page.locator('#emailCard').isVisible(),false);eq(await page.locator('#workCard').isVisible(),false);
  assert.deepEqual(errors,[]);assertions++;
