@@ -4,7 +4,7 @@ import {rootPruningConclusion,ROOT_PRUNING_SOURCES} from './mobile-tree-root-pru
  * Omitted inputs remain unknown. No new exemption, safe radius, authorization,
  * automatic violation finding, credential verification or network request.
  */
-export const QUICK_DIGGING_VERSION='0.7.3';
+export const QUICK_DIGGING_VERSION='0.7.4';
 export function quickDiggingSummary(a,r=screenDigging(a)){
  if(!r.active)return null;
  const pending=r.scope==='unresolved'||r.approvalRouteUnresolved===true;
@@ -61,6 +61,13 @@ export function installQuickDigging(doc){
  make('h3','One follow-up: what happens to the roots?',rootFollow);
  make('p','This answer changes the root-pruning guidance. It is not a permit application, and choosing a method does not establish approval.',rootFollow).className='help';
  const rootGrid=make('div','',rootFollow);rootGrid.className='grid';
+ // Engineering ROW requirements depend on the excavation position, not
+ // just the tree trunk. Offer this one-step follow-up after initial screening.
+ const areaFollow=make('section','',section);areaFollow.id='digQuickExcavationLocation';areaFollow.hidden=true;
+ more.before(areaFollow);
+ make('h3','Where will the digging happen?',areaFollow);
+ make('p','The tree and digging area may be on different properties. This answer checks whether Engineering right-of-way authorization may be needed.',areaFollow).className='help';
+ const areaGrid=make('div','',areaFollow);areaGrid.className='grid';
  const follow=make('details','',section);follow.id='digQuickProperty';follow.hidden=true;
  make('summary','Confirm property details for the City requirements',follow);
  make('p','Only needed when the first result cannot establish which City rules apply. Use what you know; an unanswered item is not a No.',follow).className='help';
@@ -95,7 +102,8 @@ export function installQuickDigging(doc){
    move('digFeet',core);move('digStage',core);core.append(immediate);
    move('digInches',precision);move('digMeasured',precision);anchors.get('digFeet')?.box.append(precision);
    move('digComplex',complex);anchors.get(val('digTarget')==='same'?'scDbh':'digOtherDbh')?.box.append(complex);
-   for(const id of ['scProperty','scSpecies','digTarget','digOtherTrees','digArea'])move(id,followGrid);
+   for(const id of ['scProperty','scSpecies','digTarget','digOtherTrees'])move(id,followGrid);
+   move('digArea',areaGrid);
    if(chapter&&chapter.parentElement!==follow)follow.append(chapter);
    for(const id of ['digDepth','digWidth','digLength','digMethod','digStorage','digArborist','digCredential','dig811'])move(id,moreGrid);
    move('digHandling',rootFollow.hidden?moreGrid:rootGrid);
@@ -121,7 +129,7 @@ export function installQuickDigging(doc){
    if(chapter&&chapterAnchor.parentNode)chapterAnchor.after(chapter);
    for(const a of labels.values())a.node.textContent=a.text;
    for(const a of helps.values())a.node.textContent=a.text;
-   precision.remove();complex.remove();core.hidden=true;more.hidden=true;follow.hidden=true;rootFollow.hidden=true;
+   precision.remove();complex.remove();core.hidden=true;more.hidden=true;follow.hidden=true;rootFollow.hidden=true;areaFollow.hidden=true;
    if(originalGrid)originalGrid.hidden=false;
    if(section.querySelector('legend'))section.querySelector('legend').textContent=originalLegend;
    for(const a of intros){a.node.textContent=a.text;a.node.hidden=false;}
@@ -142,6 +150,7 @@ export function installQuickDigging(doc){
   const a=read(),r=screenDigging(a),s=quickDiggingSummary(a,r),panel=$('diggingResult');
   if(!s||!panel||panel.hidden)return;
   last={a,r,s,fingerprint:JSON.stringify(a)};
+  areaFollow.hidden=r.scope!=='covered';
   if(s.rootRule.followUpNeeded){rootFollow.hidden=false;move('digHandling',rootGrid);}
   panel.dataset.rootMethod=s.rootRule.status;
   const original=[...panel.children];panel.replaceChildren();panel.dataset.quickVersion=QUICK_DIGGING_VERSION;
@@ -153,6 +162,10 @@ export function installQuickDigging(doc){
   if(s.rootRule.followUpNeeded){
    const b=make('button','Answer the root-handling follow-up',actions);b.id='digQuickRootFollow';b.type='button';b.className='secondary';
    b.addEventListener('click',()=>{rootFollow.hidden=false;move('digHandling',rootGrid);rootFollow.scrollIntoView({behavior:'smooth',block:'start'});$('digHandling')?.focus({preventScroll:true});});
+  }
+  if(r.scope==='covered'&&(!a.excavationArea||a.excavationArea==='unknown')){
+   const b=make('button','Where will the digging happen? Check Engineering requirements',actions);b.id='digQuickAreaFollow';b.type='button';b.className='secondary';
+   b.addEventListener('click',()=>{areaFollow.hidden=false;areaFollow.scrollIntoView({behavior:'smooth',block:'start'});$('digArea')?.focus({preventScroll:true});});
   }
   if(s.pending){const b=make('button','Confirm the missing property details',actions);b.id='digQuickConfirm';b.type='button';b.className='secondary';b.addEventListener('click',()=>openSection(follow,'scProperty'));}
   const detailButton=make('button','Prepare a detailed review request (optional)',actions);detailButton.id='digQuickPrepare';detailButton.type='button';detailButton.className='secondary';detailButton.addEventListener('click',()=>openSection(more,'digMethod'));
@@ -192,13 +205,13 @@ export function installQuickDigging(doc){
  });
  // Open a collapsed optional section if the visitor entered an invalid value.
  form.addEventListener('invalid',e=>{let n=e.target.parentElement;while(n&&n!==form){if(n.tagName==='DETAILS'){n.hidden=false;n.open=true;}n=n.parentElement;}},true);
- const reset=()=>{epoch++;last=null;editingDetails=false;follow.hidden=true;follow.open=false;rootFollow.hidden=true;more.open=false;precision.open=false;complex.open=false;rootAlert();};
+ const reset=()=>{epoch++;last=null;editingDetails=false;follow.hidden=true;follow.open=false;rootFollow.hidden=true;areaFollow.hidden=true;more.open=false;precision.open=false;complex.open=false;rootAlert();};
  let bound=false;const bind=()=>{if(bound||!$('propertyMapAddress'))return;bound=true;$('propertyMapAddress').addEventListener('input',reset);};
  const observer=new win.MutationObserver(()=>{bind();if(bound)observer.disconnect();});observer.observe(doc.body,{childList:true,subtree:true});bind();
  new win.MutationObserver(()=>win.queueMicrotask(sync)).observe(form,{attributes:true,attributeFilter:['data-task-tab']});
  const style=make('style','',doc.head);style.textContent=[
- '#digQuickCore[hidden],#digQuickDetails[hidden],#digQuickProperty[hidden],#digQuickImmediate[hidden],#digQuickRootMethod[hidden]{display:none!important}',
- '#digQuickRootMethod{margin:18px 0;padding:14px;border:1px solid var(--amberline);border-radius:10px}#digQuickRootMethod .grid{grid-template-columns:1fr}',
+ '#digQuickCore[hidden],#digQuickDetails[hidden],#digQuickProperty[hidden],#digQuickImmediate[hidden],#digQuickRootMethod[hidden],#digQuickExcavationLocation[hidden]{display:none!important}',
+ '#digQuickRootMethod,#digQuickExcavationLocation{margin:18px 0;padding:14px;border:1px solid var(--amberline);border-radius:10px}#digQuickRootMethod .grid,#digQuickExcavationLocation .grid{grid-template-columns:1fr}',
  '#digQuickCore{grid-template-columns:1fr;gap:20px}',
  '#digQuickCore>div>label{font-size:16px}',
  '#digQuickCore .plain-explanation{display:none}',
