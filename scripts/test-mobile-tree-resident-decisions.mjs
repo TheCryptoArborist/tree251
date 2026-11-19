@@ -102,7 +102,7 @@ test('Chapter 17 screening preserves conditional residential landscaping excepti
 test('Chapter 17 and Engineering ROW are independent findings',()=>{
  const a={city:'inside',location:'row',work:'planting',property:'developed',disturbedSqFt:10,ldSensitive:'no'};
  assert.equal(engineeringReview(a).code,'ROW_PERMIT_REQUIRED');
- assert.equal(screenLandDisturbance(a).code,'MINOR_RESIDENTIAL_POSSIBLE');
+ assert.equal(screenLandDisturbance(a).code,'REVIEW_NEEDED');
  assert.equal(screenLandDisturbance({...a,landDisturbance:'pending'}).code,'APPLICATION_PENDING');
  assert.equal(screenLandDisturbance({...a,landDisturbance:'issued'}).code,'PERMIT_REPORTED');
 });
