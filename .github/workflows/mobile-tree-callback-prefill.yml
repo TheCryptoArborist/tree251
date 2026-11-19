@@ -1,0 +1,46 @@
+name: Mobile tree callback prefill
+on:
+  pull_request:
+    paths:
+      - 'public/testing/mobile-tree-*.mjs'
+      - 'scripts/test-mobile-tree-callback-*.mjs'
+      - '.github/workflows/mobile-tree-callback-prefill.yml'
+permissions:
+  contents: read
+jobs:
+  callback-prefill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install isolated browser dependency
+        run: npm install --prefix "$RUNNER_TEMP/callback-prefill" --no-audit --no-fund playwright
+      - name: Inspect public field schema without creating a submission
+        env:
+          BROWSER_DEPS: ${{ runner.temp }}/callback-prefill
+        run: |
+          node --input-type=module <<'NODE'
+          import {createRequire} from 'node:module';
+          import {execSync} from 'node:child_process';
+          const require=createRequire(process.env.BROWSER_DEPS+'/package.json');
+          const {chromium}=require('playwright');
+          const executablePath=execSync('command -v google-chrome || command -v chromium || command -v chromium-browser',{encoding:'utf8'}).trim();
+          const browser=await chromium.launch({executablePath,headless:true,args:['--no-sandbox']});
+          try {
+            const page=await browser.newPage();
+            await page.route('**/*',route=>{
+              const request=route.request();
+              if(/submit\.jotform|\/submissions(?:[/?]|$)/i.test(request.url()))return route.abort();
+              return route.continue();
+            });
+            await page.goto('https://form.jotform.com/221198646412861',{waitUntil:'domcontentloaded'});
+            await page.waitForSelector('.form-line');
+            const fields=await page.locator('.form-line').evaluateAll(nodes=>nodes.filter(n=>/^(Property Address|Property Type)/.test(n.querySelector('label.form-label')?.textContent.trim()||'')).map(n=>({
+              label:n.querySelector('label.form-label')?.textContent.trim(),
+              controls:[...n.querySelectorAll('input,select,textarea')].map(e=>({tag:e.tagName,id:e.id,name:e.name,type:e.type,options:e.tagName==='SELECT'?[...e.options].map(o=>({value:o.value,text:o.textContent})):undefined}))
+            })));
+            if(fields.length!==2)throw Error('Expected the two existing property fields, got '+fields.length);
+            console.log('CALLBACK_PUBLIC_FIELD_SCHEMA',JSON.stringify(fields));
+            console.log('No submission created; only public form metadata read.');
+          } finally {await browser.close();}
+          NODE
