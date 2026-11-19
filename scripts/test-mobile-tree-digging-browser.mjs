@@ -75,8 +75,8 @@ try{
  eq(await page.getAttribute('#simplePermitAnswer','data-outcome'),'tree-permit-with-root-advice');
  matches(await page.textContent('#simplePermitAnswer'),/digging needs a separate check/);
  // New inputs invalidate summaries just like the original questionnaire.
- await page.selectOption('#digHandling','cut');eq(await page.locator('#permitOutput').isVisible(),false);
- await run();await page.uncheck('#digAlso');
+ await page.click('#step-work');await page.selectOption('#digHandling','cut');eq(await page.locator('#permitOutput').isVisible(),false);
+ await run();await page.click('#step-work');await page.uncheck('#digAlso');
  eq(await page.locator('#diggingFields').isVisible(),false);eq(await page.locator('#digFeet').isDisabled(),true);
  await page.click('#screenNow');await page.waitForSelector('#simplePermitAnswer[data-outcome="residential-no-permit"]');
  eq(await page.locator('#diggingResult').isVisible(),false);
