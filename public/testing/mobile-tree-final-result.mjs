@@ -1,6 +1,7 @@
 /* Display-only outcome summary. Does not alter permit rules. */
 import {installContactPaths} from './mobile-tree-contact-paths.mjs';
-export const RESULT_VERSION='0.4.7';
+import {installCallbackPrefill} from './mobile-tree-callback-prefill.mjs';
+export const RESULT_VERSION='0.4.8';
 export function installFinalResult(doc){
  const $=id=>doc.getElementById(id),form=$('permitForm'),out=$('permitOutput'),old=$('permitOutcome');
  if(!form||!out||!old||$('simplePermitAnswer'))return false;
@@ -80,5 +81,6 @@ export function installFinalResult(doc){
  for(const event of ['input','change'])form.addEventListener(event,()=>{panel.hidden=true;old.hidden=false;details.open=false;});
  const footer=doc.querySelector('footer');if(footer)make('span',' · Clear results '+RESULT_VERSION,footer);
  installContactPaths(doc);
+ installCallbackPrefill(doc);
  return true;
 }
