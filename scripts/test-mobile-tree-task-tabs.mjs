@@ -110,7 +110,7 @@ try{
  eq(await page.locator('#diggingFields').isVisible(),true);await run();
  matches(await page.textContent('#permitOutcome'),/Commission/);
  eq(await page.getAttribute('#diggingResult','data-outcome'),'DAMAGE_REPORTED');
- await page.uncheck('#digAlso');
+ await page.click('#step-work');await page.uncheck('#digAlso');
  await page.selectOption('#scWork','root');eq(await page.getAttribute('#diggingTab','aria-selected'),'true');
  await page.click('#treeWorkTab');eq(await page.inputValue('#scWork'),'pruning');
  await page.focus('#treeWorkTab');await page.keyboard.press('ArrowRight');
