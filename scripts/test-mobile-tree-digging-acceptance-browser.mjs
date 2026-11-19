@@ -43,7 +43,7 @@ try{
  const email=await page.inputValue('#emailBody');
  check('Short email retains method and ROW location',email.includes('cuts through roots as digging proceeds')&&email.includes('Digging location: public street right-of-way'));
  check('Full policy report is not pasted into email',!email.includes('QUICK CHECK'));
- await page.fill('#digFeet','11');
+ await page.click('#step-work');await page.fill('#digFeet','11');
  check('Changed distance invalidates result',!(await page.locator('#permitOutput').isVisible()));
  check('Changed distance invalidates draft',!(await page.locator('#draftArea').isVisible()));
  await set({scLocation:'private',scProperty:'developed',udcZoning:'r1r2',udcOverlay:'none',udcPlan:'no',digOtherTrees:'no',digHandling:'stop',digArea:'row',digFeet:'10'});
