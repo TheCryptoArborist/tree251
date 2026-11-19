@@ -39,7 +39,18 @@ eq(airportAddress.features.length,1);
 const airportPoint=airportAddress.features[0].geometry;
 const parcelZoning=await json('/api/mobile-tree-gis?'+new URLSearchParams({mode:'property',lon:String(airportPoint.x),lat:String(airportPoint.y)}));
 eq(parcelZoning.propertyStatus,'ok');eq(parcelZoning.zoningStatus,'ok');
-eq(parcelZoning.parcel.classcode_desc,'Commercial');
+// Compare the gateway to the CURRENT authoritative fields. City parcel IDs and
+// optional tax attributes can change; never manufacture yesterday's value.
+const upstreamURL=new URL('https://maps.cityofmobile.org/arcgis/rest/services/Parcel_Details_MS/MapServer/0/query');
+upstreamURL.search=new URLSearchParams({where:'1=1',geometry:airportPoint.x+','+airportPoint.y,geometryType:'esriGeometryPoint',inSR:'4326',spatialRel:'esriSpatialRelIntersects',returnGeometry:'false',outFields:'parcel,keyx,classcode_desc,undeveloped',f:'json'}).toString();
+const upstreamResponse=await fetch(upstreamURL,{signal:AbortSignal.timeout(30000),cache:'no-store'});
+eq(upstreamResponse.status,200);
+const upstream=await upstreamResponse.json();check(!upstream.error,'Direct City parcel query must succeed');
+eq(upstream.features?.length,1,'Direct City parcel must be unambiguous');
+const cityAttrs=Object.fromEntries(Object.entries(upstream.features[0].attributes).map(([key,value])=>[key.toLowerCase(),value]));
+for(const key of ['parcel','keyx','classcode_desc','undeveloped'])eq(parcelZoning.parcel[key],cityAttrs[key]??null,'Gateway preserves current City '+key);
+const liveTaxClass=policy.mappedProperty({parcel:{matches:[{attributes:cityAttrs}]}}).taxClass;
+if(!cityAttrs.classcode_desc)eq(liveTaxClass,'unknown','Absent City classification must stay unknown');
 assert.deepEqual(parcelZoning.zoningDistricts.map(x=>x.code).sort(),['B-1','R-1']);assertions++;
 const f=(code='R-1',name='Single-Family Residential',overlay='N/A')=>({zoning:{state:'inside',matches:[{attributes:{district_code:code,district_name:name,sub_district_name:'Suburban',overlay}}]},overlays:{state:'none',matches:[]}});
 eq(policy.mappedProperty(f()).zoning,'r1r2');eq(policy.mappedProperty(f()).overlay,'none');
@@ -142,8 +153,10 @@ try{
  await page.fill('#propertyMapAddress','2721 Airport Boulevard');await page.click('#findPropertyMap');
  await page.locator('#propertyMapCandidates button').first().click({timeout:35000});
  await page.waitForSelector('#permitForm[data-property-records="ready"]',{timeout:60000,state:'attached'});
- eq(await page.getAttribute('#permitForm','data-parcel-tax-class'),'commercial');eq(await page.getAttribute('#permitForm','data-split-zoned'),'yes');
- matches(await page.textContent('#udcZoningRecord'),/R-1.*B-1/);matches(await page.textContent('#residentParcelStatus'),/Tax classification: Commercial/);
+ eq(await page.getAttribute('#permitForm','data-parcel-tax-class'),liveTaxClass);eq(await page.getAttribute('#permitForm','data-split-zoned'),'yes');
+ matches(await page.textContent('#udcZoningRecord'),/R-1.*B-1/);
+ if(cityAttrs.classcode_desc)check((await page.textContent('#residentParcelStatus')).includes('Tax classification: '+cityAttrs.classcode_desc),'UI preserves the current classification');
+ else check(!(await page.textContent('#residentParcelStatus')).includes('Tax classification: Commercial'),'Missing classification is not displayed as Commercial');
  eq(await page.locator('#scProperty option[value="commercial"]').count(),1);eq(await page.inputValue('#scProperty'),'unknown');
  await page.waitForSelector('#applyMapAnswers:not([disabled])',{timeout:45000});await page.click('#applyMapAnswers');
  eq(await page.inputValue('#scCity'),'inside');eq(await page.inputValue('#scHistoric'),'no');
@@ -152,12 +165,56 @@ try{
  await page.click('#screenNow');await page.waitForSelector('#permitOutput:not(.hidden)');
  matches(await page.textContent('#permitOutcome'),/verification/i);
  await page.waitForSelector('#simplePermitAnswer:not([hidden])');
- check((await page.getAttribute('#simplePermitAnswer','data-outcome'))!=='residential-no-permit','Commercial parcel cannot inherit residential clearance');
+ check((await page.getAttribute('#simplePermitAnswer','data-outcome'))!=='residential-no-permit','Split-zoned parcel cannot inherit residential clearance, even with missing classification');
  await page.click('#step-work');await page.selectOption('#scProperty','commercial');await page.click('#screenNow');await page.waitForSelector('#permitOutput:not(.hidden)');
  matches(await page.textContent('#permitOutcome'),/Tree permit required/);matches(await page.textContent('#simplePermitAnswer'),/Split zoning/);
+ // Preserve commercial conflict coverage with a labelled, controlled browser
+ // fixture. This is never written to the live GIS or used as real parcel data.
+ const fixture=await browser.newPage({viewport:{width:390,height:844}});
+ fixture.on('pageerror',e=>errors.push(e.message));
+ const pt={x:-88.1102672,y:30.6882158};
+ const rings=[[[pt.x-.002,pt.y-.002],[pt.x+.002,pt.y-.002],[pt.x+.002,pt.y+.002],[pt.x-.002,pt.y+.002],[pt.x-.002,pt.y-.002]]];
+ let fixtureClass='Commercial';
+ await fixture.route('**/api/mobile-tree-gis?*',async route=>{
+  const u=new URL(route.request().url()),mode=u.searchParams.get('mode');
+  const parcel={objectid:1,parcel:'CONTROLLED-TEST-NOT-A-CITY-RECORD',keyx:'TEST',undeveloped:null,classcode_desc:fixtureClass,acreage:1};
+  const attributes={city:{objectid:1,name:'MOBILE'},zoning:{objectid:1,district_code:'R-1',district_name:'Single-Family Residential',sub_district_name:'Suburban',overlay:'N/A'},parcel};
+  const fetchedAt=new Date().toISOString();let data;
+  if(mode==='address')data={status:'ok',fetchedAt,features:[{attributes:{address:'CONTROLLED TEST PROPERTY'},geometry:pt}]};
+  else if(mode==='property')data={status:'ok',fetchedAt,propertyStatus:'ok',parcel,zoningStatus:'ok',zoningDistricts:[{code:'R-1',name:'Single-Family Residential'}]};
+  else data={status:'ok',fetchedAt,layers:Object.fromEntries((u.searchParams.get('layer')?[u.searchParams.get('layer')]:['city','historic','zoning','overlays','parcel','cityProperty','park','planning']).map(k=>[k,{status:'ok',source:'https://example.invalid/controlled-test',fetchedAt,spatialReference:{wkid:4326},features:attributes[k]?[{attributes:attributes[k],geometry:{rings}}]:[]}]))};
+  await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(data)});
+ });
+ const loadFixture=async()=>{
+  await fixture.goto(origin+'/testing/mobile-tree-checker.html',{waitUntil:'domcontentloaded'});
+  await fixture.waitForSelector('#propertyMapAddress');
+  await fixture.fill('#propertyMapAddress','1 Controlled Test');await fixture.click('#findPropertyMap');
+  await fixture.locator('#propertyMapCandidates button').first().click();
+  await fixture.waitForSelector('#permitForm[data-property-records="ready"]',{state:'attached'});
+  await fixture.waitForSelector('#applyMapAnswers:not([disabled])');await fixture.click('#applyMapAnswers');
+ };
+ await loadFixture();
+ eq(await fixture.getAttribute('#permitForm','data-parcel-tax-class'),'commercial');
+ eq(await fixture.inputValue('#scProperty'),'unknown','Tax class must not silently set actual use');
+ await fixture.selectOption('#scLocation','private');await fixture.selectOption('#scProperty','developed');
+ await fixture.selectOption('#scWork','removal');await fixture.selectOption('#scSpecies','liveoak');
+ await fixture.fill('#scDbh','18');await fixture.selectOption('#udcPlan','no');await fixture.selectOption('#udcDevelopment','no');
+ await fixture.selectOption('#rowGroundWork','no');await fixture.click('#screenNow');
+ await fixture.waitForSelector('#simplePermitAnswer:not([hidden])');
+ matches(await fixture.textContent('#permitOutcome'),/verification/i);
+ check((await fixture.getAttribute('#simplePermitAnswer','data-outcome'))!=='residential-no-permit','Controlled Commercial/R-1 conflict must not inherit home exclusion');
+ fixtureClass=null;await loadFixture();
+ eq(await fixture.getAttribute('#permitForm','data-parcel-tax-class'),'unknown','Controlled null classification stays unknown');
+ eq(await fixture.inputValue('#scProperty'),'unknown','R-1 zoning does not fill a missing property use');
+ await fixture.selectOption('#scLocation','private');await fixture.selectOption('#scWork','removal');
+ await fixture.selectOption('#scSpecies','liveoak');await fixture.fill('#scDbh','18');
+ await fixture.selectOption('#udcPlan','unknown');await fixture.selectOption('#udcDevelopment','no');await fixture.selectOption('#rowGroundWork','no');
+ await fixture.click('#screenNow');await fixture.waitForSelector('#simplePermitAnswer:not([hidden])');
+ check((await fixture.getAttribute('#simplePermitAnswer','data-outcome'))!=='residential-no-permit','Missing classification and unconfirmed actual use cannot become residential clearance');
+ await fixture.close();
  assert.deepEqual(errors,[]);assertions++;
  await page.screenshot({path:'test-artifacts/resident/commercial-result.png',fullPage:true});
- const result={assertions,liveAddresses:['6 MAURY DR','2721 AIRPORT BLVD'],exactHostedFiles:files,automaticPropertyZoning:true,technicalPlanQuestionsHidden:true,landDisturbanceNotTreePermission:true,rowPlantingEngineeringRoute:true,changedAddressInvalidates:true,physicalIPhone:false,noEmailSent:true,noJotformSubmission:true,errors};
+ const result={assertions,liveAddresses:['6 MAURY DR','2721 AIRPORT BLVD'],liveTaxClass,upstreamClassification:cityAttrs.classcode_desc??null,controlledBrowserFixtures:['Commercial record with R-1 zoning and conflicting reported residence','Missing classification with unconfirmed actual use'],exactHostedFiles:files,automaticPropertyZoning:true,technicalPlanQuestionsHidden:true,landDisturbanceNotTreePermission:true,rowPlantingEngineeringRoute:true,changedAddressInvalidates:true,physicalIPhone:false,noEmailSent:true,noJotformSubmission:true,errors};
  await writeFile('test-artifacts/resident/result.json',JSON.stringify(result,null,2));
  console.log('RESIDENT_WORKFLOW_PASS',JSON.stringify(result));
 }catch(error){
