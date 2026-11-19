@@ -49,7 +49,7 @@ export function screenLandDisturbance(a={}){
  if(area!==null&&area>=4000)return answer('FOUR_THOUSAND_REVIEW','Land-disturbance permit review indicated at 4,000 sq. ft. or more',
   'Chapter 17 specifically requires permitting for covered clearing or grubbing at 4,000 square feet or more; other land disturbance is generally regulated under §17-8.',
   'Have Engineering determine the proper Tier II or Tier III application, any other approvals and any site-specific exemptions before work starts.',tier);
- const residential=a.property==='developed'&&a.taxClass!=='commercial';
+ const residential=a.property==='developed'&&a.taxClass!=='commercial'&&a.location==='private'&&!['row','mixed'].includes(a.excavationArea)&&!['row','mixed'].includes(a.rowWorkArea);
  if(residential&&area!==null&&area<4000&&a.ldSensitive==='no'){
   return answer('MINOR_RESIDENTIAL_POSSIBLE','Possible minor residential landscaping exception—verify',
    'Chapter 17 §17-8(b) provides conditional exceptions for certain minor work on individual residential lots. Area alone is insufficient: excavation depth, slope, drainage, cumulative post-1984 impervious area and other site restrictions matter. The SFRA is a separate application path where applicable.',
