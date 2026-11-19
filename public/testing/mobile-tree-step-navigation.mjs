@@ -76,7 +76,7 @@ export function installStepNav(doc){
   if(!target)return;
   if(target.id==='applyMapAnswers'||target.id==='skipPropertyMap'){
    const currentEpoch=stageEpoch;
-   win.setTimeout(()=>{if(stageEpoch===currentEpoch&&stage==='property')setStage('work');},100);
+   win.queueMicrotask(()=>{if(stageEpoch===currentEpoch&&stage==='property')setStage('work');});
   }
   // Method and excavation-location follow-ups belong to the editable job
   // stage. Switch before the original click handler scrolls to its control.
