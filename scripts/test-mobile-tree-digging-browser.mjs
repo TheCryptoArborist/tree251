@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {execSync} from 'node:child_process';
 import {mkdir} from 'node:fs/promises';
 import {createRequire} from 'node:module';
+import {DIGGING_VERSION} from '../public/testing/mobile-tree-digging-rules.mjs';
 const require=createRequire(process.env.BROWSER_DEPS+'/package.json');
 const {chromium}=require('playwright');
 const origin=process.env.PREVIEW_ORIGIN||'https://deploy-preview-9--tree251.netlify.app';
@@ -25,7 +26,7 @@ try{
  page.on('pageerror',e=>errors.push(e.message));
  await page.goto(origin+'/testing/mobile-tree-checker.html',{waitUntil:'domcontentloaded'});
  await page.waitForSelector('#stepContinueWork');await page.click('#stepContinueWork');
- await page.waitForSelector('#permitForm[data-digging-version="0.5.0"]');
+ await page.waitForSelector('#permitForm[data-digging-version="'+DIGGING_VERSION+'"]');
  // Known manual location fixtures exercise the actual hosted UI. These are
  // not new GIS, ownership, contractor or regulatory-acceptance verifications.
  const set=async values=>page.evaluate(values=>{
