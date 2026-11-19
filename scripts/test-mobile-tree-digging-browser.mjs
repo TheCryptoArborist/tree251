@@ -55,7 +55,7 @@ try{
  await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');
  const body=await page.inputValue('#emailBody');
  for(const re of [/digging \/ utility work near a tree/i,/Nearest digging edge: 10 feet/,/width 2 feet/,/length near the tree 20 feet/,/cuts through roots as digging proceeds/,/Please advise what root-protection measures/,/TEST-NOT-VERIFIED/])matches(body,re);
- await page.fill('#digFeet','40');
+ await page.click('#step-work');await page.fill('#digFeet','40');
  eq(await page.locator('#permitOutput').isVisible(),false);eq(await page.locator('#draftArea').isVisible(),false);
  await set({digMethod:'boring',digHandling:'expose'});await run();
  eq(await page.getAttribute('#diggingResult','data-outcome'),'OUTSIDE_SCREENING_RANGE');
@@ -91,7 +91,7 @@ try{
  await page.setViewportSize({width:390,height:844});
  await mkdir('test-artifacts',{recursive:true});
  await page.locator('#diggingResult').screenshot({path:'test-artifacts/digging-mobile-result.png'});
- await page.fill('#propertyMapAddress','A different property');
+ await page.click('#step-property');await page.fill('#propertyMapAddress','A different property');
  eq(await page.inputValue('#digFeet'),'');eq(await page.locator('#diggingResult').isVisible(),false);
  eq(await page.locator('#draftArea').isVisible(),false);
  assert.deepEqual(errors,[]);assertions++;
