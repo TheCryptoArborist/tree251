@@ -1,0 +1,38 @@
+name: Permit checker homepage entry
+on:
+  pull_request:
+    paths:
+      - 'components/TheArboristHomePage.tsx'
+      - 'components/SiteHeader.tsx'
+      - 'components/PermitCheckerPromo.tsx'
+      - 'next.config.mjs'
+      - 'scripts/test-permit-checker-entry*.mjs'
+      - '.github/workflows/permit-checker-homepage-preview.yml'
+permissions:
+  contents: read
+jobs:
+  homepage-entry:
+    if: github.event.pull_request.number == 9
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check approved copy, placement, preserved services and route
+        run: |
+          node --check scripts/test-permit-checker-entry-browser.mjs
+          node --test scripts/test-permit-checker-entry.mjs
+      - name: Install isolated browser dependency
+        run: npm install --prefix "$RUNNER_TEMP/permit-entry" --no-audit --no-fund playwright
+      - name: Review deployed desktop and mobile entry points
+        env:
+          BROWSER_DEPS: ${{ runner.temp }}/permit-entry
+          PREVIEW_ORIGIN: https://deploy-preview-9--tree251.netlify.app
+        run: node scripts/test-permit-checker-entry-browser.mjs
+      - name: Save preview screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: permit-checker-homepage-preview
+          path: test-artifacts/permit-entry/
+          if-no-files-found: ignore
+          retention-days: 14

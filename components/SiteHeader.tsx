@@ -135,6 +135,14 @@ export function SiteHeader() {
                 <ChevronDown className="size-3.5 transition group-hover:rotate-180 group-focus-within:rotate-180" aria-hidden="true" />
               </button>
               <div className="invisible absolute right-0 top-full z-50 w-64 translate-y-1 rounded-2xl border border-teal-300/20 bg-[#07131b] p-2 opacity-0 shadow-[0_18px_44px_rgba(0,0,0,0.45)] transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                <a
+                  href="/permit-checker"
+                  data-track-event="Permit Checker Click"
+                  data-track-location="desktop_resources"
+                  className="block rounded-xl px-3 py-2.5 text-sm font-black text-[#f6c95a] transition hover:bg-white/10 hover:text-white focus-ring"
+                >
+                  Mobile Tree Permit Checker
+                </a>
                 {resourceNavItems.map((item) =>
                   item.external ? (
                     <a
@@ -187,6 +195,7 @@ export function SiteHeader() {
 
         <nav aria-label="Mobile quick navigation" className="flex gap-1 overflow-x-auto border-t border-teal-300/15 px-2 py-1.5 text-center text-xs font-black text-emerald-50/90 lg:hidden">
           <Link href="/plant" className="min-w-[8rem] rounded-full border border-[#f6c95a]/45 bg-[#f6c95a]/10 px-3 py-2.5 focus-ring">Planting &amp; Care</Link>
+          <a href="/permit-checker" data-track-event="Permit Checker Click" data-track-location="mobile_navigation" className="min-w-[7.5rem] rounded-full border border-[#f6c95a]/45 bg-[#f6c95a]/10 px-3 py-2.5 focus-ring">Permit Checker</a>
           <Link href="/#start-here" className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Start Here</Link>
           <Link href="/#services" className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Services</Link>
           <Link href="/tree-inventories" className="min-w-[7.1rem] rounded-full border border-[#f6c95a]/45 bg-[#f6c95a]/10 px-2 py-2.5 focus-ring">Inventories</Link>
