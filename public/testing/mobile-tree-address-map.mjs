@@ -22,11 +22,13 @@ export function installAddressMap(doc) {
   const make=(tag,text,parent)=>{const n=doc.createElement(tag);if(text)n.textContent=text;if(parent)parent.append(n);return n;};
   const event=name=>new win.Event(name,{bubbles:true});
   const card=make('section','');card.id='propertyMapCard';card.className='card';card.setAttribute('aria-labelledby','propertyMapTitle');
-  make('h2','Start with the property address',card).id='propertyMapTitle';
-  make('p','Let the City maps look up location details. Then mark the tree so we do not mistake the house address for the tree’s position.',card);
+  make('h2','1. Search for the property address',card).id='propertyMapTitle';
+  make('p','Enter the address, select Search City addresses, and choose the matching City property. Next, mark the tree on the map.',card);
   const searchForm=make('form','',card);searchForm.id='propertyMapSearch';searchForm.method='dialog';
   make('label','Property address',searchForm).htmlFor='propertyMapAddress';
   const address=make('input','',searchForm);address.id='propertyMapAddress';address.type='text';address.maxLength=120;address.placeholder='For example: 6 Maury Drive';address.autocomplete='street-address';address.required=true;
+  address.setAttribute('aria-describedby','propertySearchHint');
+  const searchHint=make('p','After typing the address, press the gold Search button below to display matching properties.',searchForm);searchHint.id='propertySearchHint';searchHint.className='help';
   const consentLabel=make('label','',searchForm);consentLabel.className='check';
   const consent=make('input','',consentLabel);consent.type='checkbox';consent.id='propertyMapConsent';
   // GIS search is the default behavior. A lookup is initiated ONLY after the
@@ -40,24 +42,41 @@ export function installAddressMap(doc) {
   // decide which path to take. Keep the existing actions and submit semantics.
   const actions=make('div','',searchForm);actions.className='actions map-choice-actions';actions.dataset.choiceGuidance='0.4.8';
   const find=make('button','',actions);find.type='submit';find.id='findPropertyMap';find.className='map-choice';
-  make('strong','Look up my property — recommended',find).className='map-choice-title';
-  make('span','Start here. City records help fill in city limits, zoning and historic-district details.',find).className='map-choice-description';
+  make('strong','Search City addresses',find).className='map-choice-title';
+  make('span','Find matching addresses in the City of Mobile GIS',find).className='map-choice-description';
   const skip=make('button','',actions);skip.type='button';skip.id='skipPropertyMap';skip.className='secondary map-choice';
-  make('strong','Answer manually — only if the map is unavailable',skip).className='map-choice-title';
-  make('span','Use if the address is not found or the map will not load. You must supply missing location details; a definite permit answer may not be possible.',skip).className='map-choice-description';
+  make('strong','Use manual location entry',skip).className='map-choice-title';
+  make('span','Only if City search cannot locate your property',skip).className='map-choice-description';
+  // The primary action must directly follow the address, before disclosures or fallbacks.
+  searchForm.append(actions,disclosure);
+  find.classList.add('map-search-primary');
   const choiceStyles=make('style','',doc.head);choiceStyles.textContent='#propertyMapCard .map-choice-actions{display:flex;flex-direction:column;align-items:stretch;gap:12px;width:100%;max-width:680px}#propertyMapCard .map-choice{display:block;min-width:0;width:100%;min-height:48px;text-align:left;white-space:normal;line-height:1.45;padding:16px 18px;overflow-wrap:anywhere}#propertyMapCard .map-choice-title{display:block;font-size:16px;font-weight:750;line-height:1.35}#propertyMapCard .map-choice-description{display:block;margin-top:7px;font-size:14px;font-weight:400;line-height:1.5}#propertyMapCard .map-choice:focus-visible{outline:3px solid var(--green);outline-offset:4px}@media(max-width:480px){#propertyMapCard .map-choice{padding:14px}}';
   const status=make('p','',card);status.id='propertyMapStatus';status.className='status';status.setAttribute('role','status');
-  const candidates=make('div','',card);candidates.id='propertyMapCandidates';candidates.className='candidates';
-  const workspace=make('div','',card);workspace.hidden=true;workspace.id='propertyMapWorkspace';
+  const matches=make('section','',card);matches.id='propertyMapMatches';matches.hidden=true;matches.setAttribute('role','region');matches.setAttribute('aria-labelledby','propertyMatchesTitle');
+  const matchesTitle=make('h3','2. Select the correct address',matches);matchesTitle.id='propertyMatchesTitle';matchesTitle.tabIndex=-1;
+  const matchesHint=make('p','Choose the matching City address below to open the tree-location map.',matches);matchesHint.className='help';
+  const candidates=make('div','',matches);candidates.id='propertyMapCandidates';candidates.className='candidates';
+  const fallback=make('section','',card);fallback.id='propertyMapFallback';fallback.className='map-manual-fallback';
+  make('p','Address not found or map unavailable?',fallback).className='help';fallback.append(skip);
+  const workspace=make('section','',card);workspace.hidden=true;workspace.id='propertyMapWorkspace';
+  workspace.setAttribute('aria-labelledby','propertyMapConfirmTitle');
+  const mapHeading=make('h3','2. Confirm the tree on the map',workspace);mapHeading.id='propertyMapConfirmTitle';mapHeading.tabIndex=-1;
+  make('p','Verify the selected property, position the green T marker on the tree, and review the City location findings before continuing.',workspace).className='help';
   const mapDiv=make('div','',workspace);mapDiv.id='propertyTreeMap';mapDiv.setAttribute('aria-label','Property map. Tap the tree location or drag the tree marker.');mapDiv.tabIndex=0;
   const selected=make('p','',workspace);selected.id='propertyMapPoint';selected.className='help';
   make('p','Tap the tree’s approximate position or drag the green T marker. The blue dot is the address point. Map lines and imagery are not a survey; a gap between parcels does not prove a public right-of-way.',workspace).className='help';
   const useActions=make('div','',workspace);useActions.className='actions';
-  const use=make('button','Use this tree location to fill answers',useActions);use.type='button';use.id='applyMapAnswers';use.disabled=true;
+  const use=make('button','Confirm this tree location & continue',useActions);use.type='button';use.id='applyMapAnswers';use.disabled=true;use.classList.add('map-confirm-primary');
   const center=make('button','Return to the address',useActions);center.type='button';center.className='secondary';
   const factsBox=make('div','',workspace);factsBox.id='propertyMapFacts';factsBox.className='results';factsBox.setAttribute('aria-label','Answers from the City map for the selected pin');
   const limitation=make('p','',workspace);limitation.className='help';
   limitation.textContent='The City’s available answers are displayed here. Source links are optional references, not another step needed to read the answers. Map data cannot confirm tree species, size, legal ownership, required landscaping or the contents of an approved plan.';
+  make('h3','3. Confirm the tree pin and continue',workspace);
+  make('p','After checking the tree position and City findings above, confirm the location to fill the answers and proceed to Work details.',workspace).className='help';
+  workspace.append(useActions);
+  // Recenter-map control belongs by the map, away from the confirmation action.
+  const centerActions=make('div','',workspace);centerActions.className='map-center-actions';
+  mapDiv.after(centerActions);centerActions.append(center);
   permit.before(card);
   const legacy=el('locationCard');if(legacy)legacy.classList.add('hidden');
   const geoDetails=make('details','',form);geoDetails.id='mapFilledQuestions';
@@ -86,7 +105,7 @@ export function installAddressMap(doc) {
     accepted=false;use.disabled=true;el('permitOutput')?.classList.add('hidden');
   }
   function cancel(){epoch++;controller?.abort();controller=null;context=null;clearGeo();}
-  function changedAddress(){cancel();candidates.replaceChildren();workspace.hidden=true;currentAddress='';addressPoint=null;point=null;
+  function changedAddress(){cancel();candidates.replaceChildren();matches.hidden=true;workspace.hidden=true;currentAddress='';addressPoint=null;point=null;
     const prop=el('propertyAddress');if(prop){prop.value='';prop.dispatchEvent(event('input'));}
     status.textContent='Address changed. Find and select the property again; earlier map answers have been cleared.';find.disabled=false;
   }
@@ -146,21 +165,27 @@ export function installAddressMap(doc) {
   async function choose(feature){
     cancel();controller=new win.AbortController();const token=epoch;
     point={lon:feature.geometry.x,lat:feature.geometry.y};if(!validPoint(point)){status.textContent='The address coordinates are outside this checker’s area.';return;}
-    addressPoint={...point};currentAddress=feature.attributes.address;candidates.replaceChildren();workspace.hidden=false;
+    addressPoint={...point};currentAddress=feature.attributes.address;candidates.replaceChildren();matches.hidden=true;workspace.hidden=false;
+    status.textContent='Address selected: '+currentAddress+'. Now position and confirm the tree on the map.';
+    win.requestAnimationFrame(()=>{workspace.scrollIntoView({behavior:'smooth',block:'start'});mapHeading.focus({preventScroll:true});});
     const prop=el('propertyAddress');if(prop){prop.value=currentAddress;prop.dispatchEvent(event('input'));}
     selected.textContent='Address reference point only. Mark the tree before using the location answers.';
     await Promise.allSettled([showMap(point,token),queryPoint(point,token)]);
   }
   searchForm.addEventListener('submit',async e=>{
-    e.preventDefault();cancel();workspace.hidden=true;candidates.replaceChildren();
+    e.preventDefault();cancel();workspace.hidden=true;matches.hidden=true;candidates.replaceChildren();
     if(!consent.checked)consent.checked=true; // Normal explicit address search; no separate opt-in checkbox.
-    controller=new win.AbortController();const token=epoch;find.disabled=true;status.textContent='Searching the City address records…';
+    controller=new win.AbortController();const token=epoch;find.disabled=true;find.setAttribute('aria-busy','true');status.textContent='Searching City address records…';
     try{
       const data=await request({mode:'address',q:address.value.trim()},controller.signal);if(token!==epoch)return;
-      status.textContent=data.features.length?'Select the matching address. We will then load its map and City records.':'No matching address was returned. This does not mean the property is outside Mobile. Try the street name without the road suffix, or continue manually.';
-      for(const f of data.features){const b=make('button',[f.attributes.address,f.attributes.unitno,f.attributes.zipcode].filter(Boolean).join(' · '),candidates);b.type='button';b.className='candidate';b.addEventListener('click',()=>choose(f));}
-    }catch(error){if(token===epoch)status.textContent=error.message||'The City address service is unavailable. No property conclusion was made.';}
-    finally{if(token===epoch)find.disabled=false;}
+      matches.hidden=false;
+      matchesTitle.textContent=data.features.length?'2. Select the correct address ('+data.features.length+' found)':'No matching City address found';
+      matchesHint.textContent=data.features.length?'Tap your address to display its map. Do not continue until the correct property is selected.':'Check spelling or road suffix and search again, or use the manual option if the lookup remains unavailable.';
+      status.textContent=data.features.length?'City search complete. Choose the correct address from the highlighted results below.':'No City address match was returned. This does not establish that the property is outside Mobile.';
+      for(const f of data.features){const b=make('button',[f.attributes.address,f.attributes.unitno,f.attributes.zipcode].filter(Boolean).join(' · '),candidates);b.type='button';b.className='candidate';b.setAttribute('aria-label','Select address '+b.textContent);b.addEventListener('click',()=>choose(f));}
+      win.requestAnimationFrame(()=>{matches.scrollIntoView({behavior:'smooth',block:'start'});matchesTitle.focus({preventScroll:true});});
+     }catch(error){if(token===epoch){status.textContent=error.message||'City address lookup unavailable. No jurisdiction conclusion was made.';status.scrollIntoView({behavior:'smooth',block:'center'});}}
+    finally{if(token===epoch){find.disabled=false;find.removeAttribute('aria-busy');}}
   });
   center.addEventListener('click',()=>{if(map&&addressPoint)map.setView([addressPoint.lat,addressPoint.lon],19);});
   use.addEventListener('click',()=>{
