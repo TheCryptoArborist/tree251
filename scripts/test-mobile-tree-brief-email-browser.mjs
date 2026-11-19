@@ -19,7 +19,8 @@ const checks=[],errors=[];const check=(name,ok)=>{checks.push({name,pass:!!ok});
 try{
  const page=await browser.newPage({viewport:{width:390,height:844}});page.on('pageerror',e=>errors.push(e.message));
  await page.goto(origin+'/testing/mobile-tree-checker.html#digging',{waitUntil:'domcontentloaded'});
- await page.waitForSelector('#permitForm[data-quick-digging="yes"][data-resident-workflow]');await page.waitForSelector('#propertyMapAddress');await page.waitForTimeout(250);
+ await page.waitForSelector('#stepContinueWork');await page.click('#stepContinueWork');
+ await page.waitForSelector('#permitForm[data-quick-digging="yes"][data-resident-workflow]');await page.waitForSelector('#propertyMapAddress',{state:'attached'});await page.waitForTimeout(250);
  const set=values=>page.evaluate(vs=>{for(const [id,v] of Object.entries(vs)){const n=document.getElementById(id);if(!n)throw Error(id);if(n.type==='checkbox')n.checked=v;else n.value=String(v);n.dispatchEvent(new Event('input',{bubbles:true}));n.dispatchEvent(new Event('change',{bubbles:true}));}},values);
  const run=async()=>{await page.click('#screenNow');await page.waitForSelector('#permitOutput:not(.hidden)');await page.waitForTimeout(230);};
  const draft=async()=>{await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');await page.waitForFunction(()=>document.getElementById('emailBody').dataset.format==='brief-0.8.0');await page.waitForTimeout(80);return page.inputValue('#emailBody');};
