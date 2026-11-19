@@ -38,7 +38,7 @@ try{
  check('Credential not misrepresented',body.includes('TEST-NOT-VERIFIED (not verified'));
  check('Mailto matches short draft',await page.evaluate(()=>decodeURIComponent(document.getElementById('openEmail').href.split('&body=')[1]))===body);
  await page.fill('#emailBody',body+'\nPlease call after lunch.');body=await draft();check('Reopening preserves edits',body.endsWith('Please call after lunch.'));
- await page.fill('#digFeet','11');check('Fact change invalidates draft',!(await page.locator('#draftArea').isVisible()));
+ await page.click('#step-work');await page.fill('#digFeet','11');check('Fact change invalidates draft',!(await page.locator('#draftArea').isVisible()));
  await run();body=await draft();check('Rebuilt draft uses current distance',body.includes('11 feet')&&!body.includes('10 feet'));
  await set({digStage:'damaged'});await run();body=await draft();check('Damage in subject',(await page.inputValue('#emailSubject')).includes('Root damage reported'));check('Damage facts visible',body.includes('Roots have reportedly been cut or torn.'));
  await set({digTarget:'other',digOtherDbh:'30'});await run();body=await draft();check('Different tree has no invented ownership',body.includes('different tree')&&!body.includes('Tree location: public'));check('Correct affected-tree diameter',body.includes('30 inches')&&!body.includes('trunk width 24'));
