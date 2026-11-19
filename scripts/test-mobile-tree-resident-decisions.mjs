@@ -75,7 +75,7 @@ test('Engineering ROW construction permit trigger is separate from routine tree 
  for(const work of ['pruning','removal']){
   const r=engineeringReview({city:'inside',work,location:'row',rowGroundWork:'no'});
   assert.equal(r.code,'ROUTINE_NO_TRIGGER');
-  assert.match(r.requirement,/no digging, trenching/i);
+  assert.match(r.requirement,/without digging, trenching/i);
  }
  assert.equal(engineeringReview({city:'inside',work:'removal',location:'row',rowGroundWork:'unknown'}).code,'WORK_SCOPE_UNKNOWN');
  assert.equal(engineeringReview({city:'inside',work:'removal',location:'row',rowGroundWork:'yes',rowWorkArea:'row'}).code,'ROW_PERMIT_REQUIRED');
