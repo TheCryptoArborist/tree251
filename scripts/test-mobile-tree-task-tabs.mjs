@@ -59,7 +59,7 @@ try{
  const run=async()=>{await page.click('#screenNow');await page.waitForSelector('#permitOutput:not(.hidden)');await page.waitForTimeout(180);};
  await page.goto(origin+'/testing/mobile-tree-checker.html',{waitUntil:'domcontentloaded'});
  await page.waitForSelector('#treeTaskTabs');await page.waitForSelector('#propertyMapAddress');
- await page.waitForSelector('#screenNow:not([disabled])');
+ await page.waitForFunction(()=>!document.getElementById('screenNow')?.disabled);
  eq(await page.getAttribute('#treeWorkTab','aria-selected'),'true');
  eq(await page.locator('#treeWorkPanel').isVisible(),true);
  eq(await page.locator('#diggingTaskPanel').isVisible(),false);
@@ -131,6 +131,7 @@ try{
  await page.screenshot({path:'test-artifacts/task-tabs-mobile.png'});
  const direct=await browser.newPage({viewport:{width:390,height:844}});direct.on('pageerror',e=>errors.push(e.message));
  await direct.goto(origin+'/testing/mobile-tree-checker.html#digging',{waitUntil:'domcontentloaded'});
+ await direct.waitForSelector('#stepContinueWork');await direct.click('#stepContinueWork');
  await direct.waitForSelector('#screenNow:not([disabled])');await direct.waitForSelector('#diggingFields:not([hidden])');
  eq(await direct.getAttribute('#diggingTab','aria-selected'),'true');eq(await direct.inputValue('#scWork'),'root');
  eq(await direct.locator('#scLimb').isDisabled(),true);
