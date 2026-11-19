@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 12
     env:
       PUBLIC_ORIGIN: ${{ github.event_name == 'push' && 'https://www.tree251.xyz' || 'https://deploy-preview-9--tree251.netlify.app' }}
-      BROWSER_DEPS: ${{ runner.temp }}/release-browser
+      BROWSER_DEPS: /tmp/tree251-release-browser
     steps:
       - uses: actions/checkout@v4
       - name: Install isolated browser test package
