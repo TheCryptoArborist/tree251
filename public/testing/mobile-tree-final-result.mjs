@@ -1,5 +1,5 @@
 /* Display-only outcome summary. Does not alter permit rules. */
-export const RESULT_VERSION='0.4.4';
+export const RESULT_VERSION='0.4.5';
 export function installFinalResult(doc){
  const $=id=>doc.getElementById(id),form=$('permitForm'),out=$('permitOutput'),old=$('permitOutcome');
  if(!form||!out||!old||$('simplePermitAnswer'))return false;
@@ -40,6 +40,12 @@ export function installFinalResult(doc){
   // it out so the required next action is never hidden.
   const engineering=$('residentEngineering');
   if(engineering&&details.contains(engineering))details.insertAdjacentElement('beforebegin',engineering);
+  const land=$('residentLandDisturbance');
+  // Chapter 17 is an independent approval route and must stay visible.
+  if(land&&details.contains(land)){
+    if(engineering&&!details.contains(engineering))engineering.insertAdjacentElement('afterend',land);
+    else details.insertAdjacentElement('beforebegin',land);
+  }
   const p=old.textContent.trim(),chapter=$('udcOutcome')?.textContent?.trim()||'Not evaluated';
   const isHome=form.dataset.parcelTaxClass!=='commercial'&&form.dataset.splitZoned!=='yes'&&val('scCity')==='inside'&&val('scLocation')==='private'&&val('scHistoric')==='no'&&
    val('scProperty')==='developed'&&val('udcZoning')==='r1r2'&&val('udcOverlay')==='none'&&
