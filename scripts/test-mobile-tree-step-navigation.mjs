@@ -68,6 +68,7 @@ try{
  await page.waitForSelector('#treeTaskTabs[data-active-step="results"]',{timeout:12000});
  match(await page.textContent('#digQuickResultRows'),/Engineering right-of-way authorization/);
  await page.locator('#diggingFullRecordDetails>summary').click();
+ await page.locator('#resultWorkflow details>summary').click();
  eq(await page.locator('#screeningRecord').isVisible(),true,'Full technical record available on demand');
  match(await page.inputValue('#screeningRecord'),/Engineering right-of-way authorization/);
  await page.click('#treeWorkTab');
