@@ -1,6 +1,6 @@
 /* Display-only outcome summary. Does not alter permit rules. */
 import {installContactPaths} from './mobile-tree-contact-paths.mjs';
-export const RESULT_VERSION='0.4.6';
+export const RESULT_VERSION='0.4.7';
 export function installFinalResult(doc){
  const $=id=>doc.getElementById(id),form=$('permitForm'),out=$('permitOutput'),old=$('permitOutcome');
  if(!form||!out||!old||$('simplePermitAnswer'))return false;
@@ -30,6 +30,7 @@ export function installFinalResult(doc){
  '#forestryEmailCTA.optional-email{background:none;border:0;padding:9px 0;margin:0 0 10px}',
  '#forestryEmailCTA.optional-email h3{font-size:15px}',
  '#forestryEmailCTA.optional-email button{width:auto;font-size:14px}',
+ '#contactNextSteps #forestryEmailCTA #reviewForestryEmail{color:var(--ink)}',
  '@media(max-width:640px){#simpleResultRows>div{grid-template-columns:1fr;gap:2px}}'
  ].join('');
  const add=(label,val)=>{const r=make('div','',rows);make('strong',label,r);make('span',val,r);};
