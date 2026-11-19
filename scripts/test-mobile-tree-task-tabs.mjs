@@ -67,7 +67,7 @@ try{
  eq(gisRequests,0,'No lookup merely from opening the tabs');
  await page.fill('#propertyMapAddress','6 Maury Drive');await page.click('#findPropertyMap');
  await page.locator('#propertyMapCandidates button').first().click();
- await page.waitForSelector('#permitForm[data-property-records="ready"]');
+ await page.waitForSelector('#permitForm[data-property-records="ready"]',{state:'attached'});
  await page.waitForSelector('#applyMapAnswers:not([disabled])');await page.click('#applyMapAnswers');
  await set({scLocation:'row',scSpecies:'liveoak',scDbh:24});
  const requestsBefore=gisRequests;
