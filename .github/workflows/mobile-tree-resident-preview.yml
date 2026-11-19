@@ -100,7 +100,7 @@ jobs:
             eq(await page.locator('#scProperty option[value="undeveloped"]').count(),1);
             eq(await page.locator('#udcPlan option[value="no"]').count(),1);
             for(const id of ['udcRequiredTree','udcCredit','udcBuffer']){eq(await page.locator('#'+id).isVisible(),false);eq(await page.inputValue('#'+id),'unknown');}
-            await page.waitForSelector('#residentGISAnswers:not([hidden])',{timeout:15000});
+            await page.waitForFunction(()=>!document.getElementById('residentGISAnswers')?.hidden,{},{timeout:15000});
             assert.match(await page.textContent('#residentGISRows'),/R-1.*Single-Family Residential/s);assertions++;
             assert.match(await page.textContent('#residentGISRows'),/Parcel.*development/s);assertions++;
             assert.match(await page.textContent('#residentGISRows'),/Approved landscape plan/);assertions++;
@@ -156,6 +156,7 @@ jobs:
             assert.match(body,/TEST-REVIEW-ONLY/);assertions++;
             assert.match(await page.inputValue('#screeningRecord'),/not treated as tree-removal approval/);assertions++;
             for(const width of [390,820,1200]){await page.setViewportSize({width,height:844});eq(await page.evaluate(()=>document.body.scrollWidth<=innerWidth+2),true,'No horizontal overflow');}
+            await page.click('#step-property');
             await page.fill('#propertyMapAddress','205 Government Street');eq(await page.inputValue('#udcZoning'),'unknown');eq(await page.locator('#permitOutput').isVisible(),false);eq(await page.locator('#draftArea').isVisible(),false);
             // Separate live address: R-1 at street point, but commercial
             // parcel and both R-1 + B-1 across the entire tax polygon.
