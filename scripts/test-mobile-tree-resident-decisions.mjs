@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {screenPermit} from '../public/testing/mobile-tree-permit-rules.mjs';
 import {engineeringReview,staffPlanReview,mappedProperty,reconcileParcelZones} from '../public/testing/mobile-tree-property-policy.mjs';
+import {screenLandDisturbance} from '../public/testing/mobile-tree-land-disturbance.mjs';
 
 const base={jurisdiction:'inside',location:'private',work:'removal',property:'developed',
   zoning:'r1r2',historic:'no',species:'liveoak',dbh:'40',limb:'',plan:'unknown',
@@ -86,4 +87,28 @@ test('Engineering ROW permit applies to ROW planting and adjacent ROW digging',(
  assert.equal(engineeringReview({city:'inside',work:'planting',location:'row'}).code,'ROW_PERMIT_REQUIRED');
  assert.equal(engineeringReview({city:'inside',work:'planting',location:'private'}).code,'NO_ROW_TRIGGER');
  assert.equal(engineeringReview({city:'inside',work:'planting',location:'private',alsoDigging:true,excavationArea:'row'}).code,'ROW_PERMIT_REQUIRED');
+});
+
+test('Chapter 17 screening preserves conditional residential landscaping exceptions',()=>{
+ const base={city:'inside',work:'planting',location:'private',property:'developed',disturbedSqFt:250,ldSensitive:'no'};
+ const minor=screenLandDisturbance(base);
+ assert.equal(minor.code,'MINOR_RESIDENTIAL_POSSIBLE');
+ assert.equal(minor.exemptionVerified,false);
+ assert.match(minor.next,/Engineering may still require/);
+ assert.equal(screenLandDisturbance({...base,ldSensitive:'yes'}).code,'SENSITIVE_SITE');
+ assert.equal(screenLandDisturbance({...base,disturbedSqFt:4000}).code,'FOUR_THOUSAND_REVIEW');
+ assert.equal(screenLandDisturbance({...base,disturbedSqFt:43560}).code,'TIER_I_REVIEW');
+});
+test('Chapter 17 and Engineering ROW are independent findings',()=>{
+ const a={city:'inside',location:'row',work:'planting',property:'developed',disturbedSqFt:10,ldSensitive:'no'};
+ assert.equal(engineeringReview(a).code,'ROW_PERMIT_REQUIRED');
+ assert.equal(screenLandDisturbance(a).code,'MINOR_RESIDENTIAL_POSSIBLE');
+ assert.equal(screenLandDisturbance({...a,landDisturbance:'pending'}).code,'APPLICATION_PENDING');
+ assert.equal(screenLandDisturbance({...a,landDisturbance:'issued'}).code,'PERMIT_REPORTED');
+});
+test('Routine tree work alone is not presumed to be land disturbance',()=>{
+ const a={city:'inside',location:'row',work:'pruning',rowGroundWork:'no',development:'no'};
+ assert.equal(screenLandDisturbance(a).code,'NO_GROUND_REPORTED');
+ assert.equal(screenLandDisturbance({...a,rowGroundWork:'yes'}).code,'REVIEW_NEEDED');
+ assert.equal(screenLandDisturbance({...a,rowGroundWork:'unknown'}).code,'SCOPE_UNKNOWN');
 });
