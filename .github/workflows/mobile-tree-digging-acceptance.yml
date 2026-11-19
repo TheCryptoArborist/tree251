@@ -1,0 +1,37 @@
+name: Mobile tree digging acceptance scenarios
+on:
+  pull_request:
+    paths:
+      - 'public/testing/mobile-tree-*.mjs'
+      - 'public/testing/mobile-tree-checker.html'
+      - 'scripts/test-mobile-tree-digging-acceptance*.mjs'
+      - '.github/workflows/mobile-tree-digging-acceptance.yml'
+permissions:
+  contents: read
+jobs:
+  digging-acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - name: Existing rule safeguards and representative scenario matrix
+        run: |
+          node --check public/testing/mobile-tree-digging-rules.mjs
+          node --check public/testing/mobile-tree-quick-digging.mjs
+          node --check scripts/test-mobile-tree-digging-acceptance-browser.mjs
+          node --test scripts/test-mobile-tree-root-pruning-policy.mjs scripts/test-mobile-tree-quick-digging.mjs scripts/test-mobile-tree-digging.mjs scripts/test-mobile-tree-resident-decisions.mjs
+          node scripts/test-mobile-tree-digging-acceptance.mjs
+      - name: Install isolated browser test dependency
+        run: npm install --prefix "$RUNNER_TEMP/digging-acceptance" --no-audit --no-fund playwright
+      - name: Verify the exact deployed source and visible approval routes
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-9--tree251.netlify.app
+          BROWSER_DEPS: ${{ runner.temp }}/digging-acceptance
+        run: node scripts/test-mobile-tree-digging-acceptance-browser.mjs
+      - name: Save scenario evidence and mobile screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: digging-acceptance-review
+          path: test-artifacts/
+          if-no-files-found: ignore

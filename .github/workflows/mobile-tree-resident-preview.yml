@@ -1,0 +1,48 @@
+name: Mobile tree resident workflow check
+on:
+  pull_request:
+    paths:
+      - 'public/testing/mobile-tree-*.mjs'
+      - 'public/testing/mobile-tree-checker.html'
+      - 'public/testing/mobile-tree-site-theme.css'
+      - 'scripts/*mobile-tree*.mjs'
+      - 'app/api/mobile-tree-gis/route.ts'
+      - '.github/workflows/mobile-tree-resident-preview.yml'
+permissions:
+  contents: read
+jobs:
+  resident-workflow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check independently sourced permit and development decision routes
+        uses: actions/checkout@v4
+      - name: Check syntax and all existing pure decision regressions
+        shell: bash
+        run: |
+          for file in public/testing/mobile-tree-*.mjs; do node --check "$file"; done
+          node --check scripts/test-mobile-tree-resident-browser.mjs
+          mapfile -t tests < <(grep -l "from 'node:test'" scripts/*mobile-tree*.mjs)
+          test "${#tests[@]}" -gt 0
+          node --test "${tests[@]}"
+      - name: Install isolated test browser package
+        run: npm install --prefix "$RUNNER_TEMP/resident-check" --no-audit --no-fund playwright
+      - name: Test exact hosted preview and public property data
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-9--tree251.netlify.app
+          BROWSER_DEPS: ${{ runner.temp }}/resident-check
+        run: node scripts/test-mobile-tree-resident-browser.mjs
+      - name: Save reproducible resident review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resident-prelaunch-review
+          retention-days: 14
+          path: |
+            test-artifacts/resident/
+            public/testing/mobile-tree-*.mjs
+            public/testing/mobile-tree-checker.html
+            public/testing/mobile-tree-site-theme.css
+            scripts/*mobile-tree*.mjs
+            .github/workflows/mobile-tree-resident-preview.yml
+          if-no-files-found: error

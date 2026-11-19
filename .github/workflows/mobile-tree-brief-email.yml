@@ -1,0 +1,35 @@
+name: Mobile tree brief Forestry email
+on:
+  pull_request:
+    paths:
+      - 'public/testing/mobile-tree-brief-email.mjs'
+      - 'public/testing/mobile-tree-result-workflow.mjs'
+      - 'scripts/test-mobile-tree-brief-email*.mjs'
+      - '.github/workflows/mobile-tree-brief-email.yml'
+permissions:
+  contents: read
+jobs:
+  brief-email:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify concise correspondence and unchanged decision safeguards
+        run: |
+          node --check public/testing/mobile-tree-brief-email.mjs
+          node --check public/testing/mobile-tree-result-workflow.mjs
+          node --test scripts/test-mobile-tree-brief-email.mjs scripts/test-mobile-tree-root-pruning-policy.mjs scripts/test-mobile-tree-quick-digging.mjs scripts/test-mobile-tree-digging.mjs scripts/test-mobile-tree-resident-decisions.mjs
+      - name: Install isolated browser dependency
+        run: npm install --prefix "$RUNNER_TEMP/brief-email" --no-audit --no-fund playwright
+      - name: Check exact hosted build, editable short draft and separate complete record
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-9--tree251.netlify.app
+          BROWSER_DEPS: ${{ runner.temp }}/brief-email
+        run: node scripts/test-mobile-tree-brief-email-browser.mjs
+      - name: Save email and mobile evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brief-email-review
+          path: test-artifacts/
+          if-no-files-found: ignore

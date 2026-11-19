@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, ClipboardCheck, FileText, MessageSquareText, ShieldCheck } from "lucide-react";
 import { consultationAnchor } from "@/components/ConsultBranding";
 import { TreeInventoryHomeSection } from "@/components/TreeInventoryHomeSection";
+import { PermitCheckerPromo } from "@/components/PermitCheckerPromo";
 
 const deliverables = [
   {
@@ -33,9 +34,9 @@ const deliverables = [
 export function WhatYouReceiveSection() {
   return (
     <>
-      <section className="border-y border-emerald-950/10 bg-stone-50 py-10 sm:py-14">
+      <section id="construction-tree-guidance" className="border-y border-emerald-950/10 bg-stone-50 py-10 sm:py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-2xl border border-emerald-950/10 bg-white p-5 shadow-[0_18px_44px_rgba(6,17,13,0.08)] sm:p-7">
+          <div id="construction-conflict-panel" className="rounded-2xl border border-emerald-950/10 bg-white p-5 shadow-[0_18px_44px_rgba(6,17,13,0.08)] sm:p-7">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-800 sm:text-sm">
               Construction &amp; hardscape conflicts near trees
             </p>
@@ -58,6 +59,7 @@ export function WhatYouReceiveSection() {
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
           </div>
+          <PermitCheckerPromo />
         </div>
       </section>
 

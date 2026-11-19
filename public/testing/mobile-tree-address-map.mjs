@@ -1,0 +1,211 @@
+import {interpretContext, validPoint} from './mobile-tree-map-data.mjs';
+import {renderMapFacts, describeMapFact, MAP_LABELS, MAP_FACTS_VERSION} from './mobile-tree-map-facts.mjs';
+const API='/api/mobile-tree-gis';
+const GEO=['scCity','scHistoric','udcZoning','udcOverlay'];
+let leafletPromise;
+async function loadLeaflet(doc) {
+  const win=doc.defaultView;if(win.L)return win.L;
+  if(!leafletPromise)leafletPromise=new Promise((resolve,reject)=>{
+    const css=doc.createElement('link');css.rel='stylesheet';css.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    css.integrity='sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';css.crossOrigin='anonymous';doc.head.append(css);
+    const script=doc.createElement('script');script.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.integrity='sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';script.crossOrigin='anonymous';
+    const timeout=win.setTimeout(()=>reject(Error('Map library unavailable')),15000);
+    script.onload=()=>{win.clearTimeout(timeout);win.L?resolve(win.L):reject(Error('Map library unavailable'));};
+    script.onerror=()=>{win.clearTimeout(timeout);reject(Error('Map library unavailable'));};doc.head.append(script);
+  });
+  try{return await leafletPromise;}catch(error){leafletPromise=null;throw error;}
+}
+export function installAddressMap(doc) {
+  const el=id=>doc.getElementById(id),win=doc.defaultView,form=el('permitForm'),permit=el('permitCard');
+  if(!form||!permit||el('propertyMapCard'))return false;
+  const make=(tag,text,parent)=>{const n=doc.createElement(tag);if(text)n.textContent=text;if(parent)parent.append(n);return n;};
+  const event=name=>new win.Event(name,{bubbles:true});
+  const card=make('section','');card.id='propertyMapCard';card.className='card';card.setAttribute('aria-labelledby','propertyMapTitle');
+  make('h2','1. Search for the property address',card).id='propertyMapTitle';
+  make('p','Enter the address, select Search City addresses, and choose the matching City property. Next, mark the tree on the map.',card);
+  const searchForm=make('form','',card);searchForm.id='propertyMapSearch';searchForm.method='dialog';
+  make('label','Property address',searchForm).htmlFor='propertyMapAddress';
+  const address=make('input','',searchForm);address.id='propertyMapAddress';address.type='text';address.maxLength=120;address.placeholder='For example: 6 Maury Drive';address.autocomplete='street-address';address.required=true;
+  address.setAttribute('aria-describedby','propertySearchHint');
+  const searchHint=make('p','After typing the address, press the gold Search button below to display matching properties.',searchForm);searchHint.id='propertySearchHint';searchHint.className='help';
+  const consentLabel=make('label','',searchForm);consentLabel.className='check';
+  const consent=make('input','',consentLabel);consent.type='checkbox';consent.id='propertyMapConsent';
+  // GIS search is the default behavior. A lookup is initiated ONLY after the
+  // visitor submits an address, never on page load or while typing.
+  consent.checked=true;
+  consentLabel.hidden=true;consentLabel.style.display='none';
+  consent.tabIndex=-1;
+  const disclosure=make('p','Searching an address retrieves public records from City of Mobile GIS through this website. Map imagery is supplied by Esri. No email, contact details, or photographs are sent by this search.',searchForm);
+  disclosure.className='help';disclosure.id='propertyGISDisclosure';
+  // Explain the recommendation and fallback inside the buttons, where people
+  // decide which path to take. Keep the existing actions and submit semantics.
+  const actions=make('div','',searchForm);actions.className='actions map-choice-actions';actions.dataset.choiceGuidance='0.4.8';
+  const find=make('button','',actions);find.type='submit';find.id='findPropertyMap';find.className='map-choice';
+  make('strong','Search City addresses',find).className='map-choice-title';
+  make('span','Find matching addresses in the City of Mobile GIS',find).className='map-choice-description';
+  const skip=make('button','',actions);skip.type='button';skip.id='skipPropertyMap';skip.className='secondary map-choice';
+  make('strong','Use manual location entry',skip).className='map-choice-title';
+  make('span','Only if City search cannot locate your property',skip).className='map-choice-description';
+  // The primary action must directly follow the address, before disclosures or fallbacks.
+  searchForm.append(actions,disclosure);
+  find.classList.add('map-search-primary');
+  const choiceStyles=make('style','',doc.head);choiceStyles.textContent='#propertyMapCard .map-choice-actions{display:flex;flex-direction:column;align-items:stretch;gap:12px;width:100%;max-width:680px}#propertyMapCard .map-choice{display:block;min-width:0;width:100%;min-height:48px;text-align:left;white-space:normal;line-height:1.45;padding:16px 18px;overflow-wrap:anywhere}#propertyMapCard .map-choice-title{display:block;font-size:16px;font-weight:750;line-height:1.35}#propertyMapCard .map-choice-description{display:block;margin-top:7px;font-size:14px;font-weight:400;line-height:1.5}#propertyMapCard .map-choice:focus-visible{outline:3px solid var(--green);outline-offset:4px}@media(max-width:480px){#propertyMapCard .map-choice{padding:14px}}';
+  const status=make('p','',card);status.id='propertyMapStatus';status.className='status';status.setAttribute('role','status');
+  const matches=make('section','',card);matches.id='propertyMapMatches';matches.hidden=true;matches.setAttribute('role','region');matches.setAttribute('aria-labelledby','propertyMatchesTitle');
+  const matchesTitle=make('h3','2. Select the correct address',matches);matchesTitle.id='propertyMatchesTitle';matchesTitle.tabIndex=-1;
+  const matchesHint=make('p','Choose the matching City address below to open the tree-location map.',matches);matchesHint.className='help';
+  const candidates=make('div','',matches);candidates.id='propertyMapCandidates';candidates.className='candidates';
+  const fallback=make('section','',card);fallback.id='propertyMapFallback';fallback.className='map-manual-fallback';
+  make('p','Address not found or map unavailable?',fallback).className='help';fallback.append(skip);
+  const workspace=make('section','',card);workspace.hidden=true;workspace.id='propertyMapWorkspace';
+  workspace.setAttribute('aria-labelledby','propertyMapConfirmTitle');
+  const mapHeading=make('h3','2. Confirm the tree on the map',workspace);mapHeading.id='propertyMapConfirmTitle';mapHeading.tabIndex=-1;
+  make('p','Verify the selected property, position the green T marker on the tree, and review the City location findings before continuing.',workspace).className='help';
+  const mapDiv=make('div','',workspace);mapDiv.id='propertyTreeMap';mapDiv.setAttribute('aria-label','Property map. Tap the tree location or drag the tree marker.');mapDiv.tabIndex=0;
+  const selected=make('p','',workspace);selected.id='propertyMapPoint';selected.className='help';
+  make('p','Tap the tree’s approximate position or drag the green T marker. The blue dot is the address point. Map lines and imagery are not a survey; a gap between parcels does not prove a public right-of-way.',workspace).className='help';
+  const useActions=make('div','',workspace);useActions.className='actions';
+  const use=make('button','Confirm this tree location & continue',useActions);use.type='button';use.id='applyMapAnswers';use.disabled=true;use.classList.add('map-confirm-primary');
+  const center=make('button','Return to the address',useActions);center.type='button';center.className='secondary';
+  const factsBox=make('div','',workspace);factsBox.id='propertyMapFacts';factsBox.className='results';factsBox.setAttribute('aria-label','Answers from the City map for the selected pin');
+  const limitation=make('p','',workspace);limitation.className='help';
+  limitation.textContent='The City’s available answers are displayed here. Source links are optional references, not another step needed to read the answers. Map data cannot confirm tree species, size, legal ownership, required landscaping or the contents of an approved plan.';
+  make('h3','3. Confirm the tree pin and continue',workspace);
+  make('p','After checking the tree position and City findings above, confirm the location to fill the answers and proceed to Work details.',workspace).className='help';
+  workspace.append(useActions);
+  // Recenter-map control belongs by the map, away from the confirmation action.
+  const centerActions=make('div','',workspace);centerActions.className='map-center-actions';
+  mapDiv.after(centerActions);centerActions.append(center);
+  permit.before(card);
+  const legacy=el('locationCard');if(legacy)legacy.classList.add('hidden');
+  const geoDetails=make('details','',form);geoDetails.id='mapFilledQuestions';
+  make('summary','Location answers — filled from the map, or answer manually',geoDetails);
+  make('p','The map results above show the available facts. Clear results can fill these questions after you confirm the tree pin. A boundary caution does not hide the mapped designation, but keeps the affected permit answer uncertain. A manual correction is marked as your answer.',geoDetails).className='help';
+  const geoGrid=make('div','',geoDetails);geoGrid.className='grid';
+  for(const id of GEO){const field=el(id);if(field)geoGrid.append(field.parentElement);}
+  const originalGrid=form.querySelector('.grid');if(originalGrid&&originalGrid!==geoGrid)originalGrid.before(geoDetails);
+  const hero=doc.querySelector('.hero .lead');if(hero)hero.textContent='Start with an address and mark the tree on the map. We will fill in the location facts we can check, then ask about the tree and the work.';
+  const intro=doc.querySelector('#permitCard .stephead .muted');if(intro)intro.textContent='Check the map-filled location answers, then tell us about the tree and what you want done. You can continue without a map.';
+  const styles=make('style','',doc.head);styles.textContent='#mapProvenance{overflow-wrap:anywhere;word-break:break-word}#propertyTreeMap{height:380px;border:1px solid var(--line);border-radius:10px;margin-top:16px;z-index:0}#propertyMapCard .leaflet-control a{color:#203b32}#propertyMapCard .tree-pin{border-radius:50%;background:#224f3c;color:white;font:bold 18px/30px system-ui;text-align:center;border:2px solid white;box-shadow:0 1px 5px #333}#propertyMapCard [hidden]{display:none!important}#propertyMapCard .leaflet-container{font:13px/1.4 system-ui}#propertyMapCard .leaflet-control-layers label{font:13px/1.4 system-ui;margin:3px}#propertyMapCard .leaflet-control-layers input{display:inline;width:auto;min-height:0}#mapFilledQuestions{margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:9px}#propertyMapCard .resultrow a{overflow-wrap:anywhere}#propertyMapFacts .resultrow>div{min-width:0;overflow-wrap:anywhere}#propertyMapFacts .map-answer{font-size:15px;display:block}#propertyMapFacts .map-source{border:0;margin-top:9px;padding:0}#propertyMapFacts .map-source summary{font-weight:400;font-size:12px;padding:6px 0}#propertyMapFacts .map-caution{padding:9px 10px;background:var(--amber);border-left:3px solid var(--amberline);color:var(--ink)}@media(max-width:680px){#propertyTreeMap{height:330px}}';
+  let map,L,marker,refMarker,parcelLines,context=null,point=null,addressPoint=null,currentAddress='',epoch=0,controller=null,applying=false,accepted=false,mapReady=false;
+  const sources=new Map();const originalText=new Map();
+  for(const id of GEO){const field=el(id);originalText.set(id,new Map([...field.options].map(o=>[o.value,o.textContent])));}
+  function setAnswer(id,value,sourceNote){
+    const field=el(id);if(!field)return;
+    for(const o of field.options)o.textContent=originalText.get(id)?.get(o.value)||o.textContent;
+    field.value=value;
+    if(sourceNote){field.selectedOptions[0].textContent+=' — City map suggestion';sources.set(id,sourceNote);}
+    else sources.delete(id);
+    applying=true;field.dispatchEvent(event('input'));field.dispatchEvent(event('change'));applying=false;
+  }
+  function clearGeo(){
+    for(const id of GEO)setAnswer(id,'unknown',null);
+    const loc=el('scLocation');if(loc){loc.value='unknown';loc.dispatchEvent(event('change'));}
+    accepted=false;use.disabled=true;el('permitOutput')?.classList.add('hidden');
+  }
+  function cancel(){epoch++;controller?.abort();controller=null;context=null;clearGeo();}
+  function changedAddress(){cancel();candidates.replaceChildren();matches.hidden=true;workspace.hidden=true;currentAddress='';addressPoint=null;point=null;
+    const prop=el('propertyAddress');if(prop){prop.value='';prop.dispatchEvent(event('input'));}
+    status.textContent='Address changed. Find and select the property again; earlier map answers have been cleared.';find.disabled=false;
+  }
+  address.addEventListener('input',changedAddress);
+  el('propertyAddress')?.addEventListener('input',()=>{if(currentAddress&&el('propertyAddress').value.trim()!==currentAddress){cancel();workspace.hidden=true;currentAddress='';status.textContent='The address in your email was changed. Repeat the property lookup before using map-filled answers.';}});
+  consent.addEventListener('change',()=>{if(!consent.checked){changedAddress();if(map){map.remove();map=null;marker=null;refMarker=null;mapReady=false;}status.textContent='Map access is off. You can answer the questions manually.';}});
+  for(const id of GEO)el(id).addEventListener('change',()=>{if(!applying){sources.delete(id);for(const o of el(id).options)o.textContent=originalText.get(id)?.get(o.value)||o.textContent;}});
+  skip.addEventListener('click',()=>{geoDetails.open=true;permit.scrollIntoView({behavior:'smooth',block:'start'});});
+  async function request(params,signal){
+    const response=await win.fetch(API+'?'+new URLSearchParams(params),{signal,cache:'no-store'});
+    const data=await response.json();if(!response.ok||data.status!=='ok')throw Error(data.error||'City records unavailable.');return data;
+  }
+  function renderFacts(){
+    renderMapFacts(doc,factsBox,context,{applied:accepted});
+    if(map&&L){
+      parcelLines?.remove();parcelLines=L.layerGroup().addTo(map);
+      const raw=context.facts.parcel;
+      const seen=new Set();
+      for(const feature of [...raw.matches,...raw.nearby]){
+        const id=feature.attributes.objectid;if(seen.has(id))continue;seen.add(id);
+        for(const ring of feature.geometry.rings)L.polyline(ring.map(([x,y])=>[y,x]),{color:'#f3ce70',weight:2,interactive:false}).addTo(parcelLines);
+      }
+    }
+  }
+  async function queryPoint(p,token){
+    context=null;use.disabled=true;accepted=false;factsBox.replaceChildren();
+    status.textContent='Checking City limits, local historic districts, current zoning, parcels, parks and planning records…';
+    try{
+      const data=await request({mode:'context',lon:p.lon.toFixed(7),lat:p.lat.toFixed(7)},controller.signal);
+      if(token!==epoch)return;context=interpretContext(data);renderFacts();use.disabled=!mapReady;
+      status.textContent='City map answers are shown below. Position the T marker at the tree, then fill the available location questions. A caution appears beside any uncertain value rather than replacing it.';
+      selected.textContent=(accepted?'Tree pin':'Map point')+': '+p.lat.toFixed(6)+', '+p.lon.toFixed(6)+' · Records fetched '+new Date(context.fetchedAt).toLocaleString()+'. Fetch time is not the data’s revision date.';
+    }catch(error){if(token===epoch){status.textContent='Unable to check these City layers. No map answers were filled. You can use the manual questions.';use.disabled=true;}}
+  }
+  function moveTree(p){
+    if(!validPoint(p)||!consent.checked)return;
+    cancel();controller=new win.AbortController();point=p;
+    marker?.setLatLng([p.lat,p.lon]);selected.textContent='Approximate tree position — not survey verified.';
+    queryPoint(p,epoch);
+  }
+  async function showMap(p,token){
+    try{
+      L=await loadLeaflet(doc);if(token!==epoch||!consent.checked)return;
+      if(!map){
+        map=L.map(mapDiv,{scrollWheelZoom:false,maxZoom:21}).setView([p.lat,p.lon],19);
+        const imagery=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:21,maxNativeZoom:19,attribution:'Imagery © Esri and imagery providers; City GIS / Mobile County parcel information'}).addTo(map);
+        imagery.on('tileerror',()=>{status.textContent='Some map images did not load. Do not guess the tree location; the manual questions remain available.';});
+        map.on('click',e=>moveTree({lon:e.latlng.lng,lat:e.latlng.lat}));
+      }
+      map.setView([p.lat,p.lon],19);map.invalidateSize();refMarker?.remove();marker?.remove();
+      refMarker=L.circleMarker([p.lat,p.lon],{radius:6,color:'#146db4',fillColor:'#fff',fillOpacity:1}).addTo(map).bindTooltip('City address point — not necessarily the tree');
+      marker=L.marker([p.lat,p.lon],{draggable:true,title:'Approximate tree location; drag or tap map',icon:L.divIcon({className:'tree-pin',html:'T',iconSize:[32,32],iconAnchor:[16,16]})}).addTo(map);
+      marker.on('dragend',()=>{const q=marker.getLatLng();moveTree({lon:q.lng,lat:q.lat});});
+      mapReady=true;use.disabled=!context;if(context)renderFacts();
+    }catch{if(token===epoch){mapReady=false;use.disabled=true;status.textContent='Map display could not load. City record results can still be read below; use the manual questions rather than guessing the tree position.';}}
+  }
+  async function choose(feature){
+    cancel();controller=new win.AbortController();const token=epoch;
+    point={lon:feature.geometry.x,lat:feature.geometry.y};if(!validPoint(point)){status.textContent='The address coordinates are outside this checker’s area.';return;}
+    addressPoint={...point};currentAddress=feature.attributes.address;candidates.replaceChildren();matches.hidden=true;workspace.hidden=false;
+    status.textContent='Address selected: '+currentAddress+'. Now position and confirm the tree on the map.';
+    win.requestAnimationFrame(()=>{workspace.scrollIntoView({behavior:'smooth',block:'start'});mapHeading.focus({preventScroll:true});});
+    const prop=el('propertyAddress');if(prop){prop.value=currentAddress;prop.dispatchEvent(event('input'));}
+    selected.textContent='Address reference point only. Mark the tree before using the location answers.';
+    await Promise.allSettled([showMap(point,token),queryPoint(point,token)]);
+  }
+  searchForm.addEventListener('submit',async e=>{
+    e.preventDefault();cancel();workspace.hidden=true;matches.hidden=true;candidates.replaceChildren();
+    if(!consent.checked)consent.checked=true; // Normal explicit address search; no separate opt-in checkbox.
+    controller=new win.AbortController();const token=epoch;find.disabled=true;find.setAttribute('aria-busy','true');status.textContent='Searching City address records…';
+    try{
+      const data=await request({mode:'address',q:address.value.trim()},controller.signal);if(token!==epoch)return;
+      matches.hidden=false;
+      matchesTitle.textContent=data.features.length?'2. Select the correct address ('+data.features.length+' found)':'No matching City address found';
+      matchesHint.textContent=data.features.length?'Tap your address to display its map. Do not continue until the correct property is selected.':'Check spelling or road suffix and search again, or use the manual option if the lookup remains unavailable.';
+      status.textContent=data.features.length?'City search complete. Choose the correct address from the highlighted results below.':'No City address match was returned. This does not establish that the property is outside Mobile.';
+      for(const f of data.features){const b=make('button',[f.attributes.address,f.attributes.unitno,f.attributes.zipcode].filter(Boolean).join(' · '),candidates);b.type='button';b.className='candidate';b.setAttribute('aria-label','Select address '+b.textContent);b.addEventListener('click',()=>choose(f));}
+      win.requestAnimationFrame(()=>{matches.scrollIntoView({behavior:'smooth',block:'start'});matchesTitle.focus({preventScroll:true});});
+     }catch(error){if(token===epoch){status.textContent=error.message||'City address lookup unavailable. No jurisdiction conclusion was made.';status.scrollIntoView({behavior:'smooth',block:'center'});}}
+    finally{if(token===epoch){find.disabled=false;find.removeAttribute('aria-busy');}}
+  });
+  center.addEventListener('click',()=>{if(map&&addressPoint)map.setView([addressPoint.lat,addressPoint.lon],19);});
+  use.addEventListener('click',()=>{
+    if(!context||!point||!mapReady||!consent.checked)return;
+    const sourceKeys={scCity:'city',scHistoric:'historic',udcZoning:'zoning',udcOverlay:'zoning'};
+    for(const id of GEO){const value=context.proposals[id]||'unknown';const fact=context.facts[sourceKeys[id]];
+      setAnswer(id,value,value==='unknown'?null:{source:fact.source,fetchedAt:context.fetchedAt,point:{...point},address:currentAddress});}
+    accepted=true;const count=sources.size;geoDetails.open=true;renderFacts();
+    status.textContent=count+' location answer'+(count===1?'':'s')+' filled from City maps for your approximate tree pin. Confirm the remaining tree and work details. Ownership and plan obligations were not inferred.';
+    selected.textContent='Tree pin selected by you: '+point.lat.toFixed(6)+', '+point.lon.toFixed(6)+' (not a surveyed boundary).';
+    permit.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  form.addEventListener('submit',()=>{
+    if(!accepted||!sources.size)return;
+    const notes=el('permitNotes');if(!notes)return;
+    el('mapProvenance')?.remove();const n=make('p','',notes);n.id='mapProvenance';
+    const shown=Object.entries(context.facts).map(([kind,fact])=>{const r=describeMapFact(kind,fact);return MAP_LABELS[kind]+': '+[r.answer,...r.details,...r.warnings].join(' ');}).join('\n');
+    n.style.whiteSpace='pre-line';
+    n.textContent='Map source: '+currentAddress+'; user-positioned tree pin '+point.lat.toFixed(6)+', '+point.lon.toFixed(6)+'. Preliminary GIS suggestions, not legal boundary verification. '+[...sources].map(([id,s])=>id+': '+s.source+' (fetched '+s.fetchedAt+')').join('; ')+'.\n'+shown+'\nTree ownership and approved-plan obligations were not determined by these map results.';
+  });
+  const foot=doc.querySelector('footer');if(foot){make('span',' · Address and map '+MAP_FACTS_VERSION,foot);make('span',' · Map choice guidance 0.4.8',foot);}
+  return true;
+}

@@ -1,0 +1,35 @@
+name: Mobile tree contact paths
+on:
+  pull_request:
+    paths:
+      - 'public/testing/mobile-tree-*.mjs'
+      - 'public/testing/mobile-tree-checker.html'
+      - 'scripts/test-mobile-tree-contact-paths*.mjs'
+      - '.github/workflows/mobile-tree-contact-paths.yml'
+permissions:
+  contents: read
+jobs:
+  contact-paths:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate contact routing and unchanged screening rules
+        run: |
+          node --check public/testing/mobile-tree-contact-paths.mjs
+          node --check public/testing/mobile-tree-final-result.mjs
+          node --test scripts/test-mobile-tree-contact-paths.mjs scripts/test-mobile-tree-resident-decisions.mjs scripts/test-mobile-tree-digging.mjs
+      - name: Install isolated browser test dependency
+        run: npm install --prefix "$RUNNER_TEMP/contact-paths-test" --no-audit --no-fund playwright
+      - name: Test exact hosted contact paths without submitting anything
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-9--tree251.netlify.app
+          BROWSER_DEPS: ${{ runner.temp }}/contact-paths-test
+        run: node scripts/test-mobile-tree-contact-paths-browser.mjs
+      - name: Save contact-path results and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contact-paths-preview-check
+          path: test-artifacts/
+          if-no-files-found: ignore

@@ -1,0 +1,29 @@
+name: Mobile tree stage navigation
+on:
+  pull_request:
+    paths:
+      - 'public/testing/mobile-tree-step-navigation.mjs'
+      - 'public/testing/mobile-tree-worker-qualifications.mjs'
+      - 'public/testing/mobile-tree-quick-digging.mjs'
+      - 'scripts/test-mobile-tree-step-navigation.mjs'
+      - '.github/workflows/mobile-tree-step-navigation.yml'
+permissions:
+  contents: read
+jobs:
+  stage-navigation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate new navigation and existing root decisions
+        run: |
+          node --check public/testing/mobile-tree-step-navigation.mjs
+          node --check scripts/test-mobile-tree-step-navigation.mjs
+          node --test scripts/test-mobile-tree-brief-email.mjs scripts/test-mobile-tree-root-pruning-policy.mjs scripts/test-mobile-tree-quick-digging.mjs scripts/test-mobile-tree-digging.mjs scripts/test-mobile-tree-resident-decisions.mjs
+      - name: Install isolated Playwright
+        run: npm install --prefix "$RUNNER_TEMP/stage-navigation" --no-audit --no-fund playwright
+      - name: Test the exact hosted preview on phone and desktop viewports
+        env:
+          BROWSER_DEPS: ${{ runner.temp }}/stage-navigation
+          PREVIEW_ORIGIN: https://deploy-preview-9--tree251.netlify.app
+        run: node scripts/test-mobile-tree-step-navigation.mjs

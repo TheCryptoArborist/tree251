@@ -1,0 +1,17 @@
+name: Verify Airport Boulevard property zoning versus commercial use
+on:
+  pull_request:
+    paths:
+      - 'scripts/verify-mobile-2721-airport.mjs'
+      - '.github/workflows/mobile-2721-airport-verification.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-gis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare current City GIS, parcel classifications and published zoning
+        run: node scripts/verify-mobile-2721-airport.mjs

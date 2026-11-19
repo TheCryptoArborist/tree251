@@ -1,0 +1,129 @@
+name: Permit checker release verification
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/permit-checker-release-smoke.yml'
+      - 'public/testing/mobile-tree-*'
+      - 'components/PermitCheckerPromo.tsx'
+      - 'components/WhatYouReceiveSection.tsx'
+      - 'next.config.mjs'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/permit-checker-release-smoke.yml'
+      - 'public/testing/mobile-tree-*'
+      - 'app/api/mobile-tree-gis/**'
+      - 'components/PermitCheckerPromo.tsx'
+      - 'components/WhatYouReceiveSection.tsx'
+      - 'next.config.mjs'
+permissions:
+  contents: read
+jobs:
+  release-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      PUBLIC_ORIGIN: ${{ github.event_name == 'push' && 'https://www.tree251.xyz' || 'https://deploy-preview-9--tree251.netlify.app' }}
+      BROWSER_DEPS: /tmp/tree251-release-browser
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install isolated browser test package
+        run: npm install --prefix "$BROWSER_DEPS" --no-audit --no-fund playwright
+      - name: Verify deployed entry, screening and contact handoff without sending
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {readFile,mkdir,writeFile} from 'node:fs/promises';
+          import {createRequire} from 'node:module';
+          import {execSync} from 'node:child_process';
+          const require=createRequire(process.env.BROWSER_DEPS+'/package.json');
+          const {chromium}=require('playwright');
+          const origin=process.env.PUBLIC_ORIGIN;
+          assert.ok(['https://www.tree251.xyz','https://deploy-preview-9--tree251.netlify.app'].includes(origin));
+          const files=['mobile-tree-contact-paths.mjs','mobile-tree-callback-prefill.mjs','mobile-tree-property-policy.mjs','mobile-tree-task-tabs.mjs'];
+          const expected=await Promise.all(files.map(f=>readFile('public/testing/'+f,'utf8')));
+          let ready=false;
+          for(let i=0;i<70;i++){
+            try{
+              const responses=await Promise.all(files.map(f=>fetch(origin+'/testing/'+f,{cache:'no-store',signal:AbortSignal.timeout(12000)})));
+              const actual=await Promise.all(responses.map(r=>r.ok?r.text():''));
+              const h=await fetch(origin+'/',{cache:'no-store',signal:AbortSignal.timeout(12000)}),home=await h.text();
+              const entry=await fetch(origin+'/permit-checker',{redirect:'manual',cache:'no-store',signal:AbortSignal.timeout(12000)});
+              if(actual.every((s,j)=>s===expected[j])&&h.ok&&home.includes('id="construction-conflict-panel"')&&home.includes('Planning tree work in Mobile, Alabama?')&&[302,307].includes(entry.status)&&entry.headers.get('location')?.includes('/testing/mobile-tree-checker.html')){ready=true;break;}
+            }catch{}
+            await new Promise(r=>setTimeout(r,5000));
+          }
+          assert.ok(ready,'The approved release has not reached this origin');
+          const executablePath=execSync('command -v google-chrome || command -v chromium || command -v chromium-browser',{encoding:'utf8'}).trim();
+          const browser=await chromium.launch({executablePath,headless:true,args:['--no-sandbox']});
+          const checks=[],errors=[],blocked=[];
+          const check=(name,condition)=>{checks.push({name,pass:!!condition});assert.ok(condition,name);};
+          await mkdir('test-artifacts/release',{recursive:true});
+          let page;
+          try{
+            const context=await browser.newContext({viewport:{width:1440,height:1000}});
+            await context.route('**/*',route=>{
+              if(/submit\.jotform|\/submissions(?:[/?]|$)/i.test(route.request().url())){blocked.push(route.request().url());return route.abort();}
+              return route.continue();
+            });
+            page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
+            await page.goto(origin+'/',{waitUntil:'domcontentloaded'});
+            check('Approved panel is directly below construction guidance',await page.locator('#permit-checker-introduction').evaluate(n=>n.previousElementSibling?.id==='construction-conflict-panel'));
+            check('All six service cards retained',await page.locator('#start-here > div.grid > article').count()===6);
+            check('Desktop Resources link retained',await page.locator('nav[aria-label="Primary navigation"] a[href="/permit-checker"]').count()===1);
+            for(const width of [390,1440]){
+              await page.setViewportSize({width,height:1000});
+              check('No horizontal overflow at '+width,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2));
+              await page.locator('#construction-tree-guidance').screenshot({path:'test-artifacts/release/home-'+width+'.png'});
+            }
+            await page.setViewportSize({width:390,height:844});
+            check('Mobile checker entry retained',await page.locator('nav[aria-label="Mobile quick navigation"] a[href="/permit-checker"]').isVisible());
+            await page.locator('#permit-checker-introduction a').click();
+            await page.waitForURL('**/testing/mobile-tree-checker.html');
+            await page.waitForSelector('#treeTaskTabs');
+            await page.waitForSelector('#permitForm[data-resident-workflow]',{state:'attached'});
+            await page.waitForSelector('#stepContinueWork');
+            check('City remains final permitting authority',(await page.textContent('.hero .notice')).includes('make the final decisions on permit applications'));
+            await page.click('#stepContinueWork');
+            await page.evaluate(()=>{
+              const values={scCity:'inside',scLocation:'private',scProperty:'developed',scHistoric:'no',scWork:'pruning',scSpecies:'liveoak',scDbh:'24',scLimb:'2',udcZoning:'r1r2',udcOverlay:'none',udcPlan:'no',udcDevelopment:'no',rowGroundWork:'no',digAlso:false};
+              for(const [id,value] of Object.entries(values)){
+                const n=document.getElementById(id);if(!n)throw Error('Missing control '+id);
+                if(n.type==='checkbox')n.checked=value;else n.value=String(value);
+                n.dispatchEvent(new Event('input',{bubbles:true}));n.dispatchEvent(new Event('change',{bubbles:true}));
+              }
+              // Synthetic local test entry, never submitted or sent to GIS/Jotform.
+              document.getElementById('propertyAddress').value='1 Release Verification Test';
+            });
+            await page.click('#screenNow');await page.waitForSelector('#contactNextSteps:not([hidden])');
+            check('Screening completes on this origin',await page.locator('#simplePermitAnswer').isVisible());
+            check('Private help and City choices both remain available',await page.locator('#requestArboristCallback').isVisible()&&await page.locator('#reviewForestryEmail').isVisible());
+            await page.click('#preparePlanningInquiry');
+            check('Planning routing uses .gov and copies Forestry',(await page.textContent('#cityInquiryRecipients'))==='To: planning@cityofmobile.gov · Cc: forestry@cityofmobile.gov');
+            await page.click('#prepareLandInquiry');
+            check('Land inquiry uses separate .gov address',(await page.textContent('#cityInquiryRecipients'))==='To: land.disturbance@cityofmobile.gov');
+            await page.click('#requestArboristCallback');
+            const callback=new URL(await page.getAttribute('#openArboristRequest','href'));
+            check('Correct existing Jotform',callback.origin==='https://form.jotform.com'&&callback.pathname==='/221198646412861');
+            check('Property address transfers',callback.searchParams.get('propertyAddress[addr_line1]')==='1 Release Verification Test');
+            check('Reported property type transfers',callback.searchParams.get('propertyType')==='Residential');
+            await page.click('#reviewForestryEmail');await page.waitForSelector('#draftArea:not(.hidden)');
+            check('Forestry draft opens with approved .gov routing',(await page.getAttribute('#openEmail','href')).startsWith('mailto:forestry@cityofmobile.gov'));
+            check('No JavaScript errors',errors.length===0);
+            check('No attempted form submission',blocked.length===0);
+            await writeFile('test-artifacts/release/result.json',JSON.stringify({origin,head:process.env.GITHUB_SHA,checks,errors,formSubmitted:false,emailSent:false,controlledScreeningInputs:true},null,2));
+            console.log('RELEASE_SMOKE_PASS',JSON.stringify({origin,head:process.env.GITHUB_SHA,checks:checks.length,errors,formSubmitted:false,emailSent:false}));
+          }catch(e){
+            await writeFile('test-artifacts/release/failure.json',JSON.stringify({origin,checks,errors,error:String(e)},null,2));
+            if(page)await page.screenshot({path:'test-artifacts/release/failure.png',fullPage:true}).catch(()=>{});
+            throw e;
+          }finally{await browser.close();}
+          NODE
+      - name: Save release verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: permit-checker-release-verification
+          path: test-artifacts/release/
+          retention-days: 14
+          if-no-files-found: warn

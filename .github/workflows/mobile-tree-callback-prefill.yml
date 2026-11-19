@@ -1,0 +1,35 @@
+name: Mobile tree callback prefill
+on:
+  pull_request:
+    paths:
+      - 'public/testing/mobile-tree-*.mjs'
+      - 'scripts/test-mobile-tree-callback-*.mjs'
+      - '.github/workflows/mobile-tree-callback-prefill.yml'
+permissions:
+  contents: read
+jobs:
+  callback-prefill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate property mapping, query encoding and unchanged City handoff
+        run: |
+          node --check public/testing/mobile-tree-callback-prefill.mjs
+          node --check scripts/test-mobile-tree-callback-prefill-browser.mjs
+          node --test scripts/test-mobile-tree-callback-prefill.mjs scripts/test-mobile-tree-contact-paths.mjs
+      - name: Install isolated browser dependency
+        run: npm install --prefix "$RUNNER_TEMP/callback-prefill" --no-audit --no-fund playwright
+      - name: Test hosted handoff and actual Jotform prefills without submitting
+        env:
+          BROWSER_DEPS: ${{ runner.temp }}/callback-prefill
+          PREVIEW_ORIGIN: https://deploy-preview-9--tree251.netlify.app
+        run: node scripts/test-mobile-tree-callback-prefill-browser.mjs
+      - name: Save callback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: callback-property-prefill
+          path: test-artifacts/callback-prefill/
+          if-no-files-found: ignore
+          retention-days: 14

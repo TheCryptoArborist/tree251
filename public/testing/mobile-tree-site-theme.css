@@ -1,0 +1,151 @@
+/* Visual design reference: tree251 home, app/globals.css and SiteHeader.tsx.
+   This standalone /testing page is not wrapped in the Next.js site layout.
+   Keep palette, navigation and focus treatment consistent with production. */
+:root{
+ color-scheme:dark;
+ --ink:#f2fdf7;--muted:#b6ccc2;--paper:#050b12;--card:#07131b;
+ --line:#295047;--green:#047857;--wash:#123228;--amber:#332b1c;
+ --amberline:#f6c95a;--radius:18px;
+}
+html{scroll-padding-top:28px}
+body{background:#050b12;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}
+a{color:#f6c95a}a:hover{color:#ffdc70}
+button,.button{border-radius:11px;font-weight:750}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline-color:#f6c95a}
+input,select,textarea{background:#0b211b;color:#f2fdf7;border-color:#698c7b}
+input:disabled,select:disabled,textarea:disabled{background:#122621;color:#c8dbd0}
+input::placeholder,textarea::placeholder{color:#a0b6aa;opacity:1}
+select option{background:#0b211b;color:#f2fdf7}
+input:focus,select:focus,textarea:focus{border-color:#f6c95a}
+.card{background:linear-gradient(140deg,#0c201d 0%,#07131b 100%);border-color:var(--line);box-shadow:0 12px 32px rgba(0,0,0,.17)}
+.notice{background:var(--amber);border-color:#b88f3a;color:#fff3d5}
+.safe,.resultrow{background:#14352d;color:var(--ink)}
+.resultrow{background:#112820}
+.resultrow strong{color:#f6c95a}
+.results{border-color:var(--line);background:var(--line)}
+.muted,.help{color:var(--muted)}
+.tag{color:#f6c95a}
+.number{background:#173f32;color:#f6c95a}
+.stephead h2,h2,h3{color:#f7fff9}
+button.secondary,.button.secondary{border-color:#759789;color:#e2f9eb;background:#10271f}
+button.secondary:hover,.button.secondary:hover{border-color:#f6c95a;background:#18362b;color:#fff}
+details{border-top-color:var(--line)}
+summary{color:#f3e5bb}
+#permitForm fieldset{border-color:var(--line)!important}
+#permitOutput{color:var(--ink)}
+#diggingResult{background:#272519;border-color:#f6c95a}
+#diggingResult h3,#diggingResult h4{color:#fff9e6}
+#simplePermitAnswer{border-left-color:#f6c95a!important}
+#treeTaskTabs .task-intro h2{color:#fff}
+#treeTaskTabs #treeStepButtons button,#treeTaskTabs #treeTaskTablist [role="tab"]{border-color:#3b6b5a;background:#132c28;color:#e6f8f1}
+#treeTaskTabs #treeStepButtons button[aria-pressed="true"],#treeTaskTabs #treeTaskTablist [role="tab"][aria-selected="true"]{background:#047857;color:#fff;border-color:#f6c95a}
+#treeTaskTabs #treeStepButtons button:disabled{color:#c1d5cb}
+#treeStepNavigation{background:#0b1f17}
+#propertyMapCard .leaflet-container{color:#17211b}
+#propertyMapCard .leaflet-control a{color:#17211b}
+#propertyMapCard .map-caution{background:#332b1c!important;color:#fff3d5!important;border-left-color:#f6c95a!important}
+/* Header mirrors the home-page's dark navigation, logo, gold call to action. */
+header.site-header{position:relative;background:#050b12;border-bottom:1px solid rgba(94,222,180,.2);box-shadow:0 14px 34px rgba(0,0,0,.34);color:white}
+.site-header-social{background:#07131b;border-bottom:1px solid rgba(246,201,90,.28);font-size:11px;color:#f6c95a;letter-spacing:.16em;font-weight:800;text-transform:uppercase}
+.site-header-social .wrap{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:7px 0}
+.site-header-social nav{display:flex;gap:14px;font-size:12px;letter-spacing:0;text-transform:none;font-weight:700}
+.site-header-social a{color:#def8eb}
+.site-header-main{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:12px 0}
+.site-brand{display:flex;align-items:center;gap:12px;text-decoration:none;min-width:0;color:#fff}
+.site-brand:hover{color:#fff}
+.site-brand-image{display:grid;place-items:center;width:48px;height:48px;flex:none;overflow:hidden;border-radius:8px;background:#062e23;border:1px solid #466447}
+.site-brand-image img{width:100%;height:100%;object-fit:contain}
+.site-brand-copy{display:block;line-height:1.13}
+.site-brand-copy strong{display:block;font-size:20px;letter-spacing:.07em;text-transform:uppercase;font-weight:900;color:#fff}
+.site-brand-copy em{display:block;margin-top:4px;font-size:14px;color:#f6c95a;font-style:normal;font-weight:850}
+.site-brand-copy small{display:block;margin-top:4px;font-size:12px;color:#bcdfce;font-weight:650}
+.site-main-nav{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:13px;font-weight:750}
+.site-main-nav a{color:#d5eee0;padding:8px 5px;text-decoration:none}
+.site-main-nav a:hover{color:#f6c95a}
+.site-header-cta{display:inline-flex;justify-content:center;align-items:center;white-space:nowrap;min-height:45px;border-radius:999px;padding:10px 18px;background:#f6c95a;color:#06110d!important;text-decoration:none;font-size:13px;font-weight:900;box-shadow:0 9px 25px rgba(246,201,90,.18)}
+.site-header-cta:hover{background:#ffdc70}
+.site-mobile-nav{display:none;gap:6px;padding:9px 14px;border-top:1px solid rgba(94,222,180,.16);overflow-x:auto}
+.site-mobile-nav a{flex:0 0 auto;border:1px solid rgba(246,201,90,.3);background:#0b1f17;padding:9px 13px;border-radius:30px;color:#edfdf6;font-size:12px;font-weight:800;white-space:nowrap;text-decoration:none}
+/* Home uses a dark canopy photo hero and a gold overline. */
+.hero{position:relative;isolation:isolate;overflow:hidden;min-height:220px;margin:22px 0 24px;padding:36px 36px 34px;background:#07131b;border:1px solid rgba(94,222,180,.22);border-radius:20px}
+.hero:before{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(5,11,18,.96),rgba(6,17,13,.89) 55%,rgba(6,17,13,.63)),url("/consult-request-background.jpeg") right center/cover no-repeat}
+.hero .eyebrow{color:#f6c95a;font-weight:900}
+.hero h1{color:#fff;font-weight:900;letter-spacing:-.035em;max-width:760px}
+.hero .lead{color:#dcf7e7;font-weight:500}
+.hero .notice{max-width:760px;background:rgba(47,38,23,.91)}
+/* Search, results and confirmation: one prominent action per decision. */
+#propertyMapCard{border-color:#3b6756;background:linear-gradient(160deg,#0d2923,#07131b)}
+#propertyMapCard>h2{font-weight:900;font-size:clamp(23px,4vw,29px)}
+#propertyMapSearch{max-width:720px}
+#propertyMapSearch>label{font-size:16px;margin:12px 0 8px;color:#fff;font-weight:850}
+#propertyMapAddress{min-height:54px;font-size:17px;border:2px solid #7ca694;border-radius:11px;background:#0b211b;color:#fff}
+#propertyMapAddress:focus{border-color:#f6c95a}
+#propertyMapCard #propertySearchHint{margin:7px 0 0}
+#propertyMapCard .map-choice-actions{max-width:720px;margin:13px 0 0}
+#propertyMapCard .map-search-primary{display:block;width:100%;background:#f6c95a;border:2px solid #f6c95a;color:#06110d;border-radius:12px;text-align:center;box-shadow:0 10px 27px rgba(246,201,90,.14);min-height:58px;padding:12px 18px}
+#propertyMapCard .map-search-primary strong{color:#06110d;font-size:18px;font-weight:900}
+#propertyMapCard .map-search-primary span{color:#21352a;font-size:13px;font-weight:650;margin-top:4px}
+#propertyMapCard .map-search-primary:hover{background:#ffdc70;border-color:#ffdc70}
+#propertyMapCard .map-search-primary:disabled{opacity:.7}
+#propertyMapCard #propertyGISDisclosure{margin-top:13px;max-width:690px;font-size:12px;color:#b4cabf}
+#propertyMapStatus:not(:empty){margin:19px 0 6px;padding:12px 15px;background:#102d27;border-left:3px solid #f6c95a;border-radius:9px;color:#edfdf6}
+#propertyMapMatches{margin-top:12px;padding:17px;border:2px solid #f6c95a;border-radius:15px;background:#142a22;scroll-margin-top:20px}
+#propertyMapMatches[hidden],#propertyMapWorkspace[hidden]{display:none!important}
+#propertyMapMatches h3{font-size:21px;margin:0 0 5px;font-weight:900;color:#f6c95a}
+#propertyMapMatches .candidates{margin:16px 0 0}
+#propertyMapMatches .candidate{width:100%;min-height:56px;justify-content:space-between;background:#204b39;color:#fff;border:1px solid #78a08c;border-radius:10px;padding:13px 16px;text-align:left;font-size:16px;font-weight:800}
+#propertyMapMatches .candidate:hover{background:#286649;border-color:#f6c95a}
+#propertyMapMatches .candidate:after{content:"Select this address →";margin-left:14px;color:#f6c95a;font-size:12px;white-space:normal;text-align:right}
+.map-manual-fallback{max-width:720px;margin-top:28px;padding:14px 0 0;border-top:1px solid #315448}
+#propertyMapCard .map-manual-fallback .help{font-size:12px;margin:0 0 9px;color:#c1d5cb}
+#propertyMapCard #skipPropertyMap{border:1px solid #426a58;background:transparent;color:#d4eee0;min-height:43px;width:100%;display:block;text-align:left;border-radius:10px;box-shadow:none;padding:11px 14px}
+#propertyMapCard #skipPropertyMap strong{font-size:14px;color:#d4eee0}
+#propertyMapCard #skipPropertyMap span{font-size:12px;color:#9bbba9}
+#propertyMapWorkspace{margin-top:22px;border-top:1px solid #315448;padding-top:22px;scroll-margin-top:20px}
+#propertyMapWorkspace>h3{font-size:22px;color:#f6c95a;font-weight:900}
+.map-center-actions{display:flex;justify-content:flex-end;margin-top:8px}
+#propertyMapWorkspace .map-center-actions button{font-size:13px;min-height:40px;padding:8px 12px}
+#propertyMapFacts{margin-bottom:12px}
+#propertyMapWorkspace .map-confirm-primary{background:#f6c95a;color:#06110d;border-color:#f6c95a;min-height:58px;font-weight:900;font-size:16px}
+#propertyMapWorkspace .map-confirm-primary:not(:disabled):hover{background:#ffdc70;border-color:#ffdc70}
+#propertyMapWorkspace .map-confirm-primary:disabled{background:#786f4d;border-color:#786f4d;color:#fff2c8;opacity:.8}
+#propertyMapWorkspace .map-confirm-primary{width:100%;max-width:690px}
+#propertyMapWorkspace .actions{margin-top:12px}
+#propertyMapContinue{border-top-color:#315448}
+#propertyMapContinue button{min-height:52px}
+footer.wrap{color:#c1d5cb;border-top:1px solid #315448;margin-top:30px}
+footer.wrap a{color:#f6c95a}
+@media(max-width:1080px){
+ .site-main-nav{display:none}
+ .site-header-social{display:none}
+ .site-mobile-nav{display:flex}
+}
+@media(max-width:680px){
+ .site-header-main{gap:9px;padding:10px 0}
+ .site-brand-image{width:40px;height:40px}
+ .site-brand-copy strong{font-size:16px}
+ .site-brand-copy em{font-size:12px}
+ .site-brand-copy small{display:none}
+ .site-header-cta{font-size:12px;min-height:42px;padding:9px 12px}
+ .hero{padding:24px 18px;margin-top:16px;min-height:0}
+ .hero h1{font-size:clamp(28px,7vw,39px)}
+ #propertyMapCard .map-search-primary{min-height:60px}
+ #propertyMapMatches{padding:12px}
+ #propertyMapMatches .candidate{flex-direction:column;align-items:flex-start;gap:5px}
+ #propertyMapMatches .candidate:after{margin-left:0}
+ #propertyMapWorkspace .map-confirm-primary{max-width:none}
+}
+@media(max-width:360px){
+ .site-header-cta{font-size:11px;padding:8px 10px}
+ .site-brand-copy strong{font-size:14px}
+}
+@media print{
+ :root{color-scheme:light;--ink:#101810;--muted:#364c3a;--paper:white;--card:white;--line:#aaa;--wash:#eee;--amber:#fff;--amberline:#aaa}
+ body{background:#fff;color:#101810}
+ header.site-header,.site-mobile-nav{display:none!important}
+ .hero{color:#111;background:white;border:0;padding:0;min-height:0}
+ .hero:before{display:none}
+ .hero h1,.hero .lead{color:#111}
+ #propertyMapCard{background:white;border-color:#aaa}
+ .card{background:#fff;box-shadow:none}
+}

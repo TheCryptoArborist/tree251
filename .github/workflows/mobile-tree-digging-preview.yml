@@ -1,0 +1,38 @@
+name: Mobile tree digging and root protection
+on:
+  pull_request:
+    paths:
+      - 'public/testing/mobile-tree-digging-*.mjs'
+      - 'public/testing/mobile-tree-worker-qualifications.mjs'
+      - 'public/testing/mobile-tree-final-result.mjs'
+      - 'public/testing/mobile-tree-result-workflow.mjs'
+      - 'public/testing/mobile-tree-resident-workflow.mjs'
+      - 'scripts/test-mobile-tree-digging*.mjs'
+      - '.github/workflows/mobile-tree-digging-preview.yml'
+permissions:
+  contents: read
+jobs:
+  digging-screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax and root-decision regression checks
+        run: |
+          node --check public/testing/mobile-tree-digging-rules.mjs
+          node --check public/testing/mobile-tree-digging-ui.mjs
+          node --test scripts/test-mobile-tree-digging.mjs scripts/test-mobile-tree-resident-decisions.mjs
+      - name: Install isolated browser test dependency
+        run: npm install --prefix "$RUNNER_TEMP/digging-test" --no-audit --no-fund playwright
+      - name: Check the hosted form, safety results, saved record and email
+        env:
+          PREVIEW_ORIGIN: https://deploy-preview-9--tree251.netlify.app
+          BROWSER_DEPS: ${{ runner.temp }}/digging-test
+        run: node scripts/test-mobile-tree-digging-browser.mjs
+      - name: Keep result screenshot for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: digging-preview-check
+          path: test-artifacts/
+          if-no-files-found: ignore
