@@ -36,7 +36,7 @@ try{
   }
  },v);
  await page.goto(origin+'/testing/mobile-tree-checker.html#digging',{waitUntil:'domcontentloaded'});
- await page.waitForSelector('#treeStepNavigation');
+ await page.waitForSelector('#treeStepNavigation');await page.waitForSelector('#propertyMapCard:visible',{timeout:20000});
  await page.waitForFunction(()=>!document.getElementById('screenNow')?.disabled);
  eq(await page.getAttribute('#diggingTab','aria-selected'),'true');
  eq(await page.getAttribute('#treeTaskTabs','data-active-step'),'property');
