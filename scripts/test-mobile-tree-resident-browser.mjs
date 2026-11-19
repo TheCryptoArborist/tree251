@@ -186,8 +186,8 @@ try{
   const attributes={city:{objectid:1,name:'MOBILE'},zoning:{objectid:1,district_code:'R-1',district_name:'Single-Family Residential',sub_district_name:'Suburban',overlay:'N/A'},parcel};
   const fetchedAt=new Date().toISOString();let data;
   if(mode==='address')data={status:'ok',fetchedAt,features:[{attributes:{address:'CONTROLLED TEST PROPERTY'},geometry:pt}]};
-  else if(mode==='property')data={status:'ok',fetchedAt,propertyStatus:'ok',parcel,zoningStatus:'ok',zoningDistricts:[{code:'R-1',name:'Single-Family Residential'}]};
-  else data={status:'ok',fetchedAt,layers:Object.fromEntries((u.searchParams.get('layer')?[u.searchParams.get('layer')]:['city','historic','zoning','overlays','parcel','cityProperty','park','planning']).map(k=>[k,{status:'ok',source:'https://example.invalid/controlled-test',fetchedAt,spatialReference:{wkid:4326},features:attributes[k]?[{attributes:attributes[k],geometry:{rings}}]:[]}]))};
+  else if(mode==='property')data={status:'ok',fetchedAt,point:{lon:pt.x,lat:pt.y},propertyStatus:'ok',parcel,zoningStatus:'ok',zoningDistricts:[{code:'R-1',name:'Single-Family Residential'}]};
+  else data={status:'ok',fetchedAt,point:{lon:pt.x,lat:pt.y},layers:Object.fromEntries((u.searchParams.get('layer')?[u.searchParams.get('layer')]:['city','historic','zoning','overlays','parcel','cityProperty','park','planning']).map(k=>[k,{status:'ok',source:'https://example.invalid/controlled-test',fetchedAt,spatialReference:{wkid:4326},features:attributes[k]?[{attributes:attributes[k],geometry:{rings}}]:[]}]))};
   await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(data)});
  });
  const loadFixture=async()=>{
