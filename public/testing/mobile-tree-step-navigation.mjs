@@ -32,7 +32,7 @@ export function installStepNav(doc){
  // The top task tabs are a different choice; keep this subnavigation underneath
  // their task introductions while maintaining a single source of truth.
  const firstPanel=$('treeWorkPanel');firstPanel?.before(nav);
- let stage='property',activeTask=root.dataset.activeTask||'tree-work';
+ let stage='property',activeTask=root.dataset.activeTask||'tree-work',stageEpoch=0;
  let hasResults=false;
  const labels={'property':'Property & map','work':'Work details','results':'Result & next steps'};
  const scrollHere=()=>{
@@ -63,7 +63,7 @@ export function installStepNav(doc){
    if(opts.scroll!==false)scrollHere();
    return;
   }
-  stage=key;update();
+  stage=key;stageEpoch++;update();
   if(opts.scroll!==false)scrollHere();
  };
  for(const [key,button] of buttons)button.addEventListener('click',()=>setStage(key));
@@ -75,7 +75,8 @@ export function installStepNav(doc){
   const target=e.target?.closest?.('button,a');
   if(!target)return;
   if(target.id==='applyMapAnswers'||target.id==='skipPropertyMap'){
-   win.setTimeout(()=>setStage('work'),100);
+   const currentEpoch=stageEpoch;
+   win.setTimeout(()=>{if(stageEpoch===currentEpoch&&stage==='property')setStage('work');},100);
   }
   // Method and excavation-location follow-ups belong to the editable job
   // stage. Switch before the original click handler scrolls to its control.
@@ -115,8 +116,9 @@ export function installStepNav(doc){
  });
  observer.observe(root,{attributes:true,attributeFilter:['data-active-task']});
  form.addEventListener('submit',()=>{
+  const currentEpoch=stageEpoch;
   win.setTimeout(()=>{
-   if(!output.classList.contains('hidden'))setStage('results');
+   if(stageEpoch===currentEpoch&&!output.classList.contains('hidden'))setStage('results');
   },200);
  });
  form.addEventListener('input',()=>{
