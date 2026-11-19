@@ -129,7 +129,7 @@ export function engineeringReview(a={}) {
   'Confirm the jurisdiction of the actual planting or excavation area before determining an Engineering ROW permit.',
   'A Mobile mailing address or tree location does not establish the ROW boundary.');
  if(area==='row')return found('ROW_PERMIT_REQUIRED','Engineering ROW permit required',
-  'Engineering right-of-way authorization is required before '+(planting?'planting trees or excavating':'digging, trenching, utility work or other soil disturbance')+' in the City public ROW. Obtain the applicable Engineering ROW permit before starting.',
+  'Engineering right-of-way authorization is required before '+(planting?'planting trees or excavating':'digging, trenching, utility work or other soil disturbance')+' in the City public ROW. Obtain the applicable Engineering ROW permit before starting. Coordinate affected tree protection and planting plans with Urban Forestry.',
   'This is separate from tree-work approval, root-cutting permission and Alabama 811. Confirm the current application with Engineering.');
  if(!area||area==='unknown'||area==='mixed')return found('ROW_LOCATION_UNKNOWN','Engineering ROW permit status: location confirmation needed',
   'Confirm whether any part of the planting, digging, trenching, utility work or ground disturbance is in City ROW. If so, the Engineering ROW permit route applies.',
