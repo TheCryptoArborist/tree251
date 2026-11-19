@@ -40,7 +40,7 @@ try{
  await page.click('#step-work');await page.selectOption('#digStage','not-started');await page.fill('#scDbh','24');await page.fill('#digFeet','10');await run();
  eq(await page.getAttribute('#diggingResult','data-outcome'),'CLOSE_EXCAVATION');
  eq(await page.locator('#digQuickResultRows>div').count(),4);
-  matches(await page.textContent('#digQuickResultRows'),/Engineering ROW permit required/);
+  matches(await page.textContent('#digQuickResultRows'),/Engineering ROW permit status: location confirmation needed/);
  matches(await page.textContent('#digQuickResultRows'),/24-inch.*10 feet/s);
  matches(await page.textContent('#digQuickResultRows'),/Urban Forestry/);
  matches(await page.textContent('#digQuickResultRows'),/non-selective root pruning.*prohibited/s);
