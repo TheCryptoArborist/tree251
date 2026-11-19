@@ -43,6 +43,8 @@ try{
  eq(await page.locator('#propertyMapCard').isVisible(),true);
  eq(await page.locator('#permitCard').isVisible(),false);
  eq(await page.locator('#step-property').getAttribute('aria-pressed'),'true');
+ eq(await page.locator('#step-work').isDisabled(),true,'Top work tab stays unavailable until map step is deliberately continued');
+ eq(await page.locator('#step-results').isDisabled(),true,'Top result tab does not permit skipping the property step');
  await page.waitForSelector('#propertyMapContinue #stepContinueWork');
  eq(await page.locator('#treeStepNavigation #stepContinueWork').count(),0,'Forward action is not in the top progress header');
  eq(await page.locator('#treeStepActions').isVisible(),false,'No empty forward-action area above the map');
@@ -52,6 +54,8 @@ try{
  }),true,'Continue action is after the map and its findings');
  match(await page.textContent('#propertyMapContinue'),/Review the address and tree location above/);
  await page.click('#stepContinueWork');
+ eq(await page.locator('#step-work').isDisabled(),false,'Work tab unlocks after deliberate continue');
+ eq(await page.locator('#step-results').isDisabled(),false,'Progress navigation unlocks after leaving property step');
  eq(await page.locator('#permitForm').isVisible(),true);
  eq(await page.locator('#digQuickCore input:visible,#digQuickCore select:visible').count(),5);
  eq(await page.locator('#propertyMapCard').isVisible(),false);
