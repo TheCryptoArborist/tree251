@@ -2,7 +2,7 @@
  * Presentation only. Keeps one property GIS map, one questionnaire, one result,
  * and one editable email. Switching stages does not change permit logic.
  */
-export const STEP_NAV_VERSION='0.8.3';
+export const STEP_NAV_VERSION='0.8.4';
 export function installStepNav(doc){
  const $=id=>doc.getElementById(id),win=doc.defaultView,root=$('treeTaskTabs'),
        flow=$('treeTaskSharedFlow'),form=$('permitForm'),output=$('permitOutput');
@@ -50,7 +50,9 @@ export function installStepNav(doc){
   attach.observe(doc.body,{childList:true,subtree:true});
  }
  let stage='property',activeTask=root.dataset.activeTask||'tree-work',stageEpoch=0;
- let hasResults=false;
+ // Later stages unlock only after the user deliberately completes the map
+ // step or chooses the bottom/manual continuation action.
+ let propertyAdvanced=false;
  const labels={'property':'Property & map','work':'Work details','results':'Result & next steps'};
  const scrollHere=()=>{
   nav.scrollIntoView({behavior:'auto',block:'start'});
@@ -63,6 +65,7 @@ export function installStepNav(doc){
    const on=stage===key;
    button.setAttribute('aria-pressed',String(on));
    button.setAttribute('aria-current',on?'step':'false');
+   button.disabled=key!=='property'&&!propertyAdvanced;
   }
   next.hidden=stage!=='property';
   back.hidden=stage!=='work';
@@ -81,7 +84,8 @@ export function installStepNav(doc){
    if(opts.scroll!==false)scrollHere();
    return;
   }
-  stage=key;stageEpoch++;update();
+  stage=key;if(key!=='property')propertyAdvanced=true;
+  stageEpoch++;update();
   if(opts.scroll!==false)scrollHere();
  };
  for(const [key,button] of buttons)button.addEventListener('click',()=>setStage(key));
@@ -166,6 +170,7 @@ export function installStepNav(doc){
  '#treeStepButtons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}',
  '#treeStepButtons button{border:1px solid var(--line);background:var(--wash);color:var(--ink);border-radius:9px;min-width:0;white-space:normal;text-align:left;padding:11px;min-height:75px;overflow-wrap:anywhere}',
  '#treeStepButtons button[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:white;box-shadow:inset 0 -3px var(--amberline)}',
+ '#treeStepButtons button:disabled{cursor:default;opacity:.65;box-shadow:none}',
  '#treeStepButtons button strong{display:block;font-size:14px;line-height:1.25}',
  '#treeStepButtons button span{display:block;font-size:11px;margin-top:5px;line-height:1.3}',
  '#treeStepButtons button:focus-visible{outline:3px solid #bd7725;outline-offset:2px}',
