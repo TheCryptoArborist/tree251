@@ -2,7 +2,7 @@
  * Presentation only. Keeps one property GIS map, one questionnaire, one result,
  * and one editable email. Switching stages does not change permit logic.
  */
-export const STEP_NAV_VERSION='0.8.2';
+export const STEP_NAV_VERSION='0.8.3';
 export function installStepNav(doc){
  const $=id=>doc.getElementById(id),win=doc.defaultView,root=$('treeTaskTabs'),
        flow=$('treeTaskSharedFlow'),form=$('permitForm'),output=$('permitOutput');
@@ -27,11 +27,28 @@ export function installStepNav(doc){
  }
  const message=make('p','',nav);message.id='treeStepMessage';message.className='help';
  const workActions=make('div','',nav);workActions.id='treeStepActions';workActions.className='actions';
- const next=make('button','Continue to work details',workActions);next.type='button';next.id='stepContinueWork';
+ // Keep the forward action out of the progress header. It belongs AFTER the
+ // property/map review, so it cannot become the first prominent shortcut.
+ const next=make('button','Continue to work details');next.type='button';next.id='stepContinueWork';
  const back=make('button','Back to property & map',workActions);back.type='button';back.id='stepBackProperty';back.className='secondary';
  // The top task tabs are a different choice; keep this subnavigation underneath
  // their task introductions while maintaining a single source of truth.
  const firstPanel=$('treeWorkPanel');firstPanel?.before(nav);
+ const mountPropertyContinue=()=>{
+  const card=$('propertyMapCard');if(!card)return false;
+  let footer=$('propertyMapContinue');
+  if(!footer){
+   footer=make('div','',card);footer.id='propertyMapContinue';footer.className='property-map-continue';
+   const guidance=make('p','Review the address and tree location above before moving on. If the map is unavailable, you can continue and answer missing location questions manually.',footer);
+   guidance.className='help';
+  }
+  footer.append(next);
+  return true;
+ };
+ if(!mountPropertyContinue()){
+  const attach=new win.MutationObserver(()=>{if(mountPropertyContinue())attach.disconnect();});
+  attach.observe(doc.body,{childList:true,subtree:true});
+ }
  let stage='property',activeTask=root.dataset.activeTask||'tree-work',stageEpoch=0;
  let hasResults=false;
  const labels={'property':'Property & map','work':'Work details','results':'Result & next steps'};
@@ -49,6 +66,7 @@ export function installStepNav(doc){
   }
   next.hidden=stage!=='property';
   back.hidden=stage!=='work';
+  workActions.hidden=stage!=='work';
   if(stage==='results'&&!valid)message.textContent='No current result yet. Open Work details, then run the check.';
   else if(stage==='results')message.textContent='This is a screening result, not City authorization. The full record is available below if needed.';
   else if(stage==='property')message.textContent='Start with the City address lookup, or continue manually if the map is unavailable.';
@@ -153,7 +171,10 @@ export function installStepNav(doc){
  '#treeStepButtons button:focus-visible{outline:3px solid #bd7725;outline-offset:2px}',
  '#treeStepMessage{margin:12px 0 0}',
  '#treeStepActions{margin-top:9px}',
- '#treeStepActions button[hidden],#diggingFullRecordDetails[hidden]{display:none!important}',
+ '#treeStepActions[hidden],#treeStepActions button[hidden],#propertyMapContinue button[hidden],#diggingFullRecordDetails[hidden]{display:none!important}',
+ '#propertyMapContinue{margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}',
+ '#propertyMapContinue .help{margin:0 0 12px}',
+ '#propertyMapContinue button{width:100%;max-width:680px}',
  '#treeTaskTabs[data-active-step="property"] #permitCard,#treeTaskTabs[data-active-step="property"] #emailCard,#treeTaskTabs[data-active-step="property"] #workCard{display:none!important}',
  '#treeTaskTabs[data-active-step="work"] #propertyMapCard,#treeTaskTabs[data-active-step="work"] #permitOutput,#treeTaskTabs[data-active-step="work"] #emailCard,#treeTaskTabs[data-active-step="work"] #workCard{display:none!important}',
  '#treeTaskTabs[data-active-step="results"] #propertyMapCard,#treeTaskTabs[data-active-step="results"] #permitForm,#treeTaskTabs[data-active-step="results"] #permitCard>.stephead,#treeTaskTabs[data-active-step="results"] #permitReady{display:none!important}',
