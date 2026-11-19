@@ -2,7 +2,7 @@
  * Property/address zoning is separate from the tree pin and actual site use.
  * A missing planning record is never evidence that no approved plan exists.
  */
-export const RESIDENT_VERSION='0.4.7';
+export const RESIDENT_VERSION='0.4.8';
 export const ENGINEERING_SOURCE='https://www.buildmobile.org/forms-and-applications/';
 export const ROW_LANDSCAPE_SOURCE='https://www.buildmobile.org/pdf/Major-Minor%20ROW%20Permit%20Application%20-%206-1-19.pdf';
 const text=v=>String(v??'').trim();
@@ -100,12 +100,44 @@ export function staffPlanReview(a={}) {
   if(construction)return {...common,title:'Check tree approval separately from the land-disturbance permit'};
   return common;
 }
+// Project arborist clarification 2026-11-19. Published forms sometimes
+// describe "any ROW work"; City Engineering confirmation is needed before
+// these operational distinctions are treated as controlling legal guidance.
 export function engineeringReview(a={}) {
-  if(a.work!=='planting')return null;
-  if(a.city==='outside')return null;
-  if(a.location==='row')return {title:'Planting in street right-of-way: Engineering permit route',
-    requirement:'Arrange the Engineering right-of-way landscaping permit and Urban Forestry planting-plan review before planting. A tree trimming/removal application is not the planting application.',
-    note:'This follows the project expert\u2019s ROW planting guidance and the City\u2019s published ROW landscape-permit category. Confirm current submission requirements with Engineering; no fee or processing time is inferred from the older form.',sources:[ENGINEERING_SOURCE,ROW_LANDSCAPE_SOURCE]};
-  if(a.location==='unknown')return {title:'Planting location needs confirmation',requirement:'Establish whether the planting spot is in the public street right-of-way. If it is, the Engineering ROW landscaping permit route applies.',note:'The canopy of an existing tree or a parcel-map gap does not determine the planting location.',sources:[ENGINEERING_SOURCE]};
-  return null;
+ const sources=[ENGINEERING_SOURCE,ROW_LANDSCAPE_SOURCE];
+ const found=(code,title,requirement,note)=>({code,title,requirement,note,sources,authorizationGranted:false});
+ const planting=a.work==='planting';
+ const ground=['root','roots'].includes(a.work)||a.alsoDigging===true||a.rowGroundWork==='yes';
+ if(a.city==='outside')return null;
+ if(!planting&&!ground){
+  if(a.rowGroundWork==='no'){
+   return a.location==='row'?found('ROUTINE_NO_TRIGGER','Routine tree work: no Engineering ROW construction permit indicated',
+    'Routine tree pruning or removal without digging, trenching, utilities, planting or other soil disturbance does not trigger an Engineering ROW construction permit under the project arborist’s guidance.',
+    'This is not City authorization and does not remove Chapter 65 or Tree Commission obligations.'):null;
+  }
+  return found('WORK_SCOPE_UNKNOWN','Confirm ground work on the job',
+   'Will any digging, trenching, underground utility work, stump excavation or soil disturbance occur? If so, identify the actual work area.',
+   'The tree-trunk location alone cannot answer this. An unanswered question is not No.');
+ }
+ let area=planting?a.location:(['root','roots'].includes(a.work)||a.alsoDigging===true?a.excavationArea:a.rowWorkArea);
+ if(planting&&a.alsoDigging===true){
+  if(a.excavationArea==='row')area='row';
+  else if(a.excavationArea==='mixed'&&area!=='row')area='mixed';
+  else if((!a.excavationArea||a.excavationArea==='unknown')&&area!=='row')area='unknown';
+ }
+ if(a.city!=='inside')return found('JURISDICTION_UNKNOWN','Confirm City jurisdiction',
+  'Confirm the jurisdiction of the actual planting or excavation area before determining an Engineering ROW permit.',
+  'A Mobile mailing address or tree location does not establish the ROW boundary.');
+ if(area==='row')return found('ROW_PERMIT_REQUIRED','Engineering ROW permit required',
+  'Engineering right-of-way authorization is required before '+(planting?'planting trees or excavating':'digging, trenching, utility work or other soil disturbance')+' in the City public ROW. Obtain the applicable Engineering ROW permit before starting.',
+  'This is separate from tree-work approval, root-cutting permission and Alabama 811. Confirm the current application with Engineering.');
+ if(!area||area==='unknown'||area==='mixed')return found('ROW_LOCATION_UNKNOWN','Engineering ROW permit status: location confirmation needed',
+  'Confirm whether any part of the planting, digging, trenching, utility work or ground disturbance is in City ROW. If so, the Engineering ROW permit route applies.',
+  'The tree and excavation can have different locations. GIS is not a ROW boundary survey.');
+ if(area==='private')return found('NO_ROW_TRIGGER','No City ROW permit trigger identified from the work location',
+  'The reported planting or soil disturbance takes place entirely on private land outside the public ROW, so no City Engineering ROW construction permit is indicated on those facts.',
+  'Other City approvals, utility locating and tree-root protection remain separate; this is not digging clearance.');
+ return found('OTHER_PUBLIC_LAND','Other public land: verify approvals',
+  'Planting or soil disturbance on City parks or other City property requires checking the applicable authority, rather than automatically treating the location as street ROW.',
+  'No permission to perform work on public land is granted.');
 }
