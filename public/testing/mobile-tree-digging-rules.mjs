@@ -1,3 +1,4 @@
+import {engineeringReview} from './mobile-tree-property-policy.mjs';
 /* Digging/root protection v0.5.0. Screening, not a finding of a violation.
  * Basis reopened 2026-11-18: adopted Mobile Ordinance 65-018-2021,
  * Articles I(2), II, V(4), VII, VIII(1)-(3), X(1)(d),(2),(5).
@@ -6,7 +7,7 @@
  * the ordinance does not specify that measurement endpoint. No center correction
  * is inferred from DBH measured at 4.5 feet.
  */
-export const DIGGING_VERSION='0.5.0';
+export const DIGGING_VERSION='0.5.1';
 // Project expert clarification (former City Urban Forester), 2026-11-18:
 // screen excavation/root protection citywide, including occupied R-1/R-2 lots.
 // This is the project's scope interpretation, not a verbatim ordinance quote.
@@ -96,9 +97,10 @@ export function screenDigging(a={}){
    :scope==='unresolved'
     ? 'Confirm the affected tree and its jurisdiction first. Unknown facts alone do not establish a City permit or mandatory email.'
     : 'Comply with the root-protection and supervision requirements. A City permit or email is not automatically required solely because the citywide digging check applies; separate project approvals remain to be determined.';
- const engineering=a.excavationArea==='row'
-  ? 'The excavation is reported in the public street area. Check Engineering right-of-way authorization independently of where the tree stands.'
-  : 'Confirm any applicable Engineering or land-disturbance approval for the full work scope. A utility or construction permit is not automatically tree-root authorization.';
+ const engineeringFinding=engineeringReview(a);
+ const engineering=engineeringFinding
+  ? engineeringFinding.title+': '+engineeringFinding.requirement+' '+engineeringFinding.note
+  : 'Confirm any applicable Engineering and land-disturbance approval for the project. Utility locating is not tree-root authorization.';
  const notes=[
   'Scope basis: citywide digging screening follows the project owner’s clarification as a former City Urban Forester (18 November 2026). This is recorded separately from the published Article I(2) general residential exception, not quoted as a statutory amendment.',
   'Screening estimate only: this is not a surveyed critical root zone, legal setback, approved root cut, or risk assessment. Species tolerance, tree age and health influence the appropriate root zone.',
@@ -120,7 +122,7 @@ export function screenDigging(a={}){
  for(const [key,label] of [['purpose','work purpose'],['excavationArea','excavation location'],['method','digging method'],['rootHandling','plan for encountered roots'],['stage','whether work or root damage has already occurred']])if(!a[key]||a[key]==='unknown')missing.push(label);
  const dimensions={depthInches:num(a.depthInches),widthFeet:num(a.widthFeet),lengthFeet:num(a.lengthFeet)};
  const locate='Contact Alabama 811 before excavation, allow the required notice period, and confirm utility-operator responses. A locate ticket does not authorize cutting tree roots. Reported locate status: '+(a.locate||'unknown')+' (not verified).';
- return {active:true,version:DIGGING_VERSION,scopeVersion:DIGGING_SCOPE_VERSION,scopeBasis:DIGGING_SCOPE_BASIS,code,title,scope,cityReview,approvalRouteUnresolved,range,proximity,legal,handling,coordination,engineering,locate,notes,missing,dimensions,authorizationGranted:false,violationDetermined:false};
+ return {active:true,version:DIGGING_VERSION,scopeVersion:DIGGING_SCOPE_VERSION,scopeBasis:DIGGING_SCOPE_BASIS,code,title,scope,cityReview,approvalRouteUnresolved,range,proximity,legal,handling,coordination,engineering,engineeringCode:engineeringFinding?.code||'NOT_EVALUATED',locate,notes,missing,dimensions,authorizationGranted:false,violationDetermined:false};
 }
 export function diggingRecord(a,r){
  if(!r?.active)return '';
