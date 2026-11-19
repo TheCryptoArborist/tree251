@@ -28,7 +28,19 @@ export function installResidentWorkflow(doc,interpret) {
   // than expecting a homeowner to certify that no other restrictions exist.
   const extra=el('scExtra');
   if(extra){extra.value='unknown';extra.parentElement.hidden=true;}
-  const chapter=el('chapter64');
+  // Engineering ROW permits depend on ground disturbance, not merely a tree in the ROW.
+   const rowBox=make('div','');rowBox.id='residentROWWork';rowBox.className='full';
+   el('scWork')?.parentElement.insertAdjacentElement('afterend',rowBox);
+   const rowLabel=make('label','Does this job include digging, trenching, utility work, stump excavation or other soil disturbance?',rowBox);rowLabel.htmlFor='rowGroundWork';
+   const rowGround=make('select','',rowBox);rowGround.id='rowGroundWork';
+   replaceOptions(rowGround,[['unknown',"I'm not sure"],['no','No — routine tree work only, no digging or soil disturbance'],['yes','Yes — digging, trenching, utilities, stump excavation or soil disturbance']]);
+   make('p','Routine tree pruning or removal alone does not trigger an Engineering ROW construction permit. Ground work is screened separately.',rowBox).className='help';
+   const rowAreaBox=make('div','',rowBox);rowAreaBox.id='residentROWArea';
+   const rowAreaLabel=make('label','Where will the ground disturbance occur?',rowAreaBox);rowAreaLabel.htmlFor='rowWorkArea';
+   const rowArea=make('select','',rowAreaBox);rowArea.id='rowWorkArea';
+   replaceOptions(rowArea,[['unknown',"I'm unsure where the right-of-way boundary is"],['private','Entirely on private land, outside the ROW'],['row','In City street right-of-way'],['mixed','Across several locations, possibly ROW'],['city','City park or other City-owned land']]);
+   make('p','Use the actual digging area; the tree trunk can be on different property.',rowAreaBox).className='help';
+   const chapter=el('chapter64');
   const heading=chapter?.querySelector('legend');if(heading)heading.textContent='Project details and records City staff may need to check';
   const intro=chapter?.querySelector(':scope > p.help');if(intro)intro.textContent='You are not expected to find or interpret an approved landscape plan. For an applicable site, the prepared email asks City staff to retrieve the plan and check this tree.';
   const five=el('udcQuestions');if(five)five.hidden=true;
@@ -101,6 +113,8 @@ export function installResidentWorkflow(doc,interpret) {
     const branch=el('scLimb')?.parentElement;if(branch)branch.hidden=work!=='pruning';
     const trunk=el('scDbh')?.parentElement;if(trunk)trunk.hidden=work==='planting';
     ldBox.hidden=!(development?.value==='yes'||['root','clearing'].includes(work));
+     rowBox.hidden=!['removal','pruning','relocation','clearing'].includes(work)||el('digAlso')?.checked===true;
+     rowAreaBox.hidden=rowBox.hidden||rowGround.value!=='yes';
   }
   function setValue(id,value){const n=el(id);if(!n||n.value===value)return;writing=true;try{n.value=value;emit(n);}finally{writing=false;}}
   function refreshRecords(){
@@ -180,10 +194,13 @@ export function installResidentWorkflow(doc,interpret) {
     el('applyMapAnswers')?.addEventListener('click',()=>win.queueMicrotask(refreshRecords));
   };
   const observer=new win.MutationObserver(()=>{bindMap();if(mappingInstalled)observer.disconnect();});observer.observe(doc.body,{childList:true,subtree:true});bindMap();
-  el('scWork')?.addEventListener('change',scopeQuestions);development?.addEventListener('change',scopeQuestions);scopeQuestions();propertyQuestions();
+  el('scWork')?.addEventListener('change',scopeQuestions);development?.addEventListener('change',scopeQuestions);rowGround.addEventListener('change',scopeQuestions);
+   form.addEventListener('change',e=>{if(e.target?.id==='digAlso')scopeQuestions();});
+   scopeQuestions();propertyQuestions();
   const read=()=>({city:el('scCity')?.value,location:el('scLocation')?.value,work:el('scWork')?.value,property:el('scProperty')?.value,
     zoning:el('udcZoning')?.value,overlay:el('udcOverlay')?.value,taxClass:form.dataset.parcelTaxClass||'unknown',plan:el('udcPlan')?.value,development:development?.value,
-    landDisturbance:ld.value,caseNumber:caseNumber.value.trim()});
+    landDisturbance:ld.value,caseNumber:caseNumber.value.trim(),
+     rowGroundWork:rowGround.value,rowWorkArea:rowArea.value,alsoDigging:el('digAlso')?.checked===true,excavationArea:el('digArea')?.value||'unknown'});
   const engineering=make('section','');engineering.id='residentEngineering';engineering.className='notice';engineering.hidden=true;
   el('udcResultSection')?.before(engineering);
   let lastRequest='';
@@ -197,17 +214,17 @@ export function installResidentWorkflow(doc,interpret) {
     el('residentProjectSummary')?.remove();
     const summary=make('p','',el('permitNotes'));summary.id='residentProjectSummary';
     summary.textContent=(property?'Property record: '+address+'; zoning '+property.zoneText+'; parcel tax class '+property.taxClass+'; special districts '+property.overlayText+'; fetched '+sources.fetchedAt+'. This is an address-based map finding, not verified site use or plan history. ':'')+review.projectNote+(a.caseNumber?' Project reference: '+a.caseNumber+' (not verified).':'');
-    engineering.replaceChildren();engineering.hidden=!eng;
-    if(eng){
-      make('h3',eng.title,engineering);make('p',eng.requirement,engineering);make('p',eng.note,engineering);
-      for(const url of eng.sources){const p=make('p','',engineering),link=make('a',url.includes('ROWAPPLICATION')?'City ROW landscape-permit form (older published form; not a current fee quote)':'City Engineering permit information',p);link.href=url;link.target='_blank';link.rel='noopener noreferrer';}
+    engineering.replaceChildren();engineering.hidden=!eng||a.work==='root'||a.alsoDigging;
+    if(eng&&a.work!=='root'&&!a.alsoDigging){
+       make('h3',eng.title,engineering);make('p',eng.requirement,engineering);make('p',eng.note,engineering);
+      for(const url of eng.sources){const p=make('p','',engineering),link=make('a',url.includes('Major-Minor')?'City ROW landscape-permit form (older published form; not a current fee quote)':'City Engineering permit information',p);link.href=url;link.target='_blank';link.rel='noopener noreferrer';}
       summary.textContent+=' '+eng.title+': '+eng.requirement;
-      if(a.city==='inside'&&a.location==='row')el('permitNext').textContent=eng.requirement;
+      if(eng.code==='ROW_PERMIT_REQUIRED')el('permitNext').textContent+=' '+eng.requirement;
     }
     lastRequest=review.code==='STAFF_VERIFICATION'?'Please retrieve the approved site/landscape plan and any conditions for this property. Please check whether this tree is at a required planting location, marked for retention, credited toward required landscaping, or within required frontage, parking or buffer planting. Please advise whether the proposed work needs a separate tree permit, plan modification or replacement planting.':'';
     if(review.projectNote)lastRequest+=' '+review.projectNote+' Please check the land-disturbance permit and approved tree work separately.';
     if(a.caseNumber)lastRequest+=' Project/permit reference supplied (not verified): '+a.caseNumber+'.';
-    if(eng)lastRequest+=' '+eng.requirement+' Please identify the current Engineering ROW planting application and required Urban Forestry coordination.';
+    if(eng?.code==='ROW_PERMIT_REQUIRED'&&a.work!=='root'&&!a.alsoDigging)lastRequest+=' '+eng.requirement+' Please identify the current Engineering ROW application and required Urban Forestry coordination.';
   }
   doc.addEventListener('submit',e=>{if(e.target===form)paintStaffReview();
     if(e.target===el('workForm')&&lastRequest&&!el('draftArea')?.classList.contains('hidden')){
