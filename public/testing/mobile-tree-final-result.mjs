@@ -1,5 +1,6 @@
 /* Display-only outcome summary. Does not alter permit rules. */
-export const RESULT_VERSION='0.4.5';
+import {installContactPaths} from './mobile-tree-contact-paths.mjs';
+export const RESULT_VERSION='0.4.6';
 export function installFinalResult(doc){
  const $=id=>doc.getElementById(id),form=$('permitForm'),out=$('permitOutput'),old=$('permitOutcome');
  if(!form||!out||!old||$('simplePermitAnswer'))return false;
@@ -77,5 +78,6 @@ export function installFinalResult(doc){
  form.addEventListener('submit',()=>doc.defaultView.setTimeout(render,40));
  for(const event of ['input','change'])form.addEventListener(event,()=>{panel.hidden=true;old.hidden=false;details.open=false;});
  const footer=doc.querySelector('footer');if(footer)make('span',' · Clear results '+RESULT_VERSION,footer);
+ installContactPaths(doc);
  return true;
 }
