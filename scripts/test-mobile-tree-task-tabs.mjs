@@ -65,8 +65,29 @@ try{
  eq(await page.locator('#diggingTaskPanel').isVisible(),false);
  eq(await page.locator('#diggingFields').isVisible(),false);
  eq(gisRequests,0,'No lookup merely from opening the tabs');
+ // Address search is the first obvious action, with results immediately
+ // highlighted and the site-matched header/logo present on the mobile layout.
+ eq(await page.locator('.site-brand-image img').getAttribute('src'),'/arborist-logo-cropped.png');
+ eq(await page.locator('.site-header-cta').isVisible(),true);
+ eq(await page.locator('#findPropertyMap').isVisible(),true);
+ eq(await page.evaluate(()=>{
+  const input=document.getElementById('propertyMapAddress'),button=document.getElementById('findPropertyMap');
+  const a=input.getBoundingClientRect(),b=button.getBoundingClientRect();
+  return b.top>a.bottom&&b.top-a.bottom<115;
+ }),true,'Search action is directly beneath the address field');
+ eq(await page.evaluate(()=>getComputedStyle(document.body).backgroundColor),'rgb(5, 11, 18)');
  await page.fill('#propertyMapAddress','6 Maury Drive');await page.click('#findPropertyMap');
+ await page.locator('#propertyMapMatches:not([hidden])').waitFor();
+ matches(await page.textContent('#propertyMatchesTitle'),/Select the correct address/);
+ eq(await page.locator('#propertyMapCandidates button').count(),1);
+ eq(await page.locator('#propertyMapMatches').isVisible(),true);
  await page.locator('#propertyMapCandidates button').first().click();
+ eq(await page.locator('#propertyMapWorkspace').isVisible(),true);
+ eq(await page.locator('#propertyMapMatches').isVisible(),false);
+ eq(await page.evaluate(()=>{
+   const facts=document.getElementById('propertyMapFacts'),confirm=document.getElementById('applyMapAnswers');
+   return !!(facts.compareDocumentPosition(confirm)&Node.DOCUMENT_POSITION_FOLLOWING);
+ }),true,'Map confirm button follows map findings rather than preceding them');
  await page.waitForSelector('#permitForm[data-property-records="ready"]',{state:'attached'});
  await page.waitForSelector('#applyMapAnswers:not([disabled])');await page.click('#applyMapAnswers');
  await set({scLocation:'row',scSpecies:'liveoak',scDbh:24});
