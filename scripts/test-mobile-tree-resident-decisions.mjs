@@ -70,3 +70,20 @@ test('Single-zoned parcel is not incorrectly tagged as split-zoned',()=>{
  assert.equal(actual.zoning,'r1r2');
  assert.equal(actual.splitZoned,false);
 });
+
+test('Engineering ROW construction permit trigger is separate from routine tree work',()=>{
+ for(const work of ['pruning','removal']){
+  const r=engineeringReview({city:'inside',work,location:'row',rowGroundWork:'no'});
+  assert.equal(r.code,'ROUTINE_NO_TRIGGER');
+  assert.match(r.requirement,/no digging, trenching/i);
+ }
+ assert.equal(engineeringReview({city:'inside',work:'removal',location:'row',rowGroundWork:'unknown'}).code,'WORK_SCOPE_UNKNOWN');
+ assert.equal(engineeringReview({city:'inside',work:'removal',location:'row',rowGroundWork:'yes',rowWorkArea:'row'}).code,'ROW_PERMIT_REQUIRED');
+ assert.equal(engineeringReview({city:'inside',work:'pruning',location:'private',rowGroundWork:'yes',rowWorkArea:'row'}).code,'ROW_PERMIT_REQUIRED');
+ assert.equal(engineeringReview({city:'inside',work:'clearing',rowGroundWork:'yes',rowWorkArea:'mixed'}).code,'ROW_LOCATION_UNKNOWN');
+});
+test('Engineering ROW permit applies to ROW planting and adjacent ROW digging',()=>{
+ assert.equal(engineeringReview({city:'inside',work:'planting',location:'row'}).code,'ROW_PERMIT_REQUIRED');
+ assert.equal(engineeringReview({city:'inside',work:'planting',location:'private'}).code,'NO_ROW_TRIGGER');
+ assert.equal(engineeringReview({city:'inside',work:'planting',location:'private',alsoDigging:true,excavationArea:'row'}).code,'ROW_PERMIT_REQUIRED');
+});
