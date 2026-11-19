@@ -55,7 +55,7 @@ jobs:
             await page.fill('#propertyMapAddress','6 Maury Drive');assert.equal(await page.isChecked('#propertyMapConsent'),true);assert.equal(await page.locator('#propertyMapConsent').isVisible(),false);await page.click('#findPropertyMap');
             await page.locator('#propertyMapCandidates button').first().click({timeout:40000});
             await page.waitForSelector('#applyMapAnswers:not([disabled])',{timeout:45000});
-            await page.waitForSelector('#permitForm[data-property-records="ready"]',{timeout:45000});
+            await page.waitForSelector('#permitForm[data-property-records="ready"]',{timeout:45000,state:'attached'});
             assert.equal(await page.inputValue('#scCity'),'unknown','Tree confirmation still needed for jurisdiction');
             await page.waitForSelector('.leaflet-tile-loaded',{timeout:30000});
             assert.equal(await page.locator('#propertyMapFacts .map-answer').count(),8);
@@ -92,7 +92,7 @@ jobs:
             await page.fill('#propertyMapAddress','6 Maury DR');
             await page.click('#findPropertyMap');await page.locator('#propertyMapCandidates button').first().click({timeout:40000});
             await page.waitForSelector('#applyMapAnswers:not([disabled])',{timeout:45000});
-            await page.waitForSelector('#permitForm[data-property-records="ready"]',{timeout:45000});
+            await page.waitForSelector('#permitForm[data-property-records="ready"]',{timeout:45000,state:'attached'});
             const zoning=page.locator('[data-layer="zoning"]');
             assert.match(await zoning.locator('.map-answer').textContent(),/R-1.*Single-Family Residential/);
             assert.match(await zoning.locator('.map-caution').textContent(),/Near a mapped boundary/);
