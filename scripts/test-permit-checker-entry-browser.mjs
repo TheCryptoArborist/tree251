@@ -12,11 +12,11 @@ for(let attempt=0;attempt<60;attempt++){
     const home=await fetch(origin+'/',{cache:'no-store',signal:AbortSignal.timeout(12000)});
     const text=await home.text();
     const entry=await fetch(origin+'/permit-checker',{redirect:'manual',cache:'no-store',signal:AbortSignal.timeout(12000)});
-    if(home.ok&&text.includes('id="permit-checker-introduction"')&&[302,307].includes(entry.status)&&entry.headers.get('location')?.includes('/testing/mobile-tree-checker.html')){deployed=true;break;}
+    if(home.ok&&text.includes('id="permit-checker-introduction"')&&text.includes('id="construction-conflict-panel"')&&text.includes('id="construction-tree-guidance"')&&[302,307].includes(entry.status)&&entry.headers.get('location')?.includes('/testing/mobile-tree-checker.html')){deployed=true;break;}
   }catch{}
   await new Promise(resolve=>setTimeout(resolve,5000));
 }
-assert.ok(deployed,'Homepage entry and shortcut have not reached the preview');
+assert.ok(deployed,'Repositioned homepage entry and shortcut have not reached the preview');
 const executablePath=execSync('command -v google-chrome || command -v chromium || command -v chromium-browser',{encoding:'utf8'}).trim();
 const browser=await chromium.launch({executablePath,headless:true,args:['--no-sandbox']});
 const checks=[],errors=[];let page;
@@ -31,7 +31,8 @@ try{
   check('The approved heading appears once',await page.getByRole('heading',{name:'Planning tree work in Mobile, Alabama?',exact:true}).count()===1);
   check('The primary homepage headline remains intact',(await page.locator('h1').textContent()).trim()==='Concerned About a Tree?');
   check('All six service cards remain',await page.locator('#start-here > div.grid > article').count()===6);
-  check('The panel is between the Start Here introduction and service cards',await page.locator('#permit-checker-introduction').evaluate(node=>node.parentElement.id==='start-here'&&node.previousElementSibling.querySelector('h2')?.textContent==='What do you need help with?'&&node.nextElementSibling.querySelectorAll('article').length===6));
+  check('The checker is immediately below the construction and hardscape panel',await page.locator('#permit-checker-introduction').evaluate(node=>node.previousElementSibling?.id==='construction-conflict-panel'&&node.closest('section')?.id==='construction-tree-guidance'&&node.previousElementSibling.textContent.includes('Construction & hardscape conflicts near trees')));
+  check('No checker panel remains in the six-card Start Here area',await page.locator('#start-here #permit-checker-introduction').count()===0);
   check('City decision authority remains explicit',(await page.locator('#permit-checker-introduction').textContent()).includes('City of Mobile departments make the final permitting decisions.'));
   const desktop=page.locator('nav[aria-label="Primary navigation"]');
   await desktop.getByRole('button',{name:'Resources',exact:true}).focus();
@@ -39,6 +40,7 @@ try{
   await desktopLink.waitFor({state:'visible'});
   check('The checker is first in Resources',await desktopLink.evaluate(link=>link.parentElement.firstElementChild===link));
   await page.locator('#permit-checker-introduction').screenshot({path:'test-artifacts/permit-entry/desktop-panel.png'});
+  await page.locator('#construction-tree-guidance').screenshot({path:'test-artifacts/permit-entry/desktop-placement.png'});
   await desktopLink.click();
   await page.waitForURL('**/testing/mobile-tree-checker.html');
   await page.waitForSelector('#treeTaskTabs');
@@ -50,9 +52,11 @@ try{
     await page.setViewportSize({width,height:900});
     check('No page-wide horizontal overflow at '+width,await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2));
     check('Panel and button fit at '+width,await page.locator('#permit-checker-introduction').evaluate(node=>{const rect=node.getBoundingClientRect(),link=node.querySelector('a').getBoundingClientRect();return rect.left>=0&&rect.right<=innerWidth+1&&link.left>=rect.left&&link.right<=rect.right&&link.height>=44;}));
+    check('Service cards and construction panel precede the checker at '+width,await page.locator('#permit-checker-introduction').evaluate(node=>{const panel=document.getElementById('construction-conflict-panel'),cards=[...document.querySelectorAll('#start-here > div.grid > article')];return node.previousElementSibling===panel&&panel.getBoundingClientRect().bottom<=node.getBoundingClientRect().top&&cards.length===6&&cards.every(card=>card.getBoundingClientRect().bottom<=panel.getBoundingClientRect().top);}));
   }
   await page.setViewportSize({width:390,height:844});
   await page.locator('#permit-checker-introduction').screenshot({path:'test-artifacts/permit-entry/mobile-panel.png'});
+  await page.locator('#construction-tree-guidance').screenshot({path:'test-artifacts/permit-entry/mobile-placement.png'});
   const mobile=page.locator('nav[aria-label="Mobile quick navigation"]');
   const mobileLink=mobile.getByRole('link',{name:'Permit Checker',exact:true});
   check('Mobile checker link is near the beginning',await mobileLink.evaluate(link=>Array.from(link.parentElement.children).indexOf(link)===1));

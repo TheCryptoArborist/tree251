@@ -26,7 +26,7 @@ export function PermitCheckerPromo() {
           href="/permit-checker"
           data-track-event="Permit Checker Click"
           data-track-label="Check permit requirements"
-          data-track-location="start_here"
+          data-track-location="construction_conflict_section"
           className="inline-flex min-h-12 w-full shrink-0 items-center justify-center gap-2 rounded-full border border-[#f6c95a]/70 bg-[#f6c95a]/10 px-5 py-3 text-center text-sm font-black text-[#f6c95a] transition hover:bg-[#f6c95a]/20 focus-ring lg:w-auto"
         >
           Check permit requirements

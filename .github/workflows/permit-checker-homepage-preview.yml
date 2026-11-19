@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'components/TheArboristHomePage.tsx'
+      - 'components/WhatYouReceiveSection.tsx'
       - 'components/SiteHeader.tsx'
       - 'components/PermitCheckerPromo.tsx'
       - 'next.config.mjs'
