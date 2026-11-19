@@ -3,7 +3,7 @@
  * No GIS, self-reported emergency, or entered credential can grant authorization.
  */
 import {getWorkQualifications} from './mobile-tree-worker-qualifications.mjs';
-export const RULE_VERSION = '0.4.1';
+export const RULE_VERSION = '0.4.2';
 export const REFERENCES = Object.freeze({
   private: {label:'City of Mobile: private-property trimming/removal guidance; Chapter 65 §§65-1, 65-2, 65-6',url:'https://www.cityofmobile.gov/public-works/tree-trimming-removal-permits/'},
   bylaws: {label:'Mobile Tree Commission bylaws, Article VII(f), adopted November 19, 2019',url:'https://www.buildmobile.org/pdf/MTC%20Adopted%20Nov%2019%202019%20BY%20LAWS.pdf'},
@@ -38,6 +38,9 @@ const positive = value => {
 };
 export function screenPermit(input = {}) {
   const a = {...input};
+  // The original standalone form used yes; the staged form uses present.
+  // Both mean an identified additional restriction, never an unknown answer.
+  if (a.extra === 'yes') a.extra = 'present';
   const species = SPECIES[a.species] || SPECIES.unknown;
   const dbh = a.measurementUncertain ? null : positive(a.dbh);
   const limb = positive(a.limb);
