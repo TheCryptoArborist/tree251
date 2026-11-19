@@ -139,15 +139,15 @@ jobs:
             assert.match(await page.textContent('#simplePermitAnswer'),/No City tree-permit application or Forestry email is needed/);assertions++;
             assert.match(await page.textContent('#forestryEmailCTA'),/Optional: Need clarification/);assertions++;
             assert.equal(await page.locator('#resultDetails').evaluate(el=>el.open),false);assertions++;
-            await page.selectOption('#scLocation','row');await page.selectOption('#scWork','pruning');await page.fill('#scLimb','7');
+            await page.click('#step-work');await page.selectOption('#scLocation','row');await page.selectOption('#scWork','pruning');await page.fill('#scLimb','7');
             await page.click('#screenNow');await page.waitForSelector('#workerQualifications:not(.hidden)');
             assert.match(await page.textContent('#permitOutcome'),/Commission/);assertions++;
             assert.match(await page.textContent('#workerQualifications'),/ISA Certified Arborist/);assertions++;
             assert.match(await page.textContent('label[for="scLocation"]'),/trunk meet the ground/);assertions++;
-            await page.selectOption('#scWork','planting');eq(await page.locator('#scLimb').isVisible(),false);eq(await page.locator('#scDbh').isVisible(),false);
+            await page.click('#step-work');await page.selectOption('#scWork','planting');eq(await page.locator('#scLimb').isVisible(),false);eq(await page.locator('#scDbh').isVisible(),false);
             await page.click('#screenNow');await page.waitForSelector('#residentEngineering:not([hidden])');
             assert.match(await page.textContent('#residentEngineering'),/Engineering.*right-of-way/);assertions++;
-            await page.selectOption('#scWork','removal');await page.selectOption('#scLocation','private');await page.selectOption('#scProperty','undeveloped');await page.fill('#scDbh','18');
+            await page.click('#step-work');await page.selectOption('#scWork','removal');await page.selectOption('#scLocation','private');await page.selectOption('#scProperty','undeveloped');await page.fill('#scDbh','18');
             await page.selectOption('#udcDevelopment','yes');await page.selectOption('#residentLDStatus','issued');await page.fill('#residentLDNumber','TEST-REVIEW-ONLY');
             await page.click('#screenNow');await page.waitForSelector('#permitOutput:not(.hidden)');
             assert.match(await page.textContent('#permitOutcome'),/permit required/i);assertions++;
@@ -191,7 +191,7 @@ jobs:
             assert.match(await page.textContent('#permitOutcome'),/verification/i);assertions++;
             await page.waitForSelector('#simplePermitAnswer:not([hidden])');
             assert.notEqual(await page.getAttribute('#simplePermitAnswer','data-outcome'),'residential-no-permit');assertions++;
-            await page.selectOption('#scProperty','commercial');
+            await page.click('#step-work');await page.selectOption('#scProperty','commercial');
             await page.click('#screenNow');
             await page.waitForSelector('#permitOutput:not(.hidden)');
             assert.match(await page.textContent('#permitOutcome'),/Tree permit required/);assertions++;
