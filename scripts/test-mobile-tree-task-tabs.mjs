@@ -72,7 +72,7 @@ try{
  await set({scLocation:'row',scSpecies:'liveoak',scDbh:24});
  const requestsBefore=gisRequests;
  await page.evaluate(()=>window.__originalTaskMap=document.getElementById('propertyTreeMap'));
- await page.click('#diggingTab');
+ await page.click('#diggingTab');await page.click('#step-work');
  eq(await page.getAttribute('#diggingTab','aria-selected'),'true');
  eq(await page.locator('#treeWorkPanel').isVisible(),false);
  eq(await page.locator('#diggingTaskPanel').isVisible(),true);
