@@ -24,6 +24,7 @@ try{
  const page=await browser.newPage({viewport:{width:390,height:844}});const errors=[];
  page.on('pageerror',e=>errors.push(e.message));
  await page.goto(origin+'/testing/mobile-tree-checker.html',{waitUntil:'domcontentloaded'});
+ await page.waitForSelector('#stepContinueWork');await page.click('#stepContinueWork');
  await page.waitForSelector('#permitForm[data-digging-version="0.5.0"]');
  // Known manual location fixtures exercise the actual hosted UI. These are
  // not new GIS, ownership, contractor or regulatory-acceptance verifications.
