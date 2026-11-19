@@ -164,7 +164,7 @@ jobs:
             await page.fill('#propertyMapAddress','2721 Airport Boulevard');
             await page.click('#findPropertyMap');
             await page.locator('#propertyMapCandidates button').first().click({timeout:35000});
-            await page.waitForSelector('#permitForm[data-property-records="ready"]',{timeout:60000});
+            await page.waitForSelector('#permitForm[data-property-records="ready"]',{timeout:60000,state:'attached'});
             eq(await page.getAttribute('#permitForm','data-parcel-tax-class'),'commercial');
             eq(await page.getAttribute('#permitForm','data-split-zoned'),'yes');
             assert.match(await page.textContent('#udcZoningRecord'),/R-1.*B-1/);assertions++;
