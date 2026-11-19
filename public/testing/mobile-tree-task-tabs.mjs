@@ -67,6 +67,15 @@ export function installTaskTabs(doc){
   if(digging&&quick){const label=doc.querySelector('label[for="scLocation"]');if(label)label.textContent='1. Where does the tree trunk meet the ground?';}
   const heading=doc.querySelector('.hero h1');if(heading)heading.textContent='Working on or around trees in Mobile?';
   const lead=doc.querySelector('.hero .lead');if(lead)lead.textContent='Know what’s required before you prune, remove, plant, or dig. Check which permits, approvals, and tree-protection steps may apply to your location and planned work.';
+  const notice=doc.querySelector('.hero .notice');
+  if(notice&&notice.dataset.permittingGuidance!=='yes'){
+   const title=make('strong','Permitting guidance—not permit approval.');
+   const purpose=doc.createTextNode(' This independent tool from The Arborist helps you navigate the permitting process for tree work, planting, and digging. ');
+   const authority=make('strong','The appropriate City of Mobile departments determine applicable requirements and make the final decisions on permit applications.');
+   const limitation=doc.createTextNode(' Results are preliminary. This tool does not issue permits, grant approval, or authorize work.');
+   notice.replaceChildren(title,purpose,authority,limitation);
+   notice.setAttribute('role','note');notice.dataset.permittingGuidance='yes';
+  }
  }
  function activate(next,{url=true,fromWork=false,initial=false}={}){
   if(!panels.has(next))return;
