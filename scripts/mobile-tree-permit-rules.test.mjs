@@ -12,7 +12,7 @@ const cases=[
  ['Multifamily is not single-family exemption',{property:'multifamily'},'VERIFY'],
  ['Unknown plan blocks exemption',{plan:'unknown'},'VERIFY'],
  ['Unresolved construction blocks exemption',{extra:'yes'},'VERIFY'],
- ['Unresolved other restrictions blocks exemption',{extra:'unknown'},'VERIFY'],
+ ['Unknown catch-all restrictions retain limitations without inventing a permit trigger',{extra:'unknown'},'NO_IDENTIFIED'],
  ['Historic pecan at 8',{historic:'yes',species:'pecan',dbh:8},'PERMIT'],
  ['Historic pecan below 8',{historic:'yes',species:'pecan',dbh:7.9},'NO_IDENTIFIED'],
  ['Historic pecan unknown DBH',{historic:'yes',species:'pecan',dbh:''},'VERIFY'],
@@ -60,3 +60,18 @@ test('Storm claims never change rule outcome',()=>{for(const [,changes]of cases)
 test('Pecan maps to heritage Carya group',()=>{assert.equal(SPECIES.pecan.heritage,true);assert.match(screenPermit({...base,historic:'yes',species:'pecan'}).notes.join(' '),/Carya/);});
 test('No user field can claim City approval',()=>{assert.equal(screenPermit({...base,historic:'yes',approved:true,waiver:true,arboristVerified:true}).code,'PERMIT');});
 test('Empty input safe',()=>assert.equal(screenPermit().code,'VERIFY'));
+
+test('Unanswered catch-all is not a verified absence of other restrictions',()=>{
+ const r=screenPermit({...base,extra:'unknown'});
+ assert.equal(r.code,'NO_IDENTIFIED');
+ assert.ok(r.notes.some(n=>n.includes('have not been verified')));
+ assert.match(r.next,/does not waive/);
+});
+test('Legacy yes and staged present extra-work answers are equivalent',()=>{
+ for(const location of ['private','row']){
+  const a={...base,location,species:location==='row'?'wateroak':'liveoak'};
+  const legacy=screenPermit({...a,extra:'yes'}),staged=screenPermit({...a,extra:'present'});
+  assert.deepEqual(legacy,staged);
+  assert.equal(legacy.code,'VERIFY');
+ }
+});
