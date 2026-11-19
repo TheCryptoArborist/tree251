@@ -4,7 +4,7 @@ import {rootPruningConclusion,ROOT_PRUNING_SOURCES} from './mobile-tree-root-pru
  * Omitted inputs remain unknown. No new exemption, safe radius, authorization,
  * automatic violation finding, credential verification or network request.
  */
-export const QUICK_DIGGING_VERSION='0.7.4';
+export const QUICK_DIGGING_VERSION='0.7.5';
 export function quickDiggingSummary(a,r=screenDigging(a)){
  if(!r.active)return null;
  const pending=r.scope==='unresolved'||r.approvalRouteUnresolved===true;
@@ -37,11 +37,11 @@ export function quickDiggingSummary(a,r=screenDigging(a)){
  if(a.excavationArea==='row'&&r.scope==='covered')next+=' '+r.engineering;
  const title=!urgent&&r.scope==='covered'&&a.rootHandling==='cut'?'Change the proposed root-cutting method':r.title;
  const readyForCity=r.cityReview===true;
- return {title,root,city,next,pending,readyForCity,missing,rootRule,authorizationGranted:false};
+ return {title,root,city,next,pending,readyForCity,missing,rootRule,engineeringRow:{code:r.engineeringCode,requirement:r.engineering},authorizationGranted:false};
 }
 export function quickDiggingRecord(a,r,s=quickDiggingSummary(a,r)){
  const record=diggingRecord(a,r).split('\n').filter(line=>!(s.pending&&line===r.coordination)&&!line.startsWith('REQUEST:')&&!line.startsWith('No automatic City review request')&&!line.startsWith('Still needed:')).join('\n');
- return record+'\n\nROOT-PRUNING METHOD: '+s.rootRule.status+'\n'+s.rootRule.finding+'\n'+s.rootRule.selectiveDefinition+'\nMethod compliance, actual ISA supervision, the actual critical root zone, and authorization are NOT VERIFIED.\n'+ROOT_PRUNING_SOURCES.map(x=>x.label+': '+x.url).join('\n')+'\n\nQUICK CHECK — '+QUICK_DIGGING_VERSION+'\nRoot-protection finding: '+s.root+'\nCity requirements: '+s.city+'\nNext action: '+s.next+'\n'+(s.pending?'CITY STATUS UNRESOLVED: Confirm the missing site facts; this is not a finding that a City permit or staff referral is required.':s.readyForCity?'REQUEST: Please review the proposed excavation and applicable root-protection requirements.':'No automatic City review request is made by this result.')+'\nOptional work-plan entries not supplied remain unknown; they have not been accepted as No or verified.';
+ return record+'\n\nROOT-PRUNING METHOD: '+s.rootRule.status+'\n'+s.rootRule.finding+'\n'+s.rootRule.selectiveDefinition+'\nMethod compliance, actual ISA supervision, the actual critical root zone, and authorization are NOT VERIFIED.\n'+ROOT_PRUNING_SOURCES.map(x=>x.label+': '+x.url).join('\n')+'\n\nQUICK CHECK — '+QUICK_DIGGING_VERSION+'\nRoot-protection finding: '+s.root+'\nCity requirements: '+s.city+'\nEngineering ROW permit: '+s.engineeringRow.requirement+'\nNext action: '+s.next+'\n'+(s.pending?'CITY STATUS UNRESOLVED: Confirm the missing site facts; this is not a finding that a City permit or staff referral is required.':s.readyForCity?'REQUEST: Please review the proposed excavation and applicable root-protection requirements.':'No automatic City review request is made by this result.')+'\nOptional work-plan entries not supplied remain unknown; they have not been accepted as No or verified.';
 }
 export function installQuickDigging(doc){
  const $=id=>doc.getElementById(id),win=doc.defaultView,form=$('permitForm'),section=$('diggingFields'),out=$('permitOutput');
@@ -156,7 +156,7 @@ export function installQuickDigging(doc){
   const original=[...panel.children];panel.replaceChildren();panel.dataset.quickVersion=QUICK_DIGGING_VERSION;
   make('h3',s.title,panel);
   const rows=make('div','',panel);rows.id='digQuickResultRows';
-  for(const [heading,text] of [['Root-protection finding',s.root],['City requirements',s.city],['Next action',s.next]]){const row=make('div','',rows);make('h4',heading,row);make('p',text,row);}
+  for(const [heading,text] of [['Root-protection finding',s.root],['City requirements',s.city],['Engineering ROW permit',s.engineeringRow.requirement],['Next action',s.next]]){const row=make('div','',rows);make('h4',heading,row);make('p',text,row);}
   make('p','No distance alone authorizes digging or cutting roots. Contact Alabama 811 before excavation; utility locating and tree-root permission are separate.',panel).className='help';
   const actions=make('div','',panel);actions.className='actions';
   if(s.rootRule.followUpNeeded){
