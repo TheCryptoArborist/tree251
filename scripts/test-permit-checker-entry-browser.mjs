@@ -70,6 +70,8 @@ try{
   await page.waitForURL('**/testing/mobile-tree-checker.html');
   await page.waitForSelector('#treeTaskTabs');
   await page.waitForFunction(()=>!document.getElementById('screenNow')?.disabled);
+  // The map module mounts this button independently after the questionnaire is ready.
+  await page.locator('#stepContinueWork').waitFor({state:'visible',timeout:30000});
   check('Homepage panel opens an interactive checker',await page.locator('#stepContinueWork').isVisible());
   check('No page JavaScript errors',errors.length===0);
   const result={checks,errors,previewOnly:true,formSubmitted:false,cityEmailSent:false,physicalIPhone:false};
