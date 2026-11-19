@@ -163,9 +163,14 @@ try{
  await page.selectOption('#scLocation','private');await page.selectOption('#scProperty','developed');await page.selectOption('#scWork','removal');
  await page.selectOption('#scSpecies','liveoak');await page.fill('#scDbh','18');await page.selectOption('#udcPlan','no');await page.selectOption('#udcDevelopment','no');
  await page.click('#screenNow');await page.waitForSelector('#permitOutput:not(.hidden)');
- matches(await page.textContent('#permitOutcome'),/verification/i);
+ // A reported residence and a missing tax class do not fabricate a Chapter 65
+ // conflict. Split zoning still requires independent Chapter 64 verification.
+ if(liveTaxClass==='commercial')matches(await page.textContent('#permitOutcome'),/verification/i);
+ else matches(await page.textContent('#permitOutcome'),/No Chapter 65/i);
+ matches(await page.textContent('#udcOutcome'),/staff verification/i);
  await page.waitForSelector('#simplePermitAnswer:not([hidden])');
  check((await page.getAttribute('#simplePermitAnswer','data-outcome'))!=='residential-no-permit','Split-zoned parcel cannot inherit residential clearance, even with missing classification');
+ matches(await page.textContent('#simplePermitAnswer'),/Split zoning/);
  await page.click('#step-work');await page.selectOption('#scProperty','commercial');await page.click('#screenNow');await page.waitForSelector('#permitOutput:not(.hidden)');
  matches(await page.textContent('#permitOutcome'),/Tree permit required/);matches(await page.textContent('#simplePermitAnswer'),/Split zoning/);
  // Preserve commercial conflict coverage with a labelled, controlled browser
