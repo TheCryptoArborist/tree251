@@ -65,8 +65,8 @@ export function installTaskTabs(doc){
   const intro=permit.querySelector('.stephead .muted');if(intro)intro.textContent=digging?(quick?'Answer the five practical questions below. Leave unknown measurements blank; add a work plan only when needed.':'Use the shared property lookup, then describe the trunk size, digging distance and how roots will be handled. You do not need to complete a removal application first.'):'Confirm the property details, choose the tree work and check the applicable requirements. Include digging if it is part of the same job.';
   const submit=$('screenNow');if(submit)submit.textContent=digging?(quick?'Check whether tree review is needed':'Check digging and root requirements'):'Check tree-work requirements';
   if(digging&&quick){const label=doc.querySelector('label[for="scLocation"]');if(label)label.textContent='1. Where does the tree trunk meet the ground?';}
-  const heading=doc.querySelector('.hero h1');if(heading)heading.textContent='Check tree work or digging near a tree.';
-  const lead=doc.querySelector('.hero .lead');if(lead)lead.textContent='Choose the task below. Use City map information and a few details about the tree to check the relevant requirements.';
+  const heading=doc.querySelector('.hero h1');if(heading)heading.textContent='Working on or around trees in Mobile?';
+  const lead=doc.querySelector('.hero .lead');if(lead)lead.textContent='Know what’s required before you prune, remove, plant, or dig. Check which permits, approvals, and tree-protection steps may apply to your location and planned work.';
  }
  function activate(next,{url=true,fromWork=false,initial=false}={}){
   if(!panels.has(next))return;
