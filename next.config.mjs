@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   async redirects() {
     // Use the tested standalone checker without relocating its relative modules.
-    // Temporary while the checker remains on the unmerged preview branch.
+    // Keep the public short link stable while the checker assets live under /testing.
     return [
       {
         source: '/permit-checker',
