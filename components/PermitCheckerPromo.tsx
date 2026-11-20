@@ -6,9 +6,9 @@ export function PermitCheckerPromo() {
     <aside
       id="permit-checker-introduction"
       aria-labelledby="permit-checker-introduction-title"
-      className="mt-8 rounded-2xl border border-[#f6c95a]/40 bg-[#0b1f17] p-5 shadow-[0_18px_42px_rgba(0,0,0,0.22)] sm:mt-10 sm:p-7"
+      className="mt-4 rounded-2xl border border-[#f6c95a]/40 bg-[#0b1f17] p-4 shadow-[0_18px_42px_rgba(0,0,0,0.22)] sm:mt-10 sm:p-7"
     >
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+      <div className="flex flex-col gap-3 sm:gap-5 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
         <div className="min-w-0 max-w-3xl">
           <p className="mb-3 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.12em] text-[#f6c95a]">
             <FileText className="size-5 shrink-0" aria-hidden="true" />
@@ -33,7 +33,7 @@ export function PermitCheckerPromo() {
           <ArrowRight className="size-4 shrink-0" aria-hidden="true" />
         </a>
       </div>
-      <p className="mt-5 border-t border-teal-300/20 pt-4 text-xs leading-5 text-emerald-50/75">
+      <p className="mt-3 border-t border-teal-300/20 pt-3 text-xs leading-5 text-emerald-50/75 sm:mt-5 sm:pt-4">
         Independent guidance from The Arborist. City of Mobile departments make the final permitting decisions.
       </p>
     </aside>
