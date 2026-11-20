@@ -43,7 +43,7 @@ const faqs = [
 
 export function FAQSection() {
   return (
-    <section id="faq" className="relative isolate overflow-hidden bg-[#07131b] py-12 text-white sm:py-16">
+    <section id="faq" className="relative isolate overflow-hidden bg-[#07131b] py-7 text-white sm:py-16">
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_15%_20%,rgba(18,192,168,0.12),transparent_24rem),radial-gradient(circle_at_86%_70%,rgba(246,201,90,0.12),transparent_22rem)]" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
@@ -58,7 +58,7 @@ export function FAQSection() {
           </p>
         </div>
 
-        <div className="mt-8 grid gap-3 sm:mt-10 lg:grid-cols-2">
+        <div className="mt-5 grid gap-2 sm:mt-10 sm:gap-3 lg:grid-cols-2">
           {faqs.map((faq) => (
             <details
               key={faq.question}
