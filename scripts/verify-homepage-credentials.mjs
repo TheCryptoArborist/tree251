@@ -107,14 +107,9 @@ try {
           totalHeight: document.documentElement.scrollHeight
         };
       });
-      if (width < 1024) {
-        assert(sections.services < sections.about && sections.about < sections.reviews, "Mobile service, About, and review sections must appear in that order");
-        assert(sections.reviews < sections.construction && sections.construction < sections.resources, "Secondary mobile sections must follow trust content");
-        assert(sections.resources < sections.request, "Request form must remain reachable after resources");
-      } else {
-        assert(sections.services < sections.construction && sections.construction < sections.resources, "Desktop service content must retain its order");
-        assert(sections.resources < sections.about && sections.about < sections.reviews, "Desktop About/Reviews must retain their positions");
-      }
+      assert(sections.services < sections.about && sections.about < sections.reviews, "Service, About, and review sections must appear in a logical reading order");
+      assert(sections.reviews < sections.construction && sections.construction < sections.resources, "Secondary services and resources must follow trust content");
+      assert(sections.resources < sections.request, "Request form must remain reachable after resources");
       if (width < 768) {
         const mobileServices = page.locator("#services .mobile-service-choices");
         assert(await mobileServices.isVisible(), "Compact service choices must appear on narrow screens");
@@ -124,7 +119,7 @@ try {
         await moreServices.locator("summary").click();
         assert.equal(await moreServices.locator("a").count(), 3, "All additional services remain accessible");
         await moreServices.locator("summary").click();
-        const mobileResources = page.locator("#resources-projects .sm\\:hidden details");
+        const mobileResources = page.locator("#resources-projects details");
         assert.equal(await mobileResources.count(), 1, "Mobile resources should have an expandable list");
       }
       const permitLink = page.locator("#construction-tree-guidance #permit-checker-introduction a[href='/permit-checker']");
