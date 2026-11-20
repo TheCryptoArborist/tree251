@@ -247,7 +247,7 @@ export function TheArboristHomePage() {
               </div>
             </details>
           </div>
-          <div className="mt-8 hidden gap-4 sm:mt-10 md:grid md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-2 lg:grid-cols-3 max-md:hidden">
             {serviceGroups.map(({ title, text, detail, href, label, icon: Icon }) => (
               <article key={title} className="flex h-full flex-col rounded-2xl border border-teal-300/20 bg-[#07131b]/80 p-5 shadow-[0_22px_54px_rgba(0,0,0,0.22)] backdrop-blur sm:p-6">
                 <Icon className="size-8 text-[#f6c95a]" aria-hidden="true" />
