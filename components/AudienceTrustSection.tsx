@@ -35,7 +35,29 @@ const audienceGroups = [
 export function AudienceTrustSection() {
   return (
     <>
-      <section className="border-y border-teal-300/20 bg-[#07131b] px-4 py-8 text-white sm:px-6 sm:py-10 lg:px-8">
+      <section className="border-y border-teal-300/20 bg-[#07131b] px-4 py-6 text-white lg:hidden">
+        <div className="mx-auto max-w-7xl">
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">Property &amp; project services</p>
+          <details className="group mt-3 rounded-xl border border-teal-300/25 bg-white/[0.04] p-4">
+            <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between gap-3 text-base font-black text-white focus-ring [&::-webkit-details-marker]:hidden">
+              Work with HOAs, businesses &amp; municipalities
+              <span className="shrink-0 text-xl text-[#f6c95a] group-open:rotate-45" aria-hidden="true">+</span>
+            </summary>
+            <div className="mt-3 space-y-3 border-t border-teal-300/20 pt-3">
+              {audienceGroups.map(({ title, detail, href, label }) => (
+                <div key={title} className="rounded-lg bg-black/20 p-3">
+                  <h3 className="text-sm font-black text-white">{title}</h3>
+                  <p className="mt-1 text-xs leading-5 text-emerald-50/80">{detail}</p>
+                  <Link href={href} className="mt-2 inline-flex min-h-11 items-center gap-2 text-sm font-black text-[#f6c95a] focus-ring">
+                    {label} <ArrowRight className="size-4" aria-hidden="true" />
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </details>
+        </div>
+      </section>
+      <section className="hidden border-y border-teal-300/20 bg-[#07131b] px-4 py-8 text-white sm:px-6 sm:py-10 lg:block lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-[#f6c95a] sm:text-sm">
