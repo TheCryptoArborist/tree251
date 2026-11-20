@@ -115,6 +115,13 @@ header.site-header{position:relative;background:#050b12;border-bottom:1px solid 
 #propertyMapContinue button{min-height:52px}
 footer.wrap{color:#c1d5cb;border-top:1px solid #315448;margin-top:30px}
 footer.wrap a{color:#f6c95a}
+/* Internal module build labels belong in developer diagnostics, not the public footer. */
+footer.wrap>span{display:none!important}
+/* Preserve readable emphasis in the introductory municipal-authority disclaimer. */
+.hero .notice{line-height:1.65;max-width:810px}
+.hero .notice strong{color:#fff9e6}
+@media(max-width:450px){.hero .notice{font-size:13px;line-height:1.6}}
+
 @media(max-width:1080px){
  .site-main-nav{display:none}
  .site-header-social{display:none}
