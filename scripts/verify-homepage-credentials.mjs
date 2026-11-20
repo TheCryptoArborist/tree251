@@ -42,7 +42,7 @@ try {
       assert.equal(await about.locator("#credentials").count(), 1, "Credentials must be incorporated within About");
       await section.waitFor({ state: "visible" });
       assert.equal(await section.getAttribute("aria-labelledby"), "credentials-heading");
-      assert.equal(await section.locator("h3").innerText(), "Professional Credentials");
+      assert.equal((await section.locator("h3").textContent()).trim(), "Professional Credentials");
       assert.deepEqual(await section.locator("h4").allTextContents(), expectedTitles);
       assert.equal(await section.locator("article").count(), 3);
       assert.equal(await page.getByText("Qualifications behind the assessment.", { exact: true }).count(), 0);
