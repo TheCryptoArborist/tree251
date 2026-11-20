@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     env:
-      PUBLIC_ORIGIN: ${{ github.event_name == 'push' && 'https://www.tree251.xyz' || 'https://deploy-preview-9--tree251.netlify.app' }}
+      PUBLIC_ORIGIN: ${{ github.event_name == 'push' && 'https://www.tree251.xyz' || format('https://deploy-preview-{0}--tree251.netlify.app', github.event.pull_request.number) }}
       BROWSER_DEPS: /tmp/tree251-release-browser
     steps:
       - uses: actions/checkout@v4
@@ -39,8 +39,8 @@ jobs:
           const require=createRequire(process.env.BROWSER_DEPS+'/package.json');
           const {chromium}=require('playwright');
           const origin=process.env.PUBLIC_ORIGIN;
-          assert.ok(['https://www.tree251.xyz','https://deploy-preview-9--tree251.netlify.app'].includes(origin));
-          const files=['mobile-tree-contact-paths.mjs','mobile-tree-callback-prefill.mjs','mobile-tree-property-policy.mjs','mobile-tree-task-tabs.mjs'];
+          assert.ok(origin==='https://www.tree251.xyz'||/^https:\/\/deploy-preview-\d+--tree251\.netlify\.app$/.test(origin));
+          const files=['mobile-tree-checker.html','mobile-tree-site-theme.css','mobile-tree-step-navigation.mjs','mobile-tree-contact-paths.mjs','mobile-tree-callback-prefill.mjs','mobile-tree-property-policy.mjs','mobile-tree-task-tabs.mjs'];
           const expected=await Promise.all(files.map(f=>readFile('public/testing/'+f,'utf8')));
           let ready=false;
           for(let i=0;i<70;i++){
@@ -83,6 +83,12 @@ jobs:
             await page.waitForSelector('#treeTaskTabs');
             await page.waitForSelector('#permitForm[data-resident-workflow]',{state:'attached'});
             await page.waitForSelector('#stepContinueWork');
+            check('Public page title is current',await page.title()==='Mobile Tree Permit Checker | Mobile, Alabama | The Arborist');
+            check('Public page is indexable',await page.locator('meta[name="robots"]').getAttribute('content')==='index, follow');
+            check('Public canonical link is set',await page.locator('link[rel="canonical"]').getAttribute('href')==='https://www.tree251.xyz/permit-checker');
+            check('Production footer has no preview label',!(await page.locator('footer').innerText()).includes('Development preview'));
+            check('Internal build versions are hidden',await page.locator('footer > span:visible').count()===0);
+            check('Step button labels stack vertically',await page.locator('#step-property').evaluate(n=>getComputedStyle(n).flexDirection==='column'));
             check('City remains final permitting authority',(await page.textContent('.hero .notice')).includes('make the final decisions on permit applications'));
             await page.click('#stepContinueWork');
             await page.evaluate(()=>{
