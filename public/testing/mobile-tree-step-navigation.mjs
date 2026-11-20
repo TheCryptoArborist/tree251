@@ -168,11 +168,11 @@ export function installStepNav(doc){
  style.textContent=[
  '#treeStepNavigation{margin:12px 0 16px;padding:12px;scroll-margin-top:88px}',
  '#treeStepButtons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}',
- '#treeStepButtons button{border:1px solid var(--line);background:var(--wash);color:var(--ink);border-radius:9px;min-width:0;white-space:normal;text-align:left;padding:11px;min-height:75px;overflow-wrap:anywhere}',
+ '#treeStepButtons button{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;border:1px solid var(--line);background:var(--wash);color:var(--ink);border-radius:9px;min-width:0;white-space:normal;text-align:left;padding:11px;min-height:75px;overflow-wrap:break-word}',
  '#treeStepButtons button[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:white;box-shadow:inset 0 -3px var(--amberline)}',
  '#treeStepButtons button:disabled{cursor:default;opacity:.65;box-shadow:none}',
  '#treeStepButtons button strong{display:block;font-size:14px;line-height:1.25}',
- '#treeStepButtons button span{display:block;font-size:11px;margin-top:5px;line-height:1.3}',
+ '#treeStepButtons button span{display:block;font-size:11px;margin-top:0;line-height:1.3;font-weight:500}',
  '#treeStepButtons button:focus-visible{outline:3px solid #bd7725;outline-offset:2px}',
  '#treeStepMessage{margin:12px 0 0}',
  '#treeStepActions{margin-top:9px}',
@@ -187,7 +187,7 @@ export function installStepNav(doc){
  '#treeTaskTabs[data-active-task="digging"][data-active-step="results"] #simplePermitAnswer,#treeTaskTabs[data-active-task="digging"][data-active-step="results"] #permitOutput>.tag{display:none!important}',
  '#diggingFullRecordDetails{margin:18px 0;padding:12px;border-top:1px solid var(--line)}',
  '#diggingFullRecordDetails>summary{font-size:14px;font-weight:650;cursor:pointer}',
- '@media(max-width:450px){#treeStepNavigation{padding:10px}#treeStepButtons{gap:5px}#treeStepButtons button{padding:9px 6px;min-height:72px}#treeStepButtons button strong{font-size:12px}#treeStepButtons button span{font-size:10px}}',
+ '@media(max-width:450px){#treeStepNavigation{padding:10px}#treeStepButtons{gap:6px}#treeStepButtons button{padding:10px 8px;min-height:70px}#treeStepButtons button strong{font-size:12px;line-height:1.35}#treeStepButtons button span{display:none}}',
  '@media print{#treeStepNavigation{display:none!important}}'
  ].join('');
  syncDetails();update();

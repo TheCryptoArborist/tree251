@@ -29,7 +29,7 @@ jobs:
         run: npm install --prefix "$RUNNER_TEMP/resident-check" --no-audit --no-fund playwright
       - name: Test exact hosted preview and public property data
         env:
-          PREVIEW_ORIGIN: https://deploy-preview-9--tree251.netlify.app
+          PREVIEW_ORIGIN: https://deploy-preview-${{ github.event.pull_request.number }}--tree251.netlify.app
           BROWSER_DEPS: ${{ runner.temp }}/resident-check
         run: node scripts/test-mobile-tree-resident-browser.mjs
       - name: Save reproducible resident review evidence
