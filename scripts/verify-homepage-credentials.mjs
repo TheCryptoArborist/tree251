@@ -49,7 +49,7 @@ try {
       const placement = await section.evaluate((element) => ({
         parentHeading: element.parentElement?.querySelector("h2")?.textContent,
         previousText: element.previousElementSibling?.textContent || "",
-        nextAboutText: element.closest("#about")?.nextElementSibling?.textContent || ""
+        nextAboutText: element.closest("#about")?.parentElement?.nextElementSibling?.textContent || ""
       }));
       assert.equal(placement.parentHeading, "Independent advice, not tree work sales.");
       assert(placement.previousText.includes("The assessment is focused on the tree"), "Badges must sit below the existing advice text");
@@ -66,7 +66,7 @@ try {
         await image.evaluate(async (element) => { await element.decode(); });
         assert(await image.evaluate((element) => element.complete && element.naturalWidth > 0), "Badge image must load");
         const box = await image.boundingBox();
-        assert(box && box.width >= 35 && box.height >= 65 && box.x >= 0 && box.x + box.width <= width + 1, "Badge must remain visible and fit the viewport");
+        assert(box && box.width >= 25 && box.height >= 35 && box.x >= 0 && box.x + box.width <= width + 1, "Badge must remain visible and fit the viewport");
       }
       const aboutLink = about.locator("a").filter({ hasText: "Verify current ISA profile" });
       const footerLink = page.locator("footer a").filter({ hasText: "Verify ISA Credentials" });
@@ -93,12 +93,42 @@ try {
       } else {
         assert(credentials.y >= photoCard.y + photoCard.height, "Narrow screens must place credentials after the photo and text");
       }
-      if (width < 640) {
-        assert(cards[1].y >= cards[0].y + cards[0].height, "Phone badge cards must stack");
-      } else {
-        assert(Math.abs(cards[0].y - cards[2].y) < 2, "Wider-screen badges must share a row");
-      }
+      assert(Math.abs(cards[0].y - cards[2].y) < 2, "The three credential badges should share a compact row");
       assert(await section.locator("article").evaluateAll((elements) => elements.every((element) => element.scrollWidth <= element.clientWidth + 1)), "Card text must not overflow");
+      const sections = await page.evaluate(() => {
+        const top = (id) => document.querySelector(id).getBoundingClientRect().top + window.scrollY;
+        return {
+          services: top("#services"),
+          about: top("#about"),
+          reviews: top("#google-reviews"),
+          construction: top("#construction-tree-guidance"),
+          resources: top("#resources-projects"),
+          request: top("#consultation-request"),
+          totalHeight: document.documentElement.scrollHeight
+        };
+      });
+      if (width < 1024) {
+        assert(sections.services < sections.about && sections.about < sections.reviews, "Mobile service, About, and review sections must appear in that order");
+        assert(sections.reviews < sections.construction && sections.construction < sections.resources, "Secondary mobile sections must follow trust content");
+        assert(sections.resources < sections.request, "Request form must remain reachable after resources");
+      } else {
+        assert(sections.services < sections.construction && sections.construction < sections.resources, "Desktop service content must retain its order");
+        assert(sections.resources < sections.about && sections.about < sections.reviews, "Desktop About/Reviews must retain their positions");
+      }
+      if (width < 768) {
+        const mobileServices = page.locator("#services .mobile-service-choices");
+        assert(await mobileServices.isVisible(), "Compact service choices must appear on narrow screens");
+        assert.equal(await mobileServices.locator(":scope > a").count(), 3, "Only three primary mobile service cards");
+        const moreServices = mobileServices.locator("details");
+        assert.equal(await moreServices.getAttribute("open"), null, "Extra services start collapsed");
+        await moreServices.locator("summary").click();
+        assert.equal(await moreServices.locator("a").count(), 3, "All additional services remain accessible");
+        await moreServices.locator("summary").click();
+        const mobileResources = page.locator("#resources-projects .sm\\:hidden details");
+        assert.equal(await mobileResources.count(), 1, "Mobile resources should have an expandable list");
+      }
+      const permitLink = page.locator("#construction-tree-guidance #permit-checker-introduction a[href='/permit-checker']");
+      assert.equal(await permitLink.count(), 1, "City permit checker remains discoverable");
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), "No horizontal page overflow");
       let violations = [];
       if (process.env.AXE_SCRIPT) {
@@ -110,7 +140,8 @@ try {
       }
       await section.screenshot({ path: join(output, `credentials-${width}.png`), animations: "disabled" });
       await about.screenshot({ path: join(output, `about-${width}.png`), animations: "disabled" });
-      results.push({ width, status: "passed", credentials: expectedTitles, verificationUrl, geometry, accessibilityViolations: violations.length });
+      if (width === 390) await page.screenshot({ path: join(output, "mobile-homepage-390.png"), fullPage: true, animations: "disabled" });
+      results.push({ width, status: "passed", credentials: expectedTitles, verificationUrl, geometry, sections, accessibilityViolations: violations.length });
       console.log(`PASS ${width}px: 3 loaded badges integrated in About, correct placement, readable layout, verification links preserved`);
     } catch (error) {
       await page.screenshot({ path: join(output, `failure-${width}.png`), fullPage: true }).catch(() => {});
