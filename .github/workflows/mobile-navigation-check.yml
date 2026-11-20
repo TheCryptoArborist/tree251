@@ -1,0 +1,122 @@
+name: Mobile navigation order checks
+on:
+  pull_request:
+    branches: [main]
+    paths: ['components/SiteHeader.tsx', '.github/workflows/mobile-navigation-check.yml']
+  push:
+    branches: [main]
+    paths: ['components/SiteHeader.tsx', '.github/workflows/mobile-navigation-check.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: mobile-navigation-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      PUBLIC_ORIGIN: ${{ github.event_name == 'pull_request' && format('https://deploy-preview-{0}--tree251.netlify.app', github.event.number) || 'https://www.tree251.xyz' }}
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install isolated browser test tools
+        run: npm install --prefix "$RUNNER_TEMP/navigation-tools" --no-save --package-lock=false playwright
+      - name: Verify navigation on published preview or production
+        shell: bash
+        run: |
+          mkdir -p navigation-review
+          export PLAYWRIGHT_MODULE="$RUNNER_TEMP/navigation-tools/node_modules/playwright/index.mjs"
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import { execSync } from 'node:child_process';
+          import { writeFile } from 'node:fs/promises';
+          import { pathToFileURL } from 'node:url';
+          const { chromium } = await import(pathToFileURL(process.env.PLAYWRIGHT_MODULE).href);
+          const origin = new URL(process.env.PUBLIC_ORIGIN).origin;
+          const executablePath = execSync('command -v google-chrome || command -v chromium || command -v chromium-browser', { encoding: 'utf8' }).trim();
+          const browser = await chromium.launch({ executablePath, args: ['--no-sandbox'] });
+          const expected = [
+            ['Start Here', '/#start-here'], ['Services', '/#services'],
+            ['Planting & Care', '/plant'], ['Permit Checker', '/permit-checker'],
+            ['Inventories', '/tree-inventories'], ['Real Estate', '/real-estate'],
+            ['Storm Checklist', '/resources/storm-tree-checklist']
+          ];
+          const results = [];
+          const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+          await context.route('**/*', route => {
+            const request = route.request();
+            const url = new URL(request.url());
+            if (url.origin !== origin || !['GET', 'HEAD'].includes(request.method()) || url.pathname.startsWith('/api/')) return route.abort();
+            return route.continue();
+          });
+          const page = await context.newPage();
+          page.setDefaultTimeout(15000);
+          try {
+            let ready = false;
+            for (let attempt = 0; attempt < 36; attempt++) {
+              try {
+                const response = await page.goto(origin + '/?navigation-check=' + Date.now(), { waitUntil: 'load', timeout: 15000 });
+                const nav = page.getByRole('navigation', { name: 'Mobile quick navigation' });
+                if (response?.ok() && await nav.locator('a').first().textContent() === 'Start Here') { ready = true; break; }
+              } catch {}
+              await new Promise(resolve => setTimeout(resolve, 5000));
+            }
+            assert(ready, 'Updated navigation was not deployed during this check');
+            for (const width of [320, 390, 430, 768, 1024, 1440]) {
+              await page.setViewportSize({ width, height: 900 });
+              await page.goto(origin + '/?navigation-check=' + Date.now(), { waitUntil: 'load' });
+              const nav = page.locator('nav[aria-label="Mobile quick navigation"]');
+              const links = nav.locator('a');
+              const actual = await links.evaluateAll(items => items.map(a => [a.textContent.trim(), a.getAttribute('href')]));
+              assert.deepEqual(actual, expected, 'All mobile links and their destinations must be preserved in the requested order');
+              assert.equal(await page.locator('#start-here').count(), 1);
+              assert.equal(await page.locator('#services').count(), 1);
+              const desktop = page.locator('nav[aria-label="Primary navigation"]');
+              assert.deepEqual((await desktop.locator(':scope > a').allTextContents()).map(t => t.trim()), ['Start Here', 'Services', 'Tree Inventories', 'Real Estate', 'Reviews', 'About']);
+              assert.equal(await desktop.locator('a[href="/permit-checker"]').count(), 1);
+              const contacts = page.locator('nav[aria-label="Mobile contact actions"]');
+              assert.deepEqual((await contacts.locator('a').allTextContents()).map(t => t.trim()), ['Call', 'Schedule', 'Request']);
+              assert.equal(await contacts.locator('a').first().getAttribute('href'), 'tel:+12516223200');
+              if (width < 1024) {
+                assert(await nav.isVisible());
+                assert(!(await desktop.isVisible()));
+                await nav.evaluate(n => { n.scrollLeft = 0; });
+                for (let index = 0; index < 2; index++) {
+                  const box = await links.nth(index).boundingBox();
+                  assert(box && box.x >= 0 && box.x + box.width <= width, 'The first two links must be fully visible without horizontal scrolling');
+                }
+                await links.first().focus();
+                await page.keyboard.press('Tab');
+                assert(await links.nth(1).evaluate(a => a === document.activeElement), 'Keyboard order must match the visible menu');
+                for (let index = 0; index < 2; index++) {
+                  await links.nth(index).click();
+                  await page.waitForFunction(hash => location.hash === hash, expected[index][1].slice(1));
+                }
+                await page.evaluate(() => window.scrollTo(0, 0));
+                await nav.evaluate(n => { n.scrollLeft = 0; });
+              } else {
+                assert(!(await nav.isVisible()));
+                assert(await desktop.isVisible());
+              }
+              assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'No horizontal page overflow');
+              await page.locator('header').screenshot({ path: `navigation-review/header-${width}.png`, animations: 'disabled' });
+              results.push({ width, status: 'passed', mobileLinks: actual });
+              console.log(`PASS ${width}px: Start Here first, Services second; links, desktop header, contact bar preserved`);
+            }
+          } catch (error) {
+            await page.screenshot({ path: 'navigation-review/failure.png', fullPage: true }).catch(() => {});
+            throw error;
+          } finally {
+            await writeFile('navigation-review/results.json', JSON.stringify({ origin, commit: process.env.GITHUB_SHA, results, formsSubmitted: false }, null, 2));
+            await browser.close();
+          }
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile-navigation-review
+          path: navigation-review/
+          retention-days: 7
