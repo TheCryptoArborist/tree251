@@ -194,10 +194,10 @@ export function SiteHeader() {
         </div>
 
         <nav aria-label="Mobile quick navigation" className="flex gap-1 overflow-x-auto border-t border-teal-300/15 px-2 py-1.5 text-center text-xs font-black text-emerald-50/90 lg:hidden">
-          <Link href="/plant" className="min-w-[8rem] rounded-full border border-[#f6c95a]/45 bg-[#f6c95a]/10 px-3 py-2.5 focus-ring">Planting &amp; Care</Link>
-          <a href="/permit-checker" data-track-event="Permit Checker Click" data-track-location="mobile_navigation" className="min-w-[7.5rem] rounded-full border border-[#f6c95a]/45 bg-[#f6c95a]/10 px-3 py-2.5 focus-ring">Permit Checker</a>
           <Link href="/#start-here" className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Start Here</Link>
           <Link href="/#services" className="min-w-[5.2rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Services</Link>
+          <Link href="/plant" className="min-w-[8rem] rounded-full border border-[#f6c95a]/45 bg-[#f6c95a]/10 px-3 py-2.5 focus-ring">Planting &amp; Care</Link>
+          <a href="/permit-checker" data-track-event="Permit Checker Click" data-track-location="mobile_navigation" className="min-w-[7.5rem] rounded-full border border-[#f6c95a]/45 bg-[#f6c95a]/10 px-3 py-2.5 focus-ring">Permit Checker</a>
           <Link href="/tree-inventories" className="min-w-[7.1rem] rounded-full border border-[#f6c95a]/45 bg-[#f6c95a]/10 px-2 py-2.5 focus-ring">Inventories</Link>
           <Link href="/real-estate" className="min-w-[5.8rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Real Estate</Link>
           <Link href="/resources/storm-tree-checklist" className="min-w-[7.4rem] rounded-full border border-white/10 px-2 py-2.5 focus-ring">Storm Checklist</Link>
