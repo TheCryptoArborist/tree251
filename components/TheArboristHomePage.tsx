@@ -121,6 +121,14 @@ const resources = [
   }
 ] as const;
 
+const mobileServiceSummaries = [
+  "Understand damage, defects, and tree health concerns.",
+  "Get a second opinion before approving costly work.",
+  "Protect mature trees and their roots during construction."
+] as const;
+
+const mobilePrimaryResourcePaths = ["/plant", "/resources/storm-tree-checklist"];
+
 const independent = [
   "Peter does not need to sell removal, pruning, cabling, or cleanup work.",
   "The assessment is focused on the tree, the target, the risk, and the decision in front of you.",
@@ -160,6 +168,8 @@ function CheckList({ items }: { items: readonly string[] }) {
 export function TheArboristHomePage() {
   return (
     <div className="bg-[#050b12] text-stone-900">
+      <main>
+      <div>
       <section className="relative isolate overflow-hidden bg-[#050b12] text-white">
         <Image
           src="/consult-request-background.jpeg"
@@ -198,7 +208,9 @@ export function TheArboristHomePage() {
           </div>
         </div>
       </section>
+      </div>
 
+      <div>
       <section id="services" className="relative isolate scroll-mt-28 overflow-hidden bg-[#050b12] py-12 text-white sm:py-16">
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_10%_0%,rgba(18,192,168,0.18),transparent_28rem),radial-gradient(circle_at_86%_24%,rgba(246,201,90,0.14),transparent_24rem),linear-gradient(145deg,#050b12_0%,#07131b_46%,#0b1f17_100%)]" />
         <div className="tree-ring-texture absolute inset-y-0 right-0 -z-10 w-1/2 rotate-180 opacity-35" />
@@ -208,7 +220,34 @@ export function TheArboristHomePage() {
             title="What do you need help with?"
             text="Start with the problem or decision in front of you. You do not need to know the technical name of the arborist service you need."
           />
-          <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mobile-service-choices mt-6 grid gap-3 md:hidden">
+            {serviceGroups.slice(0, 3).map(({ title, href, icon: Icon }, index) => (
+              <Link key={title} href={href} data-track-event="Service Situation Click" data-track-label={title} data-track-location="mobile_services" className="flex min-h-24 items-center gap-3 rounded-xl border border-teal-300/25 bg-[#07131b] p-4 focus-ring">
+                <Icon className="size-7 shrink-0 text-[#f6c95a]" aria-hidden="true" />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-base font-black leading-5 text-white">{title}</span>
+                  <span className="mt-1 block text-sm leading-5 text-emerald-50/75">{mobileServiceSummaries[index]}</span>
+                </span>
+                <ArrowRight className="size-5 shrink-0 text-[#f6c95a]" aria-hidden="true" />
+              </Link>
+            ))}
+            <details className="group rounded-xl border border-teal-300/25 bg-white/[0.05] p-4">
+              <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between gap-3 font-black text-[#f6c95a] focus-ring [&::-webkit-details-marker]:hidden">
+                More ways I can help
+                <span aria-hidden="true" className="text-xl leading-none group-open:rotate-45">+</span>
+              </summary>
+              <div className="mt-3 grid gap-2 border-t border-teal-300/20 pt-3">
+                {serviceGroups.slice(3).map(({ title, detail, href, label }) => (
+                  <Link key={title} href={href} data-track-event="Service Situation Click" data-track-label={title} data-track-location="mobile_more_services" className="block rounded-lg bg-black/20 px-3 py-3 focus-ring">
+                    <span className="block text-sm font-black text-white">{title}</span>
+                    <span className="mt-1 block text-xs leading-5 text-emerald-50/75">{detail}</span>
+                    <span className="mt-1 block text-xs font-black text-[#f6c95a]">{label} →</span>
+                  </Link>
+                ))}
+              </div>
+            </details>
+          </div>
+          <div className="mt-8 grid gap-4 sm:mt-10 md:grid-cols-2 lg:grid-cols-3 max-md:hidden">
             {serviceGroups.map(({ title, text, detail, href, label, icon: Icon }) => (
               <article key={title} className="flex h-full flex-col rounded-2xl border border-teal-300/20 bg-[#07131b]/80 p-5 shadow-[0_22px_54px_rgba(0,0,0,0.22)] backdrop-blur sm:p-6">
                 <Icon className="size-8 text-[#f6c95a]" aria-hidden="true" />
@@ -230,12 +269,45 @@ export function TheArboristHomePage() {
           </div>
         </div>
       </section>
+      </div>
 
-      <AudienceTrustSection />
+      <div>
+      <section id="about" className="scroll-mt-28 bg-[#050b12] py-12 text-white sm:py-16">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:gap-10 sm:px-6 lg:grid-cols-[0.72fr_1.28fr] lg:items-center lg:px-8">
+          <div className="mx-auto flex w-full max-w-none items-start gap-3 rounded-2xl border border-teal-300/20 bg-white/[0.05] p-3 shadow-[0_20px_54px_rgba(0,0,0,0.24)] sm:block sm:p-5">
+            <div className="w-28 shrink-0 overflow-hidden rounded-xl border border-[#f6c95a]/25 bg-white sm:w-full">
+              <PeterHeadshot className="aspect-[4/5] w-full object-cover" />
+            </div>
+            <div className="min-w-0 space-y-1.5 text-sm leading-5 text-emerald-50/85 sm:mt-6 sm:space-y-3 sm:leading-6">
+              <p className="font-black uppercase tracking-[0.14em] text-[#f6c95a]">Peter Toler</p>
+              <p className="text-sm font-black leading-5 text-white sm:text-2xl sm:leading-tight">ISA Certified Arborist serving the Gulf Coast.</p>
+              <a href={isaCredentialUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-black text-[#f6c95a] hover:text-[#ffdc70] focus-ring">
+                <BadgeCheck className="size-4" aria-hidden="true" />
+                Verify current ISA profile
+              </a>
+            </div>
+          </div>
+          <div className="min-w-0">
+            <h2 className="text-2xl font-black leading-tight text-white sm:text-4xl">Independent advice, not tree work sales.</h2>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-emerald-50/85 sm:mt-4 sm:text-base sm:leading-7">
+              Peter provides practical arborist guidance for property owners, municipalities, HOAs, businesses, and project teams that need a clearer read on tree condition, risk, preservation, construction impacts, and maintenance priorities.
+            </p>
+            <div className="mt-6 rounded-2xl border border-teal-300/20 bg-[#07131b] p-4 shadow-[0_18px_42px_rgba(0,0,0,0.2)] sm:mt-8 sm:p-6">
+              <CheckList items={independent} />
+            </div>
+            <CredentialBadges />
+          </div>
+        </div>
+      </section>
+      </div>
 
+      <div><GoogleReviewsSection /></div>
 
-      <WhatYouReceiveSection />
+      <div><AudienceTrustSection /></div>
 
+      <div><WhatYouReceiveSection /></div>
+
+      <div>
       <section id="resources-projects" className="bg-[#0b1f17] py-12 text-white sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
@@ -243,7 +315,30 @@ export function TheArboristHomePage() {
             title="Explore tree resources and signature projects."
             text="Educational tools, public-awareness projects, and regional tree stories are organized here so they support the business website without competing with the primary assessment pathway."
           />
-          <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2">
+          <div className="mt-5 grid gap-2 sm:hidden">
+            {resources.filter((resource) => mobilePrimaryResourcePaths.includes(resource.href)).map(({ title, href, icon: Icon }) => (
+              <Link key={href} href={href} className="flex min-h-14 items-center gap-3 rounded-xl border border-teal-300/20 bg-white/[0.05] px-4 py-3 text-sm font-black text-white focus-ring">
+                <Icon className="size-6 shrink-0 text-[#f6c95a]" aria-hidden="true" />
+                <span className="flex-1">{title}</span>
+                <ArrowRight className="size-4 text-[#f6c95a]" aria-hidden="true" />
+              </Link>
+            ))}
+            <details className="group rounded-xl border border-teal-300/25 bg-white/[0.04] p-4">
+              <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between font-black text-[#f6c95a] focus-ring [&::-webkit-details-marker]:hidden">
+                More tree resources
+                <span aria-hidden="true" className="text-xl group-open:rotate-45">+</span>
+              </summary>
+              <div className="mt-3 grid gap-2 border-t border-teal-300/20 pt-3">
+                {resources.filter((resource) => !mobilePrimaryResourcePaths.includes(resource.href)).map(({ title, href, text }) => (
+                  <Link key={href} href={href} className="block rounded-lg bg-black/20 px-3 py-3 focus-ring">
+                    <span className="block text-sm font-bold text-white">{title}</span>
+                    <span className="mt-1 block text-xs leading-5 text-emerald-50/75">{text}</span>
+                  </Link>
+                ))}
+              </div>
+            </details>
+          </div>
+          <div className="mt-8 hidden gap-4 sm:mt-10 sm:grid sm:grid-cols-2">
             {resources.map(({ title, text, href, icon: Icon, external }) => {
               const card = (
                 <>
@@ -270,39 +365,11 @@ export function TheArboristHomePage() {
           </div>
         </div>
       </section>
+      </div>
 
-      <section id="about" className="scroll-mt-28 bg-[#050b12] py-12 text-white sm:py-16">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:gap-10 sm:px-6 lg:grid-cols-[0.72fr_1.28fr] lg:items-center lg:px-8">
-          <div className="mx-auto w-full max-w-xs rounded-2xl border border-teal-300/20 bg-white/[0.05] p-4 shadow-[0_20px_54px_rgba(0,0,0,0.24)] sm:max-w-none sm:p-5">
-            <div className="overflow-hidden rounded-xl border border-[#f6c95a]/25 bg-white">
-              <PeterHeadshot className="aspect-[4/5] w-full object-cover" />
-            </div>
-            <div className="mt-5 space-y-3 text-sm leading-6 text-emerald-50/85 sm:mt-6">
-              <p className="font-black uppercase tracking-[0.14em] text-[#f6c95a]">Peter Toler</p>
-              <p className="text-xl font-black leading-tight text-white sm:text-2xl">ISA Certified Arborist serving the Gulf Coast.</p>
-              <a href={isaCredentialUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-black text-[#f6c95a] hover:text-[#ffdc70] focus-ring">
-                <BadgeCheck className="size-4" aria-hidden="true" />
-                Verify current ISA profile
-              </a>
-            </div>
-          </div>
-          <div className="min-w-0">
-            <h2 className="text-2xl font-black leading-tight text-white sm:text-4xl">Independent advice, not tree work sales.</h2>
-            <p className="mt-3 max-w-3xl text-sm leading-6 text-emerald-50/85 sm:mt-4 sm:text-base sm:leading-7">
-              Peter provides practical arborist guidance for property owners, municipalities, HOAs, businesses, and project teams that need a clearer read on tree condition, risk, preservation, construction impacts, and maintenance priorities.
-            </p>
-            <div className="mt-6 rounded-2xl border border-teal-300/20 bg-[#07131b] p-4 shadow-[0_18px_42px_rgba(0,0,0,0.2)] sm:mt-8 sm:p-6">
-              <CheckList items={independent} />
-            </div>
-            <CredentialBadges />
-          </div>
-        </div>
-      </section>
+      <div><FAQSection /></div>
 
-      <GoogleReviewsSection />
-
-      <FAQSection />
-
+      <div>
       <section id="consultation-request" className="relative isolate scroll-mt-28 overflow-hidden bg-[#050b12] py-8 text-white sm:py-12">
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_85%_15%,rgba(246,201,90,0.16),transparent_24rem),radial-gradient(circle_at_12%_82%,rgba(18,192,168,0.12),transparent_22rem)]" />
         <div className="tree-ring-texture absolute inset-y-0 right-0 -z-10 w-1/2 rotate-180 opacity-40" />
@@ -329,6 +396,8 @@ export function TheArboristHomePage() {
           </div>
         </div>
       </section>
+      </div>
+      </main>
 
       <footer className="border-t border-teal-300/15 bg-[#030806] px-4 py-10 text-sm text-emerald-50/75 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">

@@ -34,21 +34,34 @@ const deliverables = [
 export function WhatYouReceiveSection() {
   return (
     <>
-      <section id="construction-tree-guidance" className="border-y border-emerald-950/10 bg-stone-50 py-10 sm:py-14">
+      <section id="construction-tree-guidance" className="border-y border-emerald-950/10 bg-stone-50 py-6 sm:py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div id="construction-conflict-panel" className="rounded-2xl border border-emerald-950/10 bg-white p-5 shadow-[0_18px_44px_rgba(6,17,13,0.08)] sm:p-7">
+          <div id="construction-conflict-panel" className="rounded-2xl border border-emerald-950/10 bg-white p-4 shadow-[0_18px_44px_rgba(6,17,13,0.08)] sm:p-7">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-800 sm:text-sm">
               Construction &amp; hardscape conflicts near trees
             </p>
             <h2 className="mt-3 max-w-4xl text-2xl font-black leading-tight text-emerald-950 sm:text-3xl">
               Plan the work around the tree before excavation begins.
             </h2>
-            <p className="mt-3 max-w-4xl text-sm leading-6 text-stone-700 sm:text-base sm:leading-7">
+            <p className="mt-3 hidden max-w-4xl text-sm leading-6 text-stone-700 sm:block sm:text-base sm:leading-7">
               When a valuable or heritage tree conflicts with a retaining wall, driveway, foundation, grading, trenching, utility work, sidewalk, drainage project, or other site improvement, arborist input can help identify root-zone constraints, preservation options, and practical alternatives before roots are cut or the design is locked in.
             </p>
-            <p className="mt-3 max-w-4xl text-sm leading-6 text-stone-700 sm:text-base sm:leading-7">
+            <p className="mt-3 hidden max-w-4xl text-sm leading-6 text-stone-700 sm:block sm:text-base sm:leading-7">
               The goal is to help property owners, contractors, engineers, and project teams understand the tree-related constraints early enough to make a better construction decision.
             </p>
+            <p className="mt-2 text-sm leading-6 text-stone-700 sm:hidden">
+              Before excavation or construction near a tree, an independent assessment can help identify root-zone conflicts and preservation options.
+            </p>
+            <details className="group mt-3 rounded-xl border border-emerald-950/15 bg-stone-50 p-3 text-emerald-950 sm:hidden">
+              <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between gap-3 text-sm font-black focus-ring [&::-webkit-details-marker]:hidden">
+                Read more construction guidance
+                <span aria-hidden="true" className="text-xl group-open:rotate-45">+</span>
+              </summary>
+              <div className="mt-3 border-t border-emerald-950/10 pt-3 text-sm leading-6 text-stone-700">
+                <p>When a valuable or heritage tree conflicts with a retaining wall, driveway, foundation, grading, trenching, utility work, sidewalk, drainage project, or another site improvement, arborist input can identify root-zone constraints, preservation options, and practical alternatives before roots are cut or designs are finalized.</p>
+                <p className="mt-2">Early input helps property owners, contractors, engineers, and project teams understand tree-related constraints before construction decisions become costly to change.</p>
+              </div>
+            </details>
             <Link
               href={consultationAnchor}
               data-track-event="Request Assessment Click"
@@ -65,7 +78,7 @@ export function WhatYouReceiveSection() {
 
       <TreeInventoryHomeSection />
 
-      <section id="what-you-receive" className="relative isolate overflow-hidden bg-[#07131b] py-12 text-white sm:py-16">
+      <section id="what-you-receive" className="relative isolate overflow-hidden bg-[#07131b] py-6 text-white sm:py-16">
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_18%_18%,rgba(246,201,90,0.12),transparent_22rem),radial-gradient(circle_at_82%_30%,rgba(18,192,168,0.12),transparent_24rem),linear-gradient(135deg,#050b12_0%,#07131b_55%,#0b1f17_100%)]" />
         <div className="tree-ring-texture absolute inset-y-0 left-0 -z-10 w-1/2 opacity-30" />
 
@@ -82,7 +95,21 @@ export function WhatYouReceiveSection() {
             </p>
           </div>
 
-          <div className="mt-8 grid gap-3 sm:mt-10 sm:grid-cols-2 lg:grid-cols-4">
+          <details className="group mt-5 rounded-xl border border-teal-300/25 bg-white/[0.05] p-4 text-white sm:hidden">
+            <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between gap-3 font-black text-[#f6c95a] focus-ring [&::-webkit-details-marker]:hidden">
+              Explore possible deliverables
+              <span aria-hidden="true" className="text-xl group-open:rotate-45">+</span>
+            </summary>
+            <div className="mt-3 space-y-3 border-t border-teal-300/20 pt-3">
+              {deliverables.map(({ title, text }) => (
+                <div key={title}>
+                  <h3 className="text-sm font-black text-white">{title}</h3>
+                  <p className="mt-1 text-xs leading-5 text-emerald-50/80">{text}</p>
+                </div>
+              ))}
+            </div>
+          </details>
+          <div className="mt-8 hidden gap-3 sm:mt-10 sm:grid sm:grid-cols-2 lg:grid-cols-4">
             {deliverables.map(({ title, text, Icon }) => (
               <article key={title} className="rounded-2xl border border-teal-300/20 bg-white/[0.06] p-4 shadow-[0_18px_42px_rgba(0,0,0,0.18)] backdrop-blur sm:p-5">
                 <Icon className="size-7 text-[#f6c95a] sm:size-8" aria-hidden="true" />

@@ -22,22 +22,22 @@ export function CredentialBadges() {
       <h3 id="credentials-heading" className="text-xs font-black uppercase tracking-[0.16em] text-[#f6c95a]">
         Professional Credentials
       </h3>
-      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+      <div className="mt-3 grid grid-cols-3 gap-2 sm:mt-4 sm:gap-3">
         {credentialBadges.map((credential) => (
           <article
             key={credential.title}
-            className="flex min-w-0 items-center gap-4 rounded-xl border border-teal-300/20 bg-white/[0.04] p-3 sm:block"
+            className="block min-w-0 rounded-xl border border-teal-300/20 bg-white/[0.04] p-2 sm:p-3"
           >
-            <div className="grid h-24 w-24 shrink-0 place-items-center rounded-lg bg-white p-2 sm:h-28 sm:w-full sm:p-3">
+            <div className="grid h-20 w-full place-items-center rounded-lg bg-white p-1.5 sm:h-28 sm:p-3">
               <img
                 src={credential.imageSrc}
                 alt={credential.imageAlt}
-                className="max-h-20 w-auto max-w-full object-contain sm:max-h-24"
+                className="max-h-16 w-auto max-w-full object-contain sm:max-h-24"
                 loading="lazy"
                 decoding="async"
               />
             </div>
-            <h4 className="text-sm font-bold leading-5 text-white sm:mt-3">{credential.title}</h4>
+            <h4 className="mt-2 break-words text-[11px] font-bold leading-4 text-white sm:mt-3 sm:text-sm sm:leading-5">{credential.title}</h4>
           </article>
         ))}
       </div>

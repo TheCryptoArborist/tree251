@@ -22,28 +22,46 @@ const inventoryUses = [
 
 export function TreeInventoryHomeSection() {
   return (
-    <section id="tree-inventories" className="bg-stone-50 py-12 sm:py-16">
+    <section id="tree-inventories" className="bg-stone-50 py-6 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-8 lg:grid-cols-[0.86fr_1.14fr] lg:items-center">
+        <div className="grid gap-5 sm:gap-8 lg:grid-cols-[0.86fr_1.14fr] lg:items-center">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-800 sm:text-sm">Tree inventories</p>
-            <h2 className="mt-3 text-2xl font-black leading-tight text-emerald-950 sm:text-4xl">Planning for more than one tree—or documenting trees for a building project?</h2>
-            <p className="mt-4 text-sm leading-6 text-stone-700 sm:text-base sm:leading-7">
+            <h2 className="mt-2 text-xl font-black leading-tight text-emerald-950 sm:hidden">Tree inventories &amp; surveys for larger properties</h2>
+            <h2 className="mt-3 hidden text-2xl font-black leading-tight text-emerald-950 sm:block sm:text-4xl">Planning for more than one tree—or documenting trees for a building project?</h2>
+            <p className="mt-2 text-sm leading-6 text-stone-700 sm:hidden">
+              Tree-by-tree documentation for maintenance, planning, construction, and permitting.
+            </p>
+            <p className="mt-4 hidden text-sm leading-6 text-stone-700 sm:block sm:text-base sm:leading-7">
               A professional tree inventory can support property management, municipal planning, construction, permitting, and design. The scope can be tailored to document the tree information your client, engineer, surveyor, architect, landscape architect, or permitting authority needs.
             </p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <div className="mt-4 flex flex-col gap-3 sm:mt-6 sm:flex-row sm:flex-wrap">
               <Link href="/tree-inventories" className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-emerald-900 px-6 py-3 text-center text-sm font-black uppercase tracking-[0.04em] text-white transition hover:bg-emerald-800 focus-ring sm:w-auto">
                 View Inventory Services
                 <ArrowRight className="size-4" aria-hidden="true" />
               </Link>
-              <a href={inventoryMailto} className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-emerald-900/25 bg-white px-6 py-3 text-center text-sm font-black uppercase tracking-[0.04em] text-emerald-950 transition hover:border-emerald-900/50 hover:bg-emerald-50 focus-ring sm:w-auto">
+              <a href={inventoryMailto} className="hidden min-h-12 w-full items-center justify-center gap-2 rounded-full border border-emerald-900/25 bg-white px-6 py-3 text-center text-sm font-black uppercase tracking-[0.04em] text-emerald-950 transition hover:border-emerald-900/50 hover:bg-emerald-50 focus-ring sm:inline-flex sm:w-auto">
                 <Mail className="size-4" aria-hidden="true" />
                 Email About a Project
               </a>
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+          <details className="group rounded-xl border border-emerald-950/15 bg-white p-4 text-emerald-950 sm:hidden">
+            <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between gap-3 font-black focus-ring [&::-webkit-details-marker]:hidden">
+              What an inventory can include
+              <span className="text-xl group-open:rotate-45" aria-hidden="true">+</span>
+            </summary>
+            <div className="mt-3 space-y-3 border-t border-emerald-950/10 pt-3">
+              {inventoryUses.map(({ title, text }) => (
+                <div key={title}>
+                  <p className="text-sm font-black">{title}</p>
+                  <p className="mt-1 text-xs leading-5 text-stone-700">{text}</p>
+                </div>
+              ))}
+            </div>
+          </details>
+          <div className="hidden gap-4 sm:grid sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
             {inventoryUses.map(({ title, text, Icon }) => (
               <article key={title} className="rounded-2xl border border-emerald-950/10 bg-white p-5 shadow-[0_18px_44px_rgba(6,17,13,0.08)]">
                 <Icon className="size-8 text-emerald-800" aria-hidden="true" />
@@ -54,7 +72,16 @@ export function TreeInventoryHomeSection() {
           </div>
         </div>
 
-        <div className="mt-8 rounded-2xl border border-emerald-950/10 bg-emerald-950 p-5 text-white shadow-[0_20px_50px_rgba(6,17,13,0.18)] sm:mt-10 sm:p-6">
+        <details className="group mt-3 rounded-xl border border-emerald-950/15 bg-white p-4 text-emerald-950 sm:hidden">
+          <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between gap-3 text-sm font-black focus-ring [&::-webkit-details-marker]:hidden">
+            Typical inventory deliverables
+            <span className="text-xl group-open:rotate-45" aria-hidden="true">+</span>
+          </summary>
+          <p className="mt-3 border-t border-emerald-950/10 pt-3 text-xs leading-5 text-stone-700">
+            A tree inventory spreadsheet, numbered schedule, species and diameter data, condition notes, recommendations, photographs, maps, and project-specific information may be included, depending on scope.
+          </p>
+        </details>
+        <div className="mt-8 hidden rounded-2xl border border-emerald-950/10 bg-emerald-950 p-5 text-white shadow-[0_20px_50px_rgba(6,17,13,0.18)] sm:mt-10 sm:block sm:p-6">
           <div className="flex items-start gap-3">
             <ClipboardCheck className="mt-0.5 size-6 shrink-0 text-[#f6c95a]" aria-hidden="true" />
             <p className="text-sm leading-6 text-emerald-50/90 sm:text-base sm:leading-7">
