@@ -25,6 +25,7 @@ import {
 } from "@/components/ConsultBranding";
 import { AudienceTrustSection } from "@/components/AudienceTrustSection";
 import { ConsultationRequestForm } from "@/components/ConsultationRequestForm";
+import { CredentialBadges } from "@/components/CredentialBadges";
 import { FAQSection } from "@/components/FAQSection";
 import { GoogleReviewsSection } from "@/components/GoogleReviewsSection";
 import { PeterHeadshot } from "@/components/PeterHeadshot";
@@ -296,6 +297,8 @@ export function TheArboristHomePage() {
           </div>
         </div>
       </section>
+
+      <CredentialBadges />
 
       <GoogleReviewsSection />
 
