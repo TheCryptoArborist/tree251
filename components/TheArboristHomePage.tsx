@@ -212,7 +212,7 @@ export function TheArboristHomePage() {
             {serviceGroups.map(({ title, text, detail, href, label, icon: Icon }) => (
               <article key={title} className="flex h-full flex-col rounded-2xl border border-teal-300/20 bg-[#07131b]/80 p-5 shadow-[0_22px_54px_rgba(0,0,0,0.22)] backdrop-blur sm:p-6">
                 <Icon className="size-8 text-[#f6c95a]" aria-hidden="true" />
-                <h3 className="mt-5 text-xl font-black leading-tight text-white sm:text-2xl">{title}</h3>
+                <h3 className="mt-5 text-xl font-black leading-tight text-white sm:mt-5">{title}</h3>
                 <p className="mt-3 text-sm leading-6 text-emerald-50/82">{text}</p>
                 <p className="mt-3 flex-1 text-sm leading-6 text-emerald-100/65">{detail}</p>
                 <Link
@@ -286,7 +286,7 @@ export function TheArboristHomePage() {
               </a>
             </div>
           </div>
-          <div>
+          <div className="min-w-0">
             <h2 className="text-2xl font-black leading-tight text-white sm:text-4xl">Independent advice, not tree work sales.</h2>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-emerald-50/85 sm:mt-4 sm:text-base sm:leading-7">
               Peter provides practical arborist guidance for property owners, municipalities, HOAs, businesses, and project teams that need a clearer read on tree condition, risk, preservation, construction impacts, and maintenance priorities.
@@ -294,11 +294,10 @@ export function TheArboristHomePage() {
             <div className="mt-6 rounded-2xl border border-teal-300/20 bg-[#07131b] p-4 shadow-[0_18px_42px_rgba(0,0,0,0.2)] sm:mt-8 sm:p-6">
               <CheckList items={independent} />
             </div>
+            <CredentialBadges />
           </div>
         </div>
       </section>
-
-      <CredentialBadges />
 
       <GoogleReviewsSection />
 
