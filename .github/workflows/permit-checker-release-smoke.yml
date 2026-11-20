@@ -40,7 +40,8 @@ jobs:
           const {chromium}=require('playwright');
           const origin=process.env.PUBLIC_ORIGIN;
           assert.ok(origin==='https://www.tree251.xyz'||/^https:\/\/deploy-preview-\d+--tree251\.netlify\.app$/.test(origin));
-          // Compare static JS/CSS exactly. The preview may inject its own toolbar markup into HTML; verify the rendered document below.\n          const files=['mobile-tree-site-theme.css','mobile-tree-step-navigation.mjs','mobile-tree-contact-paths.mjs','mobile-tree-callback-prefill.mjs','mobile-tree-property-policy.mjs','mobile-tree-task-tabs.mjs'];
+          // Compare static JS/CSS exactly. The preview may inject its own toolbar markup into HTML; verify the rendered document below.
+          const files=['mobile-tree-site-theme.css','mobile-tree-step-navigation.mjs','mobile-tree-contact-paths.mjs','mobile-tree-callback-prefill.mjs','mobile-tree-property-policy.mjs','mobile-tree-task-tabs.mjs'];
           const expected=await Promise.all(files.map(f=>readFile('public/testing/'+f,'utf8')));
           let ready=false;
           for(let i=0;i<70;i++){
